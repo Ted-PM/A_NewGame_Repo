@@ -1,12 +1,16 @@
 using System.Collections;
+using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 
 public class CellSpawner : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _1X1Prefab;
+    private GameObject StartCell;
 
-    [SerializeField]
+    [SerializeField,Tooltip("Last Prefab in List is start cell, Keep first one as smallest possible cell.")]
     private GameObject[] _prefabs; // 1x1, 2x1, 1x2, 2x2
 
     private GameObject[,] _cellMatrix; // [x,z]
@@ -17,6 +21,11 @@ public class CellSpawner : MonoBehaviour
 
     [SerializeField]
     private MazeGenerator _generator;
+
+    [SerializeField]
+    private int Start_X = 0;
+    [SerializeField]
+    private int Start_Z = 0;
 
     private void Awake()
     {
@@ -46,7 +55,7 @@ public class CellSpawner : MonoBehaviour
         yield return new WaitForSeconds(1f);
         //PrintWalls();
         //yield return new WaitForSeconds(1f);
-        _generator.GenerateMaze(_cellMatrix, X_Width, Z_Height);
+        _generator.GenerateMaze(_cellMatrix, X_Width, Z_Height, Start_X, Start_Z);
     }
 
     private void SetMatrixID()
@@ -55,6 +64,7 @@ public class CellSpawner : MonoBehaviour
         {
             for (int z = 0; z < Z_Height; z++)
             {
+                //Debug.Log("Setting Matrix ID (" + x + ", " + z + ")");
                 _cellMatrix[x, z].GetComponent<Cell>().SetMatrixID(x, z);
             }
         }
@@ -73,6 +83,9 @@ public class CellSpawner : MonoBehaviour
 
     private void SpawnCells()
     {
+        if (Start_X >=0 && Start_X < X_Width && Start_Z >=0 && Start_Z < Z_Height) 
+            SpawnCell(Start_X, Start_Z);
+
         for (int x = 0; x < X_Width; x++)
         {
             // create empty object to store/organise the cells in column thing
@@ -94,69 +107,116 @@ public class CellSpawner : MonoBehaviour
         }
     }
 
-    // primitive version of choose random cell size for cells.
     private void SpawnCell(int x, int z)
     {
-        int choice = GetRandomNumber(0, 10);
+        List<int> potentialPrefabs = new List<int>();
 
-        // occupies 2 spaces in x axis 2x1
-        if (choice == 0 && x + 1 < X_Width && _cellMatrix[(x + 1), z] == null)
+        potentialPrefabs = PopulatePrefabList(potentialPrefabs);
+
+        potentialPrefabs = RandomizeList(potentialPrefabs);
+
+        Cell potentialPrefab;
+
+        if (x == Start_X && z == Start_Z)
         {
-            _cellMatrix[x, z] = Instantiate(_prefabs[1], _XContainers[x].transform);
-            _cellMatrix[x, z].transform.position = new Vector3(x * 10f, 0, z * 10f);
-            _cellMatrix[x, z].name = "Cell " + x.ToString() + ", " + z.ToString();
-
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArray(x, z); //
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x, z); //
-
-            _cellMatrix[(x + 1), z] = _cellMatrix[x, z];
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x+1, z);
-        }
-        // 2 spaces in Y axis 1x2
-        else if (choice == 1 && z + 1 < Z_Height && _cellMatrix[x, (z + 1)] == null)
-        {
-            _cellMatrix[x, z] = Instantiate(_prefabs[2], _XContainers[x].transform);
-            _cellMatrix[x, z].transform.position = new Vector3(x * 10f, 0, z * 10f);
-            _cellMatrix[x, z].name = "Cell " + x.ToString() + ", " + z.ToString();
-
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArray(x, z); //
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x, z);
-
-            _cellMatrix[x, (z+1)] = _cellMatrix[x, z];
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x, z+1);
-        }
-        // 4 spaces in x and y axis 2x2
-        else if ((choice == 2 && x + 1 < X_Width && z + 1 < Z_Height) && _cellMatrix[(x + 1), z] == null && _cellMatrix[x, (z + 1)] == null && _cellMatrix[(x+1), (z + 1)] == null)
-        {
-            _cellMatrix[x, z] = Instantiate(_prefabs[3], _XContainers[x].transform);
-            _cellMatrix[x, z].transform.position = new Vector3(x * 10f, 0, z * 10f);
-            _cellMatrix[x, z].name = "Cell " + x.ToString() + ", " + z.ToString();
-
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArray(x, z); //
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x, z);
-
-            _cellMatrix[(x + 1), z] = _cellMatrix[x, z];
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x+1, z);
-
-            _cellMatrix[x, (z + 1)] = _cellMatrix[x, z];
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x, z+1);
-
-            _cellMatrix[(x+1), (z + 1)] = _cellMatrix[x, z];
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x+1, z+1);
-        }
-        else
-        {
-            _cellMatrix[x, z] = Instantiate(_prefabs[0], _XContainers[x].transform);
-            _cellMatrix[x, z].transform.position = new Vector3(x * 10f, 0, z * 10f);
-            _cellMatrix[x, z].name = "Cell " + x.ToString() + ", " + z.ToString();
-
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x, z);
-            _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArray(x, z);   
+            potentialPrefab = StartCell.GetComponent<Cell>();
+            //Debug.Log("StartCell x/z: " + potentialPrefab.GetCellXWidth() + ", " + potentialPrefab.GetCellZHeight());
+            if (CheckIfCellInBounds(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
+            {
+                //Debug.Log("StartCell inbounds");
+                if (CheckIfCellCanSpawn(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
+                {
+                    //Debug.Log("StartCell can spawn");
+                    SpawnIndividualCell(x, z, -1, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight());
+                    return;
+                }
+            }
         }
 
-        //_cellMatrix[x, z].GetComponent<Cell>().SetMatrixID(x,z);
 
-        //_cellMatrix[x, z].GetComponent<Cell>().SetIndexInArray(x, z);
+        for (int i = (_prefabs.Length - 1); i >= 0; i--)
+        {
+            potentialPrefab = _prefabs[potentialPrefabs[i]].GetComponent<Cell>();
+
+            if (!CheckIfCellInBounds(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
+                continue;
+            
+            if (CheckIfCellCanSpawn(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
+            {
+                SpawnIndividualCell(x, z, potentialPrefabs[i], potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight());
+                break;
+            }
+        }
+    }
+
+    private List<int> PopulatePrefabList(List<int> list)
+    {
+        for (int i = 0; i < _prefabs.Length; i++)
+            list.Add(i);
+
+        return list;
+    }
+
+    private List<int> RandomizeList(List<int> list)
+    {
+        if (list.Count <= 0)
+            return new List<int>();
+
+        return list.OrderBy(x => Random.value).ToList();
+    }
+
+    private void SpawnIndividualCell(int x, int z, int prefabChoice, int cellXWidth, int cellzHeight)
+    {
+        if (_XContainers[x] != null)
+            _cellMatrix[x, z] = Instantiate(_prefabs[prefabChoice], _XContainers[x].transform);
+        else 
+        {
+            GameObject StartContainer = new GameObject();
+            StartContainer.transform.parent = this.transform;
+            StartContainer.name = "Start Cell: " + Start_X.ToString() + ", " + Start_Z.ToString();
+
+            if (prefabChoice == -1)
+                _cellMatrix[x, z] = Instantiate(StartCell, StartContainer.transform);
+            else
+                _cellMatrix[x, z] = Instantiate(_prefabs[prefabChoice], StartContainer.transform);
+        }
+
+
+        _cellMatrix[x, z].transform.position = new Vector3(x * 10f, 0, z * 10f);
+        _cellMatrix[x, z].name = "Cell " + x.ToString() + ", " + z.ToString();
+        _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArray(x, z);
+
+        for (int i = 0; i < cellXWidth; i++)
+        {
+            for (int j = 0; j < cellzHeight; j++)
+            {
+                _cellMatrix[x, z].GetComponent<Cell>().SetIndexInArrayList(x + i, z + j);
+                _cellMatrix[(x + i), (z + j)] = _cellMatrix[x, z];
+            }
+        }
+    }
+
+    private bool CheckIfCellInBounds(int x, int z, int cellXWidth, int cellzHeight)
+    {
+        return ((x + cellXWidth - 1) < X_Width && x >= 0 && (z + cellzHeight - 1) < Z_Height && z >= 0);
+    }
+
+    private bool CheckIfCellCanSpawn(int x, int z, int cellXWidth, int cellzHeight)
+    {
+        bool canSpawn = true;
+
+        for (int i = 0; i < cellXWidth; i++)
+        {
+            for (int j = 0; j < cellzHeight; j++)
+            {
+                if (_cellMatrix[(x + i), (z + j)] != null)
+                {
+                    canSpawn = false;
+                }
+            }
+        }
+
+        return canSpawn;    
     }
 
     private int GetRandomNumber(int min, int max)

@@ -56,6 +56,7 @@ public class Cell : MonoBehaviour
 
     [SerializeField]
     private Material _wallMaterial;
+    private Color _wallColor;
 
     public List<int[]> _indexInArrayList;
 
@@ -65,6 +66,9 @@ public class Cell : MonoBehaviour
     public List<CellWallData> _zNegHorizontalWalls;
 
     //public WallID DirectionToExit;
+
+    [SerializeField, Tooltip("IF false, the wall renderers will be disabled & only planes used for graphics.")]
+    private bool keepCellWalls = true;
 
     public int xWidth = 1;
     public int zHeight = 1;
@@ -87,7 +91,14 @@ public class Cell : MonoBehaviour
     void Start()
     {
         //FindWallsInChildren();
+        SetColor();
         FindWallsInChildren();
+    }
+
+    private void SetColor()
+    {
+        _wallColor = new Color(((float)xWidth / (float)(xWidth + zHeight)), ((float)(xWidth + zHeight) / 5), ((float) zHeight / (float)(xWidth + zHeight)));
+        //_wallMaterial.color = _wallColor;
     }
 
     private void FindWallsInChildren()
@@ -155,6 +166,7 @@ public class Cell : MonoBehaviour
         try
         {
             Material wallMat = _wallMaterial;
+            Color color = _wallColor;
         }
         catch
         {
@@ -164,22 +176,43 @@ public class Cell : MonoBehaviour
         for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
         {
             _zPosHorizontalWalls[i].wall.gameObject.SetActive(true);
-            _zPosHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
+            //_zPosHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
+            _zPosHorizontalWalls[i].wall.SetWallColor(_wallColor);
             //_zPosHorizontalWalls[i].wall.DisableRenderer();
 
             _zNegHorizontalWalls[i].wall.gameObject.SetActive(true);
-            _zNegHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
+            //_zNegHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
+            _zNegHorizontalWalls[i].wall.SetWallColor(_wallColor);
             //_zNegHorizontalWalls[i].wall.DisableRenderer();
         }
         for (int i = 0; i < _xPosVerticleWalls.Count; i++)
         {
             _xPosVerticleWalls[i].wall.gameObject.SetActive(true);
-            _xPosVerticleWalls[i].wall.SetWallMaterial(_wallMaterial);
+            //_xPosVerticleWalls[i].wall.SetWallMaterial(_wallMaterial);
+            _xPosVerticleWalls[i].wall.SetWallColor(_wallColor);
             //_xPosVerticleWalls[i].wall.DisableRenderer();
 
             _xNegVerticleWalls[i].wall.gameObject.SetActive(true);
-            _xNegVerticleWalls[i].wall.SetWallMaterial(_wallMaterial);
+            //_xNegVerticleWalls[i].wall.SetWallMaterial(_wallMaterial);
+            _xNegVerticleWalls[i].wall.SetWallColor(_wallColor);
             //_xNegVerticleWalls[i].wall.DisableRenderer();
+        }
+
+        if (!keepCellWalls)
+            DisableWallRenderers();
+    }
+
+    public void DisableWallRenderers()
+    {
+        for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
+        {
+            _zPosHorizontalWalls[i].wall.DisableRenderer();
+            _zNegHorizontalWalls[i].wall.DisableRenderer();
+        }
+        for (int i = 0; i < _xPosVerticleWalls.Count; i++)
+        {
+            _xPosVerticleWalls[i].wall.DisableRenderer();
+            _xNegVerticleWalls[i].wall.DisableRenderer();
         }
     }
 

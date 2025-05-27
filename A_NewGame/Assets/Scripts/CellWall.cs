@@ -8,22 +8,42 @@ public class CellWall : MonoBehaviour
 
     private Collider _wallCollider;
     private Renderer _wallRenderer;
+    
+    [SerializeField]
+    private GameObject _wallPlane;
 
     private void Awake()
     {
         _wallCollider = GetComponent<Collider>();
         _wallRenderer = GetComponent<Renderer>();
-        //SetWallID();
     }
-
-    //public WallID GetWallID()
-    //{ 
-    //    return _wallID; 
-    //}
 
     public void SetWallMaterial(Material wallMaterial)
     {
         _wallRenderer.material = wallMaterial;
+        
+        try
+        {
+            _wallPlane.GetComponent<Renderer>().material = wallMaterial;
+        }
+        catch
+        {
+            Debug.LogError("Wall Plane Not Found!!");
+        }
+    }
+
+    public void SetWallColor(Color wallColor)
+    {
+        _wallRenderer.material.color = wallColor;
+
+        try
+        {
+            _wallPlane.GetComponent<Renderer>().material.color = wallColor;
+        }
+        catch
+        {
+            Debug.LogError("Wall Plane Not Found!!");
+        }
     }
 
     public void DisableCollider()
@@ -51,39 +71,7 @@ public class CellWall : MonoBehaviour
     {
         _wallRenderer.enabled = !_wallRenderer.enabled;
     }
-    //// dead
-    //private void SetWallID()
-    //{
-    //    if (transform.position.z > 0)
-    //    {
-    //        if (transform.position.x == 0)
-    //            _wallID = WallID.PosZ;
-    //        else if (transform.position.x < 15)
-    //            _wallID = WallID.PosZ_PosX;
-    //    }
-    //    if (transform.position.x > 0)
-    //    {
-    //        if (transform.position.z == 0)
-    //            _wallID = WallID.PosX_PosZ;
-    //        else if (transform.position.z < 15)
-    //            _wallID = WallID.PosX;
-    //    }
-    //    if (transform.position.z < 0)
-    //    {
-    //        if (transform.position.x == 0)
-    //            _wallID = WallID.NegZ;
-    //        else if (transform.position.x < 15)
-    //            _wallID = WallID.NegZ_PosX;
-    //    }
-    //    if (transform.position.x < 0)
-    //    {
-    //        if (transform.position.z == 0)
-    //            _wallID = WallID.NegX;
-    //        else if (transform.position.z < 15)
-    //            _wallID = WallID.NegX_PosZ;
-    //    }
-    //}
-
+   
     public float GetWallX()
     {
         return transform.localPosition.x;

@@ -15,11 +15,11 @@ public class MazeGenerator : MonoBehaviour
     private int Z_Height = 0;
 
     // where want starting pos to be in maze (as index, not acc vector3)
-    public int Start_X = 0;
-    public int Start_Z = 0;
+    private int Start_X = 0;
+    private int Start_Z = 0;
 
     // calls the recursive function which acc generates the maze, also assigns variabls & cretaes bool matrix
-    public void GenerateMaze(GameObject[,] cellMatrix, int width_X, int height_Z)
+    public void GenerateMaze(GameObject[,] cellMatrix, int width_X, int height_Z, int spawnX, int spawnZ)
     {
         Debug.Log("Generating Maze");
         X_Width = width_X;
@@ -27,6 +27,8 @@ public class MazeGenerator : MonoBehaviour
 
         _cellMatrixBool = new bool[width_X, height_Z];
 
+        Start_X = spawnX;
+        Start_Z = spawnZ;
 
         if (CheckIfStartPointValid())
             GenerateMazeRecursive(cellMatrix, null, Start_X, Start_Z);
@@ -85,6 +87,16 @@ public class MazeGenerator : MonoBehaviour
             {
                 DisableWalls(previousCell, _currentCell);
             }
+            else
+            {
+                GenerateStartCell(cellMatrix, _currentCell, x, z, _currentCell.xWidth, _currentCell.zHeight);
+
+                //List < int[]> startAdjacentCells = new List<int[]>();
+                //startAdjacentCells.Add(x);
+                //List<int[]> StartNearbyCells = RemoveOutOfBoundCells(List<int[]> potentialCells)
+                // disable 4 walls if it's the "Start" cell (where player spawns so more options)
+                
+            }
 
             // 3.
             List<int[]> potentialNextCells = GetNextCells(_currentCell, x, z);
@@ -110,6 +122,41 @@ public class MazeGenerator : MonoBehaviour
                 // 8.
                 potentialNextCells = RemoveVisitedCells(remainingCells);
             }
+        }
+    }
+
+    private void GenerateStartCell(GameObject[,] cellMatrix, Cell _currentCell, int x, int z, int cellXWidth, int cellZHeight )
+    {
+        List <int[]> startCells = new List<int[]>();
+
+        int[] tempCell = new int[2];
+        tempCell[0] = x - 1;
+        tempCell[1] = z;
+        startCells.Add(tempCell);
+
+        tempCell = new int[2];
+        tempCell[0] = x;
+        tempCell[1] = z - 1;
+        startCells.Add(tempCell);
+
+        tempCell = new int[2];
+        tempCell[0] = x + cellXWidth;
+        tempCell[1] = z;
+        startCells.Add(tempCell);
+
+        tempCell = new int[2];
+        tempCell[0] = x;
+        tempCell[1] = z + cellZHeight;
+        startCells.Add(tempCell);
+
+        startCells = RemoveOutOfBoundCells(startCells);
+
+        for (int i = 0; i < startCells.Count; i++)
+        {
+            DisableWalls(_currentCell, cellMatrix[startCells[i][0], startCells[i][1]].GetComponent<Cell>());
+            //DisableWalls(_currentCell, cellMatrix[x, z - 1].GetComponent<Cell>());
+            //DisableWalls(_currentCell, cellMatrix[(x + _currentCell.xWidth), z].GetComponent<Cell>());
+            //DisableWalls(_currentCell, cellMatrix[x, (z + _currentCell.zHeight)].GetComponent<Cell>());
         }
     }
 
@@ -272,7 +319,10 @@ public class MazeGenerator : MonoBehaviour
 
         int[] nextCellIndex = nextCell.GetIndexInArray();
         List<int[]> nextCellIndexList = nextCell.GetIndexList();
-
+        if (currentCellIndex[0] < 0 || nextCellIndex[0] < 0 || currentCellIndex[1] < 0 || nextCellIndex[1] < 0
+            || currentCellIndex[0] >= X_Width || nextCellIndex[0] >= X_Width || 
+            currentCellIndex[1] >= Z_Height || nextCellIndex[1] >= Z_Height)
+            return;
         /*
         Debug.Log("Current Cell Index: " + currentCellIndex[0] + ", " + currentCellIndex[1]);
         
@@ -287,12 +337,9 @@ public class MazeGenerator : MonoBehaviour
             Debug.Log("\t" + nextCell._indexInArrayList[i][0] + nextCell._indexInArrayList[i][1]);
         }
         */
-
-        DisableZHorizontalWall(currentCell, nextCell);
-        DisableXVerticalWall(currentCell, nextCell);
-
-        DisableZHorizontalWall(nextCell, currentCell);
-        DisableXVerticalWall(nextCell, currentCell);
+        
+        DisableZHorizontalWall(currentCell, nextCell, false);
+        DisableXVerticalWall(currentCell, nextCell, false);
     }
 
     /*      DisableZHorizontalWall(Cell current, Cell next)
@@ -313,17 +360,19 @@ public class MazeGenerator : MonoBehaviour
      * 
      * DisableXVerticalWall(Cell current, Cell next) does same shit but on x axis (left / right)
     */
-    private void DisableZHorizontalWall(Cell current, Cell next)
+    private void DisableZHorizontalWall(Cell current, Cell next, bool found)
     {
-        for (int i = 0; i < current._zPosHorizontalWalls.Count; i++)
+        for (int j = 0; j < next._indexInArrayList.Count; j++)
         {
-            for (int j = 0; j < next._indexInArrayList.Count; j++)
+            for (int i = 0; i < current._zPosHorizontalWalls.Count; i++)
             {
                 if (CompareTwoArrays(current._zPosHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                 {
                     //Debug.Log("Disable POS Z");
                     //Debug.Log(current.name + ": " + current._zPosHorizontalWalls[i].GetMatrixX() + ", " + current._zPosHorizontalWalls[i].GetMatrixZ());
                     current._zPosHorizontalWalls[i].DisableWall();
+                    if (!found)
+                        DisableZHorizontalWall(next, current, true);
                     return;
                 }
                 if (CompareTwoArrays(current._zNegHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
@@ -331,23 +380,27 @@ public class MazeGenerator : MonoBehaviour
                     //Debug.Log("Disable NEG Z");
                     //Debug.Log(current.name + ": " + current._zNegHorizontalWalls[i].GetMatrixX() + ", " + current._zNegHorizontalWalls[i].GetMatrixZ());
                     current._zNegHorizontalWalls[i].DisableWall();
+                    if (!found)
+                        DisableZHorizontalWall(next, current, true);
                     return;
                 }
             }
         }
     }
 
-    private void DisableXVerticalWall(Cell current, Cell next)
+    private void DisableXVerticalWall(Cell current, Cell next, bool found)
     {
-        for (int i = 0; i < current._xPosVerticleWalls.Count; i++)
+        for (int j = 0; j < next._indexInArrayList.Count; j++)
         {
-            for (int j = 0; j < next._indexInArrayList.Count; j++)
+            for (int i = 0; i < current._xPosVerticleWalls.Count; i++)
             {
                 if (CompareTwoArrays(current._xPosVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                 {
                     //Debug.Log("Disable POS X");
                     //Debug.Log(current.name + ": " + current._xPosVerticleWalls[i].GetMatrixX() + ", " + current._xPosVerticleWalls[i].GetMatrixZ());
                     current._xPosVerticleWalls[i].DisableWall();
+                    if (!found)
+                        DisableXVerticalWall(next, current, true);
                     return;
                 }
                 if (CompareTwoArrays(current._xNegVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
@@ -355,6 +408,8 @@ public class MazeGenerator : MonoBehaviour
                     //Debug.Log("Disable NEG X");
                     //Debug.Log(current.name + ": " + current._xNegVerticleWalls[i].GetMatrixX() + ", " + current._xNegVerticleWalls[i].GetMatrixZ());
                     current._xNegVerticleWalls[i].DisableWall();
+                    if (!found)
+                        DisableXVerticalWall(next, current, true);
                     return;
                 }
             }
