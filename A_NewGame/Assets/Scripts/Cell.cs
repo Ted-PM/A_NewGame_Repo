@@ -54,8 +54,16 @@ public class Cell : MonoBehaviour
     //[SerializeField]
     //private CellWall[] _cellWalls;
 
+    private GameObject CellFloorContainer;
+    private GameObject CellCeelingContainer;
+
     [SerializeField]
     private Material _wallMaterial;
+    [SerializeField]
+    private Material _floorMaterial;
+    [SerializeField]
+    private Material _ceelingMaterial;
+
     private Color _wallColor;
 
     public List<int[]> _indexInArrayList;
@@ -65,9 +73,13 @@ public class Cell : MonoBehaviour
     public List<CellWallData> _zPosHorizontalWalls;
     public List<CellWallData> _zNegHorizontalWalls;
 
+    public List<GameObject> _floors;
+    public List<GameObject> _ceelings;
+
+
     //public WallID DirectionToExit;
 
-    [SerializeField, Tooltip("IF false, the wall renderers will be disabled & only planes used for graphics.")]
+    //[SerializeField, Tooltip("IF false, the wall renderers will be disabled & only planes used for graphics.")]
     private bool keepCellWalls = true;
 
     public int xWidth = 1;
@@ -80,18 +92,22 @@ public class Cell : MonoBehaviour
     private void Awake()
     {
         //_cellWalls = new CellWall[8];
+        
         _hasWallMatrixId = false;
         _indexInArrayList = new List<int[]>();
         _xPosVerticleWalls = new List<CellWallData>();
         _xNegVerticleWalls = new List<CellWallData>();
         _zPosHorizontalWalls = new List<CellWallData>();
         _zNegHorizontalWalls = new List<CellWallData>();
+        _floors = new List<GameObject>();
+        _ceelings = new List<GameObject>();
+        CreateCeelingAndFloorContainers();
     }
 
     void Start()
     {
         //FindWallsInChildren();
-        SetColor();
+        //SetColor();
         FindWallsInChildren();
     }
 
@@ -99,6 +115,17 @@ public class Cell : MonoBehaviour
     {
         _wallColor = new Color(((float)xWidth / (float)(xWidth + zHeight)), ((float)(xWidth + zHeight) / 5), ((float) zHeight / (float)(xWidth + zHeight)));
         //_wallMaterial.color = _wallColor;
+    }
+
+    private void CreateCeelingAndFloorContainers()
+    {
+        CellFloorContainer = new GameObject();
+        CellFloorContainer.transform.parent = this.transform;
+        CellFloorContainer.name = "Floors";
+
+        CellCeelingContainer = new GameObject();
+        CellCeelingContainer.transform.parent = this.transform;
+        CellCeelingContainer.name = "Ceelings";
     }
 
     private void FindWallsInChildren()
@@ -152,6 +179,9 @@ public class Cell : MonoBehaviour
             }
         }
 
+        FindFloors_FindCeelins();
+
+
         // then re enable all walls when done
         ReEnableWallLists();
 
@@ -161,12 +191,54 @@ public class Cell : MonoBehaviour
         ReOrganizeXWallLists();
     }
 
+    private void FindFloors_FindCeelins()
+    {
+        GameObject temp;
+        Debug.Log("Looking for Floors / ceelings");
+        for (int i = 0; i < (xWidth * zHeight) * 2; i++)
+        {
+            //Debug.Log("In For Loop");
+
+            try
+            {
+                Debug.Log("In Try");
+
+                temp = this.gameObject.GetComponentInChildren<GameObject>();
+                if (temp.transform.localPosition.y > 0f)
+                {
+                    Debug.Log("Found Ceeling");
+                    temp.transform.parent = CellCeelingContainer.transform;
+                    _ceelings.Add(temp);
+                }
+                else
+                {
+                    Debug.Log("Found Floor");
+                    temp.transform.parent = CellFloorContainer.transform;
+                    _floors.Add(temp);
+                }
+                temp.gameObject.SetActive(false);
+            }
+            catch { Debug.Log("No Floor / Ceeling"); }
+        }
+
+        for (int i = 0; i < _ceelings.Count; i++)
+        {
+            _ceelings[i].gameObject.SetActive(true);
+            _ceelings[i].GetComponent<Renderer>().material = _ceelingMaterial;
+            //_ceelings[i].gameObject.transform.parent = CellCeelingContainer.transform;
+
+            _floors[i].gameObject.SetActive(true);
+            _floors[i].GetComponent<Renderer>().material = _floorMaterial;
+            //_floors[i].gameObject.transform.parent = CellFloorContainer.transform;
+        }
+    }
+
     private void ReEnableWallLists()
     {
         try
         {
             Material wallMat = _wallMaterial;
-            Color color = _wallColor;
+            //Color color = _wallColor;
         }
         catch
         {
@@ -176,26 +248,22 @@ public class Cell : MonoBehaviour
         for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
         {
             _zPosHorizontalWalls[i].wall.gameObject.SetActive(true);
-            //_zPosHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
-            _zPosHorizontalWalls[i].wall.SetWallColor(_wallColor);
-            //_zPosHorizontalWalls[i].wall.DisableRenderer();
+            _zPosHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
+            //_zPosHorizontalWalls[i].wall.SetWallColor(_wallColor);
 
             _zNegHorizontalWalls[i].wall.gameObject.SetActive(true);
-            //_zNegHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
-            _zNegHorizontalWalls[i].wall.SetWallColor(_wallColor);
-            //_zNegHorizontalWalls[i].wall.DisableRenderer();
+            _zNegHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
+            //_zNegHorizontalWalls[i].wall.SetWallColor(_wallColor);
         }
         for (int i = 0; i < _xPosVerticleWalls.Count; i++)
         {
             _xPosVerticleWalls[i].wall.gameObject.SetActive(true);
-            //_xPosVerticleWalls[i].wall.SetWallMaterial(_wallMaterial);
-            _xPosVerticleWalls[i].wall.SetWallColor(_wallColor);
-            //_xPosVerticleWalls[i].wall.DisableRenderer();
+            _xPosVerticleWalls[i].wall.SetWallMaterial(_wallMaterial);
+            //_xPosVerticleWalls[i].wall.SetWallColor(_wallColor);
 
             _xNegVerticleWalls[i].wall.gameObject.SetActive(true);
-            //_xNegVerticleWalls[i].wall.SetWallMaterial(_wallMaterial);
-            _xNegVerticleWalls[i].wall.SetWallColor(_wallColor);
-            //_xNegVerticleWalls[i].wall.DisableRenderer();
+            _xNegVerticleWalls[i].wall.SetWallMaterial(_wallMaterial);
+            //_xNegVerticleWalls[i].wall.SetWallColor(_wallColor);
         }
 
         if (!keepCellWalls)

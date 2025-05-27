@@ -31,7 +31,6 @@ public class CellWall : MonoBehaviour
             Debug.LogError("Wall Plane Not Found!!");
         }
     }
-
     public void SetWallColor(Color wallColor)
     {
         _wallRenderer.material.color = wallColor;
