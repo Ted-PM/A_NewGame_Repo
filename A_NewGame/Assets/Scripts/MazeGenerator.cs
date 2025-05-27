@@ -19,21 +19,23 @@ public class MazeGenerator : MonoBehaviour
     private int Start_Z = 0;
 
     // calls the recursive function which acc generates the maze, also assigns variabls & cretaes bool matrix
-    public void GenerateMaze(GameObject[,] cellMatrix, int width_X, int height_Z, int spawnX, int spawnZ)
+    public void GenerateMaze(GameObject[,] cellMatrix, bool[,] cellMatrixBool, int width_X, int height_Z, int spawnX, int spawnZ)
     {
         Debug.Log("Generating Maze");
         X_Width = width_X;
         Z_Height = height_Z;
 
-        _cellMatrixBool = new bool[width_X, height_Z];
+        _cellMatrixBool = cellMatrixBool;
+        //_cellMatrixBool = new bool[width_X, height_Z];
+        //_cellMatrixBool = (bool[,])cellMatrixBool.Clone();
 
         Start_X = spawnX;
         Start_Z = spawnZ;
 
         if (CheckIfStartPointValid())
-            GenerateMazeRecursive(cellMatrix, null, Start_X, Start_Z);
+            GenerateMazeRecursive(cellMatrix, null, Start_X, Start_Z, null);
         else
-            GenerateMazeRecursive(cellMatrix, null, 0, 0);
+            GenerateMazeRecursive(cellMatrix, null, 0, 0, null);
 
     }
 
@@ -70,7 +72,7 @@ public class MazeGenerator : MonoBehaviour
     - 9. Repeat steps 7 - 8 until no candidates exist       
      */
 
-    private void GenerateMazeRecursive(GameObject[,] cellMatrix, Cell previousCell, int x, int z)
+    private void GenerateMazeRecursive(GameObject[,] cellMatrix, Cell previousCell, int x, int z, int[] wallToBeDisabled)
     {
         // 0. a)
         if (x < X_Width && z < Z_Height && !_cellMatrixBool[x, z])
@@ -85,7 +87,7 @@ public class MazeGenerator : MonoBehaviour
             // 2.
             if (previousCell != null)
             {
-                DisableWalls(previousCell, _currentCell);
+                DisableWalls(previousCell, _currentCell, wallToBeDisabled);
             }
             else
             {
@@ -104,6 +106,15 @@ public class MazeGenerator : MonoBehaviour
             potentialNextCells = RemoveOutOfBoundCells(potentialNextCells);
             // 5.
             potentialNextCells = RemoveVisitedCells(potentialNextCells);
+
+            potentialNextCells = RemoveDeadCells(potentialNextCells, _currentCell);
+
+            Debug.Log("Potential Cells in MAIN: ");
+            for (int i = 0; i < potentialNextCells.Count; i++)
+            {
+                Debug.Log(potentialNextCells[i][0] + ", " + potentialNextCells[i][1]);
+            }
+
             // 6.
             potentialNextCells = RandomizePotentialCells(potentialNextCells);
 
@@ -114,11 +125,12 @@ public class MazeGenerator : MonoBehaviour
             while (potentialNextCells != null && potentialNextCells.Count > 0)
             {
                 // 7. a)
+                Debug.Log("Next Cell Index: " + potentialNextCells[0][0] + ", " + potentialNextCells[0][1]);
                 Cell _nextCell = cellMatrix[potentialNextCells[0][0], potentialNextCells[0][1]].GetComponent<Cell>();
                 // 7. b) 
                 List<int[]> remainingCells = potentialNextCells.Skip(1).ToList();
                 // 7. c) 
-                GenerateMazeRecursive(cellMatrix, _currentCell, potentialNextCells[0][0], potentialNextCells[0][1]);
+                GenerateMazeRecursive(cellMatrix, _currentCell, potentialNextCells[0][0], potentialNextCells[0][1], potentialNextCells[0]);
                 // 8.
                 potentialNextCells = RemoveVisitedCells(remainingCells);
             }
@@ -153,7 +165,7 @@ public class MazeGenerator : MonoBehaviour
 
         for (int i = 0; i < startCells.Count; i++)
         {
-            DisableWalls(_currentCell, cellMatrix[startCells[i][0], startCells[i][1]].GetComponent<Cell>());
+            DisableWalls(_currentCell, cellMatrix[startCells[i][0], startCells[i][1]].GetComponent<Cell>(), startCells[i]);
             //DisableWalls(_currentCell, cellMatrix[x, z - 1].GetComponent<Cell>());
             //DisableWalls(_currentCell, cellMatrix[(x + _currentCell.xWidth), z].GetComponent<Cell>());
             //DisableWalls(_currentCell, cellMatrix[x, (z + _currentCell.zHeight)].GetComponent<Cell>());
@@ -288,6 +300,59 @@ public class MazeGenerator : MonoBehaviour
         return remainingCells;
     }
 
+    private List<int[]> RemoveDeadCells(List<int[]> potentialCells, Cell currentCell)
+    {
+        //if (!currentCell.HasDeadCell())
+        //return potentialCells;
+        //if (remainingCells[i][0] == )
+        int[] currIndexList = currentCell.GetIndexInArray();
+        Debug.Log("Looking at Base Cell: " + currIndexList[0] + ", " + currIndexList[1] + "----------");
+
+        Debug.Log("Current Potential Cells: ");
+        for (int i = 0 ; i < potentialCells.Count; i++ )
+        {
+            Debug.Log(potentialCells[i][0] + ", " + potentialCells[i][1]);
+        }
+
+        //List<int[]> remainingCells = new List<int[]>(potentialCells);
+        List < (int x, int z) > deadCells = currentCell.GetDeadCellList();
+        int[] currentDeadCell = new int[2];
+        //Debug.Log("Removing Potential Next To Dead at: " + currentCell.GetIndexInArray()[0] + ", " + currentCell.GetIndexInArray()[1]);
+        Debug.Log("Num Dead Cells: " + deadCells.Count);
+        for (int j = 0; j < deadCells.Count; j++)
+        {
+            currentDeadCell[0] = deadCells[j].x;
+            currentDeadCell[1] = deadCells[j].z;
+
+            for (int i = (potentialCells.Count - 1); i >= 0; i--)
+            {
+                Debug.Log("Looking at DeadCell: " + currentDeadCell[0] + ", " + currentDeadCell[1] +
+                    " -- Potential CellIndex: : " + potentialCells[i][0] + ", " + potentialCells[i][1]);
+                if (potentialCells[i][0] == currentDeadCell[0] && ((potentialCells[i][1] == (currentDeadCell[1] + 1)
+                    || (potentialCells[i][1] == (currentDeadCell[1] - 1)))))
+                {
+                    Debug.Log("Removing Potential Cell: " + potentialCells[i][0] + ", " + potentialCells[i][1]);
+                    potentialCells.RemoveAt(i);
+                }
+                else if (potentialCells[i][1] == currentDeadCell[1] && ((potentialCells[i][0] == (currentDeadCell[0] + 1)
+                    || (potentialCells[i][0] == (currentDeadCell[0] - 1)))))
+                {
+                    Debug.Log("Removing Potential Cell: " + potentialCells[i][0] + ", " + potentialCells[i][1]);
+                    potentialCells.RemoveAt(i);
+                }
+            }
+        }
+
+        Debug.Log("New Potential Cells: ");
+        for (int i = 0; i < potentialCells.Count; i++)
+        {
+            Debug.Log(potentialCells[i][0] + ", " + potentialCells[i][1]);
+        }
+
+
+        return potentialCells;
+    }
+
     /*          6.      RandomizePotentialCells
      * Randomizes list, if you need a further explination then idk, good luck in life
      */
@@ -312,13 +377,14 @@ public class MazeGenerator : MonoBehaviour
      *      (i.e. current's positiv X (right wall) and next's negative X (left wall))
      *      instead of just running that shit 4 times and hoping it works
     */
-    private void DisableWalls(Cell currentCell, Cell nextCell)
+    private void DisableWalls(Cell currentCell, Cell nextCell, int[] wallToBeDisabled)
     {
         int[] currentCellIndex = currentCell.GetIndexInArray();
         List<int[]> currentCellIndexList = currentCell.GetIndexList();
 
         int[] nextCellIndex = nextCell.GetIndexInArray();
         List<int[]> nextCellIndexList = nextCell.GetIndexList();
+
         if (currentCellIndex[0] < 0 || nextCellIndex[0] < 0 || currentCellIndex[1] < 0 || nextCellIndex[1] < 0
             || currentCellIndex[0] >= X_Width || nextCellIndex[0] >= X_Width || 
             currentCellIndex[1] >= Z_Height || nextCellIndex[1] >= Z_Height)
@@ -338,8 +404,8 @@ public class MazeGenerator : MonoBehaviour
         }
         */
         
-        DisableZHorizontalWall(currentCell, nextCell, false);
-        DisableXVerticalWall(currentCell, nextCell, false);
+        DisableZHorizontalWall(currentCell, nextCell, wallToBeDisabled, false);
+        DisableXVerticalWall(currentCell, nextCell, wallToBeDisabled, false);
     }
 
     /*      DisableZHorizontalWall(Cell current, Cell next)
@@ -360,57 +426,99 @@ public class MazeGenerator : MonoBehaviour
      * 
      * DisableXVerticalWall(Cell current, Cell next) does same shit but on x axis (left / right)
     */
-    private void DisableZHorizontalWall(Cell current, Cell next, bool found)
+    private void DisableZHorizontalWall(Cell current, Cell next, int[] wallToBeDisabled, bool found)
     {
+        //if (wallToBeDisabled == null)
+        //{
+        //    wallToBeDisabled = new int[2];
+        //    wallToBeDisabled[0] = 
+        //}
+
         for (int j = 0; j < next._indexInArrayList.Count; j++)
         {
-            for (int i = 0; i < current._zPosHorizontalWalls.Count; i++)
+            if (CompareTwoArrays(wallToBeDisabled, next._indexInArrayList[j]))
             {
-                if (CompareTwoArrays(current._zPosHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
+                for (int i = 0; i < current._zPosHorizontalWalls.Count; i++)
                 {
-                    //Debug.Log("Disable POS Z");
-                    //Debug.Log(current.name + ": " + current._zPosHorizontalWalls[i].GetMatrixX() + ", " + current._zPosHorizontalWalls[i].GetMatrixZ());
-                    current._zPosHorizontalWalls[i].DisableWall();
-                    if (!found)
-                        DisableZHorizontalWall(next, current, true);
-                    return;
-                }
-                if (CompareTwoArrays(current._zNegHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
-                {
-                    //Debug.Log("Disable NEG Z");
-                    //Debug.Log(current.name + ": " + current._zNegHorizontalWalls[i].GetMatrixX() + ", " + current._zNegHorizontalWalls[i].GetMatrixZ());
-                    current._zNegHorizontalWalls[i].DisableWall();
-                    if (!found)
-                        DisableZHorizontalWall(next, current, true);
-                    return;
+                    if (CompareTwoArrays(current._zPosHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
+                    {
+                        //Debug.Log("Disable POS Z");
+                        //Debug.Log(current.name + ": " + current._zPosHorizontalWalls[i].GetMatrixX() + ", " + current._zPosHorizontalWalls[i].GetMatrixZ());
+                        current._zPosHorizontalWalls[i].DisableWall();
+                        if (!found)
+                        {
+                            int[] newWallToBeDisabled = new int[2];
+                            newWallToBeDisabled[0] = wallToBeDisabled[0];
+                            newWallToBeDisabled[1] = wallToBeDisabled[1] - 1;
+
+                            DisableZHorizontalWall(next, current, newWallToBeDisabled, true);
+                        }
+                        return;
+                    }
+                    if (CompareTwoArrays(current._zNegHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
+                    {
+                        //Debug.Log("Disable NEG Z");
+                        //Debug.Log(current.name + ": " + current._zNegHorizontalWalls[i].GetMatrixX() + ", " + current._zNegHorizontalWalls[i].GetMatrixZ());
+                        current._zNegHorizontalWalls[i].DisableWall();
+                        if (!found)
+                        {
+                            int[] newWallToBeDisabled = new int[2];
+                            newWallToBeDisabled[0] = wallToBeDisabled[0];
+                            newWallToBeDisabled[1] = wallToBeDisabled[1] + 1;
+
+                            DisableZHorizontalWall(next, current, newWallToBeDisabled, true);
+                        }
+                        //if (!found)
+                        //DisableZHorizontalWall(next, current, true);
+                        return;
+                    }
                 }
             }
         }
     }
 
-    private void DisableXVerticalWall(Cell current, Cell next, bool found)
+    private void DisableXVerticalWall(Cell current, Cell next, int[] wallToBeDisabled, bool found)
     {
         for (int j = 0; j < next._indexInArrayList.Count; j++)
         {
-            for (int i = 0; i < current._xPosVerticleWalls.Count; i++)
+            if (CompareTwoArrays(wallToBeDisabled, next._indexInArrayList[j]))
             {
-                if (CompareTwoArrays(current._xPosVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
+                for (int i = 0; i < current._xPosVerticleWalls.Count; i++)
                 {
-                    //Debug.Log("Disable POS X");
-                    //Debug.Log(current.name + ": " + current._xPosVerticleWalls[i].GetMatrixX() + ", " + current._xPosVerticleWalls[i].GetMatrixZ());
-                    current._xPosVerticleWalls[i].DisableWall();
-                    if (!found)
-                        DisableXVerticalWall(next, current, true);
-                    return;
-                }
-                if (CompareTwoArrays(current._xNegVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
-                {
-                    //Debug.Log("Disable NEG X");
-                    //Debug.Log(current.name + ": " + current._xNegVerticleWalls[i].GetMatrixX() + ", " + current._xNegVerticleWalls[i].GetMatrixZ());
-                    current._xNegVerticleWalls[i].DisableWall();
-                    if (!found)
-                        DisableXVerticalWall(next, current, true);
-                    return;
+                    if (CompareTwoArrays(current._xPosVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
+                    {
+                        //Debug.Log("Disable POS X");
+                        //Debug.Log(current.name + ": " + current._xPosVerticleWalls[i].GetMatrixX() + ", " + current._xPosVerticleWalls[i].GetMatrixZ());
+                        current._xPosVerticleWalls[i].DisableWall();
+                        //if (!found)
+                        //DisableXVerticalWall(next, current, true);
+                        if (!found)
+                        {
+                            int[] newWallToBeDisabled = new int[2];
+                            newWallToBeDisabled[0] = wallToBeDisabled[0] - 1;
+                            newWallToBeDisabled[1] = wallToBeDisabled[1];
+
+                            DisableXVerticalWall(next, current, newWallToBeDisabled, true);
+                        }
+                        return;
+                    }
+                    if (CompareTwoArrays(current._xNegVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
+                    {
+                        //Debug.Log("Disable NEG X");
+                        //Debug.Log(current.name + ": " + current._xNegVerticleWalls[i].GetMatrixX() + ", " + current._xNegVerticleWalls[i].GetMatrixZ());
+                        current._xNegVerticleWalls[i].DisableWall();
+                        if (!found)
+                        {
+                            int[] newWallToBeDisabled = new int[2];
+                            newWallToBeDisabled[0] = wallToBeDisabled[0] + 1;
+                            newWallToBeDisabled[1] = wallToBeDisabled[1];
+
+                            DisableXVerticalWall(next, current, newWallToBeDisabled, true);
+                        }
+                        //if (!found)
+                        //DisableXVerticalWall(next, current, true);
+                        return;
+                    }
                 }
             }
         }

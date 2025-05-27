@@ -584,11 +584,14 @@ MonoBehaviour:
   - {fileID: 342488833958512737, guid: 3adb7f149c16ae745a192057e1eb0b55, type: 3}
   - {fileID: 342488833958512737, guid: 175e8480189043d45b89436847ed9b3b, type: 3}
   - {fileID: 342488833958512737, guid: d66f673b31086c04fbb9d18eea55e559, type: 3}
-  X_Width: 20
-  Z_Height: 20
+  - {fileID: 342488833958512737, guid: 8c2a5d40c9adb9347b502e4d9cf1fab2, type: 3}
+  - {fileID: 342488833958512737, guid: ea04004be6e0a4f4ea8b37df1ce60a83, type: 3}
+  oddsOfChoosePrefab: 0100000000000000000000000000000000000000000000000000000000000000000000000000000001000000
+  X_Width: 15
+  Z_Height: 15
   _generator: {fileID: 45659397}
-  Start_X: 10
-  Start_Z: 10
+  Start_X: 0
+  Start_Z: 0
 --- !u!1 &1739683986
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,9 +1,15 @@
 using System.Collections;
-using Unity.VisualScripting;
+//using Unity.VisualScripting;
 using System.Collections.Generic;
+//using System.Diagnostics;
 using UnityEngine;
 using System.Linq;
+using System;
+//using UnityEngine.Rendering;
+//using UnityEditor.Rendering;
+using UnityEditor;
 
+//[Serializable] public class PefabAndOdds : SerializedDictionary<GameObject, int> { }
 
 public class CellSpawner : MonoBehaviour
 {
@@ -11,9 +17,12 @@ public class CellSpawner : MonoBehaviour
     private GameObject StartCell;
 
     [SerializeField,Tooltip("Last Prefab in List is start cell, Keep first one as smallest possible cell.")]
-    private GameObject[] _prefabs; // 1x1, 2x1, 1x2, 2x2
+    private GameObject[] _prefabs;
+    [SerializeField, Tooltip("The likeleyHood the prefab at that index will be chosen. Also always includes 1st Prefab.")]
+    private int[] oddsOfChoosePrefab;
 
     private GameObject[,] _cellMatrix; // [x,z]
+    private bool[,] _cellMatrixBool;
 
     private GameObject[] _XContainers;
     public int X_Width = 10;
@@ -33,12 +42,26 @@ public class CellSpawner : MonoBehaviour
         {
             _cellMatrix = null;
         }
+        if (_cellMatrixBool != null)
+        {
+            _cellMatrixBool = null;
+        }
 
         _cellMatrix = new GameObject[X_Width, Z_Height];
+        _cellMatrixBool = new bool[X_Width, Z_Height];
 
         if (_XContainers == null)
         {
             _XContainers = new GameObject[X_Width];
+        }
+        if (oddsOfChoosePrefab == null || oddsOfChoosePrefab.Length < _prefabs.Length || oddsOfChoosePrefab.Sum() == 0)
+        {
+            oddsOfChoosePrefab = new int[_prefabs.Length];
+            Array.Fill(oddsOfChoosePrefab, 1);
+        }
+        else
+        {
+            oddsOfChoosePrefab[0] = 1;
         }
     }
     void Start()
@@ -55,7 +78,7 @@ public class CellSpawner : MonoBehaviour
         yield return new WaitForSeconds(1f);
         //PrintWalls();
         //yield return new WaitForSeconds(1f);
-        _generator.GenerateMaze(_cellMatrix, X_Width, Z_Height, Start_X, Start_Z);
+        _generator.GenerateMaze(_cellMatrix, _cellMatrixBool, X_Width, Z_Height, Start_X, Start_Z);
     }
 
     private void SetMatrixID()
@@ -98,6 +121,7 @@ public class CellSpawner : MonoBehaviour
                 if (_cellMatrix[x, z] == null)
                 {
                     SpawnCell(x, z);
+                    //MarkDeadCells(_cellMatrix[x, z].GetComponent<Cell>(), x, z);
                 }
                 else
                 {
@@ -133,9 +157,11 @@ public class CellSpawner : MonoBehaviour
             }
         }
 
+        //Debug.Log("List Size:" + potentialPrefabs.Count);
 
-        for (int i = (_prefabs.Length - 1); i >= 0; i--)
+        for (int i = (potentialPrefabs.Count - 1); i >= 0; i--)
         {
+            //Debug.Log("Potential Prefab num: " + potentialPrefabs[i]);
             potentialPrefab = _prefabs[potentialPrefabs[i]].GetComponent<Cell>();
 
             if (!CheckIfCellInBounds(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
@@ -152,7 +178,13 @@ public class CellSpawner : MonoBehaviour
     private List<int> PopulatePrefabList(List<int> list)
     {
         for (int i = 0; i < _prefabs.Length; i++)
-            list.Add(i);
+        {
+            for (int j = 0; j < oddsOfChoosePrefab[i]; j++)
+            {
+                list.Add(i);
+            }
+
+        }
 
         return list;
     }
@@ -162,7 +194,7 @@ public class CellSpawner : MonoBehaviour
         if (list.Count <= 0)
             return new List<int>();
 
-        return list.OrderBy(x => Random.value).ToList();
+        return list.OrderBy(x => UnityEngine.Random.value).ToList();
     }
 
     private void SpawnIndividualCell(int x, int z, int prefabChoice, int cellXWidth, int cellzHeight)
@@ -194,6 +226,28 @@ public class CellSpawner : MonoBehaviour
                 _cellMatrix[(x + i), (z + j)] = _cellMatrix[x, z];
             }
         }
+
+        //_cellMatrix[x, z].GetComponent<Cell>().SetDeadCells();
+
+        MarkDeadCells(_cellMatrix[x, z].GetComponent<Cell>(), x, z);
+        //if (_cellMatrix[x, z].GetComponent<Cell>().GetNumDeadCells() > 0)
+        //{
+        //}
+    }
+
+    private void MarkDeadCells(Cell currentCell, int x, int z)
+    {
+        //Debug.Log("CurrentCell Base: " + x + ", " + z);
+        //Debug.Log("Num Dead Cells: " + currentCell.GetNumDeadCells());
+
+        for (int i = 0; i < currentCell.GetNumDeadCells(); i++)
+        {
+            //Debug.Log("Dead Cell at: " + (x + currentCell.GetDeadCellX(i)) + ", " + (z + currentCell.GetDeadCellZ(i)));
+            //Debug.Log("Dead Cell at: " + (currentCell.GetDeadCellX(i)) + ", " + (currentCell.GetDeadCellZ(i)));
+            _cellMatrixBool[currentCell.GetDeadCellX(i),currentCell.GetDeadCellZ(i)] = true;
+            //_cellMatrixBool[x + currentCell.GetDeadCellX(i), z + currentCell.GetDeadCellZ(i)] = true;
+        }
+        
     }
 
     private bool CheckIfCellInBounds(int x, int z, int cellXWidth, int cellzHeight)
@@ -221,7 +275,7 @@ public class CellSpawner : MonoBehaviour
 
     private int GetRandomNumber(int min, int max)
     {
-        return Random.Range(min, max);
+        return UnityEngine.Random.Range(min, max);
     }
 
     private void OnDisable()

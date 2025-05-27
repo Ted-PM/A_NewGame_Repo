@@ -51,33 +51,32 @@ public struct CellWallData
 
 public class Cell : MonoBehaviour
 {
-    //[SerializeField]
-    //private CellWall[] _cellWalls;
-
-    private GameObject CellFloorContainer;
-    private GameObject CellCeelingContainer;
-
     [SerializeField]
     private Material _wallMaterial;
     [SerializeField]
-    private Material _floorMaterial;
+    private Material _floorMaterial;       
     [SerializeField]
-    private Material _ceelingMaterial;
+    private Material _ceelingMaterial;      
 
     private Color _wallColor;
 
     public List<int[]> _indexInArrayList;
+
+
+    [Tooltip("Add the dead cells as XXZZ, no spaces, must have 4 characters")]
+    public List<string> _deadCellListStr;
+
+    private List<(int x, int z)> _deadCellListInt;
+    [HideInInspector]
+    public bool hasDeadCells;
 
     public List<CellWallData> _xPosVerticleWalls;
     public List<CellWallData> _xNegVerticleWalls;
     public List<CellWallData> _zPosHorizontalWalls;
     public List<CellWallData> _zNegHorizontalWalls;
 
-    public List<GameObject> _floors;
-    public List<GameObject> _ceelings;
-
-
-    //public WallID DirectionToExit;
+    private List<CellFloor> _floors;
+    private List<CellCeeling> _ceelings;
 
     //[SerializeField, Tooltip("IF false, the wall renderers will be disabled & only planes used for graphics.")]
     private bool keepCellWalls = true;
@@ -99,15 +98,17 @@ public class Cell : MonoBehaviour
         _xNegVerticleWalls = new List<CellWallData>();
         _zPosHorizontalWalls = new List<CellWallData>();
         _zNegHorizontalWalls = new List<CellWallData>();
-        _floors = new List<GameObject>();
-        _ceelings = new List<GameObject>();
-        CreateCeelingAndFloorContainers();
+        _floors = new List<CellFloor>();
+        _ceelings = new List<CellCeeling>();
+        _deadCellListInt = new List<(int x, int z)>();
     }
 
     void Start()
     {
         //FindWallsInChildren();
         //SetColor();
+
+
         FindWallsInChildren();
     }
 
@@ -117,15 +118,77 @@ public class Cell : MonoBehaviour
         //_wallMaterial.color = _wallColor;
     }
 
-    private void CreateCeelingAndFloorContainers()
+    public void SetDeadCells()
     {
-        CellFloorContainer = new GameObject();
-        CellFloorContainer.transform.parent = this.transform;
-        CellFloorContainer.name = "Floors";
+        Debug.Log("STR List Count: " + _deadCellListStr.Count);
 
-        CellCeelingContainer = new GameObject();
-        CellCeelingContainer.transform.parent = this.transform;
-        CellCeelingContainer.name = "Ceelings";
+        if (_deadCellListStr != null && _deadCellListStr.Count > 0)
+        {
+            SetIntDeadCells();
+            hasDeadCells = true;
+        }
+
+        //if (_deadCellListInt == null || _deadCellListInt.Count == 0)
+        //    hasDeadCells = false;
+        //else
+        //    hasDeadCells = true;
+    }
+
+    private void SetIntDeadCells()
+    {
+        for (int i = 0;  i < _deadCellListStr.Count;i++)
+        {
+            //try
+            //{
+                if (_deadCellListStr[i].Length == 4)
+                {
+                    _deadCellListInt.Add((_indexInArray[0] + GetXorZFrom2Char(_deadCellListStr[i][0], _deadCellListStr[i][1]), _indexInArray[1] + GetXorZFrom2Char(_deadCellListStr[i][2], _deadCellListStr[i][3])));
+                    Debug.Log("Dead Cell From Base: " + _indexInArray[0] + ", " + _indexInArray[1] + " at: " + _deadCellListInt[i].x + ", " + _deadCellListInt[i].z);
+                }
+            //}
+            //catch { Debug.LogError("Dead Cell Name Wrong!!"); }
+        }
+
+        
+    }
+
+    private int GetXorZFrom2Char(char a, char b)
+    {
+        int result = 0;
+        result += GetIntFromChar(a) * 10;
+        result += GetIntFromChar(b);
+        return result;
+
+    }
+
+    private int GetIntFromChar(char ch)
+    {
+        return ((int)ch - 48);
+    }
+
+    public int GetNumDeadCells()
+    {
+        return _deadCellListInt.Count;
+    }
+
+    public bool HasDeadCell()
+    {
+        return hasDeadCells;
+    }
+
+    public int GetDeadCellX(int num)
+    {
+        return _deadCellListInt[num].x;
+    }
+
+    public int GetDeadCellZ(int num)
+    {
+        return _deadCellListInt[num].z;
+    }
+
+    public List<(int x, int z)> GetDeadCellList()
+    {
+        return _deadCellListInt;
     }
 
     private void FindWallsInChildren()
@@ -179,7 +242,7 @@ public class Cell : MonoBehaviour
             }
         }
 
-        FindFloors_FindCeelins();
+        FindFloors_FindCeelins();       ///--------------------
 
 
         // then re enable all walls when done
@@ -191,45 +254,39 @@ public class Cell : MonoBehaviour
         ReOrganizeXWallLists();
     }
 
+    /// -------------------------------------------------------
     private void FindFloors_FindCeelins()
     {
-        GameObject temp;
-        Debug.Log("Looking for Floors / ceelings");
-        for (int i = 0; i < (xWidth * zHeight) * 2; i++)
-        {
-            //Debug.Log("In For Loop");
+        CellFloor tempFloor;
+        CellCeeling tempCeeling;
 
+        for (int i = 0; i < (xWidth * zHeight); i++)
+        {
             try
             {
-                Debug.Log("In Try");
+                tempFloor = this.GetComponentInChildren<CellFloor>();
+                _floors.Add(tempFloor);
+                tempCeeling = this.GetComponentInChildren<CellCeeling>();
+                _ceelings.Add(tempCeeling);
 
-                temp = this.gameObject.GetComponentInChildren<GameObject>();
-                if (temp.transform.localPosition.y > 0f)
-                {
-                    Debug.Log("Found Ceeling");
-                    temp.transform.parent = CellCeelingContainer.transform;
-                    _ceelings.Add(temp);
-                }
-                else
-                {
-                    Debug.Log("Found Floor");
-                    temp.transform.parent = CellFloorContainer.transform;
-                    _floors.Add(temp);
-                }
-                temp.gameObject.SetActive(false);
+                tempFloor.gameObject.SetActive(false);
+                tempCeeling.gameObject.SetActive(false);
             }
-            catch { Debug.Log("No Floor / Ceeling"); }
+            catch 
+            { 
+                Debug.Log("No Floor / Ceeling");
+                return;
+
+            }
         }
 
         for (int i = 0; i < _ceelings.Count; i++)
         {
             _ceelings[i].gameObject.SetActive(true);
-            _ceelings[i].GetComponent<Renderer>().material = _ceelingMaterial;
-            //_ceelings[i].gameObject.transform.parent = CellCeelingContainer.transform;
+            _ceelings[i].ChangeCeelingMat(_ceelingMaterial);
 
             _floors[i].gameObject.SetActive(true);
-            _floors[i].GetComponent<Renderer>().material = _floorMaterial;
-            //_floors[i].gameObject.transform.parent = CellFloorContainer.transform;
+            _floors[i].ChangeFloorMat(_floorMaterial);
         }
     }
 
@@ -238,7 +295,6 @@ public class Cell : MonoBehaviour
         try
         {
             Material wallMat = _wallMaterial;
-            //Color color = _wallColor;
         }
         catch
         {
@@ -411,6 +467,7 @@ public class Cell : MonoBehaviour
         _indexInArray = new int[2];
         _indexInArray[0] = x;
         _indexInArray[1] = z;
+        SetIntDeadCells();
     }
 
     // adds all "1x1" cells included in this cell to list
