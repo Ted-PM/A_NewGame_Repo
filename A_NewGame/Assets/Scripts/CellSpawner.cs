@@ -59,7 +59,9 @@ public class CellSpawner : MonoBehaviour
     private bool _isSecondFloor;
 
     //public Cell transitionCell;
+    [HideInInspector]
     public int[] transitionCellDimensions;
+    [HideInInspector]
     public int[] transitionalCellPos;
 
     private void Awake()

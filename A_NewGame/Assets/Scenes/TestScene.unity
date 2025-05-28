@@ -362,13 +362,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 331372372}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.435343, y: -0.17927992, z: -0.00581997, w: 0.88221395}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: -30, z: -15}
 --- !u!114 &331372375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,22 +585,26 @@ MonoBehaviour:
   - {fileID: 342488833958512737, guid: 3adb7f149c16ae745a192057e1eb0b55, type: 3}
   - {fileID: 342488833958512737, guid: 175e8480189043d45b89436847ed9b3b, type: 3}
   - {fileID: 342488833958512737, guid: d66f673b31086c04fbb9d18eea55e559, type: 3}
-  - {fileID: 342488833958512737, guid: 0f12b7803b459ef44b95241625784fce, type: 3}
-  oddsOfChoosePrefab: 03000000020000000200000002000000020000000200000001000000010000000100000000000000
-  X_Width: 20
-  Z_Height: 20
+  oddsOfChoosePrefab: 030000000200000002000000020000000200000002000000010000000100000001000000
+  X_Width: 25
+  Z_Height: 25
   _generator: {fileID: 1487927867}
   Start_X: 5
   Start_Z: 5
   _yTransitionPrefabs:
+  - {fileID: 342488833958512737, guid: 48fe0f1b90b277549ac497469353063c, type: 3}
   - {fileID: 342488833958512737, guid: 0f12b7803b459ef44b95241625784fce, type: 3}
+  - {fileID: 342488833958512737, guid: 165702c5cd07835499a6d6b5ef59905e, type: 3}
   - {fileID: 342488833958512737, guid: 2657d6ff049cc554abb1613be7fc3f03, type: 3}
+  - {fileID: 342488833958512737, guid: 130e5a38c2caa2344b6ebea56e137c3d, type: 3}
   _secondFloorSpawner: {fileID: 984998010962569214, guid: 2e02b7c7e7e2b6f449ea09a1d52c03f5, type: 3}
   _secondFloorX: -1
   _secondFloorZ: -1
   _secondFloorY: -1
   _hasSecondFloor: 1
   _isSecondFloor: 0
+  transitionCellDimensions: 
+  transitionalCellPos: 
 --- !u!114 &1487927867
 MonoBehaviour:
   m_ObjectHideFlags: 0

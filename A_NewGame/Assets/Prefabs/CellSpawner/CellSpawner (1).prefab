@@ -53,8 +53,8 @@ MonoBehaviour:
   - {fileID: 342488833958512737, guid: b3217306f3bb3b24a849a255166da04c, type: 3}
   - {fileID: 342488833958512737, guid: 99827d64ab9861a428056e82e6f573ae, type: 3}
   oddsOfChoosePrefab: 0100000002000000020000000200000003000000
-  X_Width: 5
-  Z_Height: 5
+  X_Width: 10
+  Z_Height: 10
   _generator: {fileID: 7809791213838646127}
   Start_X: 0
   Start_Z: 0
@@ -65,6 +65,8 @@ MonoBehaviour:
   _secondFloorY: -1
   _hasSecondFloor: 0
   _isSecondFloor: 1
+  transitionCellDimensions: 
+  transitionalCellPos: 
 --- !u!114 &7809791213838646127
 MonoBehaviour:
   m_ObjectHideFlags: 0
