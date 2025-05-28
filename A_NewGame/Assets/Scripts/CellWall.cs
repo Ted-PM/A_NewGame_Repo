@@ -81,6 +81,11 @@ public class CellWall : MonoBehaviour
         return transform.localPosition.z;
     }
 
+    public float GetWallY()
+    {
+        return transform.localPosition.y;
+    }
+
 
 
 }

@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &984998010962569214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2768872191650461778}
+  - component: {fileID: 5036775878475316140}
+  - component: {fileID: 7809791213838646127}
+  m_Layer: 0
+  m_Name: CellSpawner (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2768872191650461778
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984998010962569214}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20, y: 10, z: 20}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5036775878475316140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984998010962569214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a70c5a4398ed0e4c8d284419f2014b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartCell: {fileID: 342488833958512737, guid: 44a809896f069024b867ffe5d1545dfa, type: 3}
+  _prefabs:
+  - {fileID: 342488833958512737, guid: ad2815f8add90894c8a6022f5e41c31a, type: 3}
+  - {fileID: 342488833958512737, guid: b3217306f3bb3b24a849a255166da04c, type: 3}
+  - {fileID: 342488833958512737, guid: a8f3ea45cf3ddf54db72c0508c216e4f, type: 3}
+  - {fileID: 342488833958512737, guid: b3217306f3bb3b24a849a255166da04c, type: 3}
+  - {fileID: 342488833958512737, guid: 99827d64ab9861a428056e82e6f573ae, type: 3}
+  oddsOfChoosePrefab: 0100000002000000020000000200000003000000
+  X_Width: 5
+  Z_Height: 5
+  _generator: {fileID: 7809791213838646127}
+  Start_X: 0
+  Start_Z: 0
+  _yTransitionPrefabs: []
+  _secondFloorSpawner: {fileID: 0}
+  _secondFloorX: -1
+  _secondFloorZ: -1
+  _secondFloorY: -1
+  _hasSecondFloor: 0
+  _isSecondFloor: 1
+--- !u!114 &7809791213838646127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984998010962569214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8bd8adbfe4dd53448cb762258ac661f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

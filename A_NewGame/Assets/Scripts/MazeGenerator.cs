@@ -32,6 +32,8 @@ public class MazeGenerator : MonoBehaviour
         Start_X = spawnX;
         Start_Z = spawnZ;
 
+        Debug.Log("Maze Starting at: " + Start_X + ", " + Start_Z);
+
         if (CheckIfStartPointValid())
             GenerateMazeRecursive(cellMatrix, null, Start_X, Start_Z, null);
         else
@@ -58,12 +60,15 @@ public class MazeGenerator : MonoBehaviour
          b) Find the "base cell" of the new cell            
     - 1. Marks current cell as visited           
     - 2. Disables the walls between the previous cell and this one (if it's not the first iteration) 
+    - 2.5 Generate's the starting cell & disables walls on each side of it (more initial paths for player)
     - 3. Creates List of int pairs to hold "adjacent" cells 
             (even ones outside array bounds, e.g. if current is (1,0) -> [1,-1] [1,1] [0,0] etc.)
             (adjusts for own size, if its 2x2 then it will get 8 cells, if 1x1 only 4 etc)
     - 4. Removes cells from the list that are out of bounds, i.e. [-1,0]
     - 5. Removes cells from the list that have been visited
             (even if it's part of a 2x2 cell)
+    - 5.5 Removes "dead" cells from potential cells
+            (dead cells are "1x1" cells within a larger one which cannot be pathed too or from)
     - 6. Randomizes the List of candidates
     - 7. a) Checks if any candidates exist, if yes assigns a new cell object to the first candidate in the list
          b) creates a new list without the selected candidate
@@ -89,15 +94,10 @@ public class MazeGenerator : MonoBehaviour
             {
                 DisableWalls(previousCell, _currentCell, wallToBeDisabled);
             }
+            // 2.5
             else
             {
-                GenerateStartCell(cellMatrix, _currentCell, x, z, _currentCell.xWidth, _currentCell.zHeight);
-
-                //List < int[]> startAdjacentCells = new List<int[]>();
-                //startAdjacentCells.Add(x);
-                //List<int[]> StartNearbyCells = RemoveOutOfBoundCells(List<int[]> potentialCells)
-                // disable 4 walls if it's the "Start" cell (where player spawns so more options)
-                
+                GenerateStartCell(cellMatrix, _currentCell, x, z, _currentCell.xWidth, _currentCell.zHeight);                
             }
 
             // 3.
@@ -106,14 +106,8 @@ public class MazeGenerator : MonoBehaviour
             potentialNextCells = RemoveOutOfBoundCells(potentialNextCells);
             // 5.
             potentialNextCells = RemoveVisitedCells(potentialNextCells);
-
+            // 5.5
             potentialNextCells = RemoveDeadCells(potentialNextCells, _currentCell);
-
-            Debug.Log("Potential Cells in MAIN: ");
-            for (int i = 0; i < potentialNextCells.Count; i++)
-            {
-                Debug.Log(potentialNextCells[i][0] + ", " + potentialNextCells[i][1]);
-            }
 
             // 6.
             potentialNextCells = RandomizePotentialCells(potentialNextCells);
@@ -125,7 +119,7 @@ public class MazeGenerator : MonoBehaviour
             while (potentialNextCells != null && potentialNextCells.Count > 0)
             {
                 // 7. a)
-                Debug.Log("Next Cell Index: " + potentialNextCells[0][0] + ", " + potentialNextCells[0][1]);
+                //Debug.Log("Next Cell Index: " + potentialNextCells[0][0] + ", " + potentialNextCells[0][1]);
                 Cell _nextCell = cellMatrix[potentialNextCells[0][0], potentialNextCells[0][1]].GetComponent<Cell>();
                 // 7. b) 
                 List<int[]> remainingCells = potentialNextCells.Skip(1).ToList();
@@ -137,40 +131,6 @@ public class MazeGenerator : MonoBehaviour
         }
     }
 
-    private void GenerateStartCell(GameObject[,] cellMatrix, Cell _currentCell, int x, int z, int cellXWidth, int cellZHeight )
-    {
-        List <int[]> startCells = new List<int[]>();
-
-        int[] tempCell = new int[2];
-        tempCell[0] = x - 1;
-        tempCell[1] = z;
-        startCells.Add(tempCell);
-
-        tempCell = new int[2];
-        tempCell[0] = x;
-        tempCell[1] = z - 1;
-        startCells.Add(tempCell);
-
-        tempCell = new int[2];
-        tempCell[0] = x + cellXWidth;
-        tempCell[1] = z;
-        startCells.Add(tempCell);
-
-        tempCell = new int[2];
-        tempCell[0] = x;
-        tempCell[1] = z + cellZHeight;
-        startCells.Add(tempCell);
-
-        startCells = RemoveOutOfBoundCells(startCells);
-
-        for (int i = 0; i < startCells.Count; i++)
-        {
-            DisableWalls(_currentCell, cellMatrix[startCells[i][0], startCells[i][1]].GetComponent<Cell>(), startCells[i]);
-            //DisableWalls(_currentCell, cellMatrix[x, z - 1].GetComponent<Cell>());
-            //DisableWalls(_currentCell, cellMatrix[(x + _currentCell.xWidth), z].GetComponent<Cell>());
-            //DisableWalls(_currentCell, cellMatrix[x, (z + _currentCell.zHeight)].GetComponent<Cell>());
-        }
-    }
 
     private IEnumerator Wait()
     {
@@ -212,7 +172,46 @@ public class MazeGenerator : MonoBehaviour
                 _cellMatrixBool[x + i, z + j] = true;
             }           
         }
-    }   
+    }
+
+    /*      2.5     GenerateStartCell
+     * 
+     * Creates list containing 1 adjacent cell from each side of the starting one 
+     * Removes out of bound cells
+     * passes list to disable walls function
+    */
+    private void GenerateStartCell(GameObject[,] cellMatrix, Cell _currentCell, int x, int z, int cellXWidth, int cellZHeight)
+    {
+        List<int[]> startCells = new List<int[]>();
+
+        // to left start
+        int[] tempCell = new int[2];
+        tempCell[0] = x - 1;
+        tempCell[1] = z;
+        startCells.Add(tempCell);
+        //  below  start
+        tempCell = new int[2];
+        tempCell[0] = x;
+        tempCell[1] = z - 1;
+        startCells.Add(tempCell);
+        // to right of start
+        tempCell = new int[2];
+        tempCell[0] = x + cellXWidth;
+        tempCell[1] = z;
+        startCells.Add(tempCell);
+        // above start
+        tempCell = new int[2];
+        tempCell[0] = x;
+        tempCell[1] = z + cellZHeight;
+        startCells.Add(tempCell);
+
+        startCells = RemoveOutOfBoundCells(startCells);
+
+        for (int i = 0; i < startCells.Count; i++)
+        {
+            DisableWalls(_currentCell, cellMatrix[startCells[i][0], startCells[i][1]].GetComponent<Cell>(), startCells[i]);
+        }
+    }
 
     /*          3.  GetNextCell
      *          
@@ -300,25 +299,32 @@ public class MazeGenerator : MonoBehaviour
         return remainingCells;
     }
 
+    /*      5.5     RemoveDeadCells
+     * 
+     * Checks if current cell has dead cells
+     *      (dead cells are 1x1 cells in a larger one which can't be used as a
+     *      destination or starting point when moving to next cell)
+     *      (e.g. a 2x2 cell at (0,0) has a dead cell at [1,0] then the only 
+     *      cells you can path from are [0,0] [0,1] [1,1])
+     * 
+     * Each deadcell has its own index in the array stored
+     *      (i.e. in a 2x2 cell at (5,5) with a dead cell at [0,1] then the 
+     *      dead cells index is stored as [5, 6])
+     * compare each deadcell's index to the list of potential cells,
+     * if the deadcell has the same x and z+-1 or the same z and x+-1 then the
+     * potential cell cant be accessed because the adjacent cell is dead.
+     * remove it from the list
+    */
     private List<int[]> RemoveDeadCells(List<int[]> potentialCells, Cell currentCell)
     {
-        //if (!currentCell.HasDeadCell())
-        //return potentialCells;
-        //if (remainingCells[i][0] == )
+        if (!currentCell.HasDeadCell())
+            return potentialCells;
+
         int[] currIndexList = currentCell.GetIndexInArray();
-        Debug.Log("Looking at Base Cell: " + currIndexList[0] + ", " + currIndexList[1] + "----------");
 
-        Debug.Log("Current Potential Cells: ");
-        for (int i = 0 ; i < potentialCells.Count; i++ )
-        {
-            Debug.Log(potentialCells[i][0] + ", " + potentialCells[i][1]);
-        }
-
-        //List<int[]> remainingCells = new List<int[]>(potentialCells);
         List < (int x, int z) > deadCells = currentCell.GetDeadCellList();
         int[] currentDeadCell = new int[2];
-        //Debug.Log("Removing Potential Next To Dead at: " + currentCell.GetIndexInArray()[0] + ", " + currentCell.GetIndexInArray()[1]);
-        Debug.Log("Num Dead Cells: " + deadCells.Count);
+
         for (int j = 0; j < deadCells.Count; j++)
         {
             currentDeadCell[0] = deadCells[j].x;
@@ -326,29 +332,20 @@ public class MazeGenerator : MonoBehaviour
 
             for (int i = (potentialCells.Count - 1); i >= 0; i--)
             {
-                Debug.Log("Looking at DeadCell: " + currentDeadCell[0] + ", " + currentDeadCell[1] +
-                    " -- Potential CellIndex: : " + potentialCells[i][0] + ", " + potentialCells[i][1]);
+                // potential cell to right / left (z +- 1)
                 if (potentialCells[i][0] == currentDeadCell[0] && ((potentialCells[i][1] == (currentDeadCell[1] + 1)
                     || (potentialCells[i][1] == (currentDeadCell[1] - 1)))))
                 {
-                    Debug.Log("Removing Potential Cell: " + potentialCells[i][0] + ", " + potentialCells[i][1]);
                     potentialCells.RemoveAt(i);
                 }
+                // potential cell above / below (x +- 1)
                 else if (potentialCells[i][1] == currentDeadCell[1] && ((potentialCells[i][0] == (currentDeadCell[0] + 1)
                     || (potentialCells[i][0] == (currentDeadCell[0] - 1)))))
                 {
-                    Debug.Log("Removing Potential Cell: " + potentialCells[i][0] + ", " + potentialCells[i][1]);
                     potentialCells.RemoveAt(i);
                 }
             }
         }
-
-        Debug.Log("New Potential Cells: ");
-        for (int i = 0; i < potentialCells.Count; i++)
-        {
-            Debug.Log(potentialCells[i][0] + ", " + potentialCells[i][1]);
-        }
-
 
         return potentialCells;
     }
@@ -377,7 +374,7 @@ public class MazeGenerator : MonoBehaviour
      *      (i.e. current's positiv X (right wall) and next's negative X (left wall))
      *      instead of just running that shit 4 times and hoping it works
     */
-    private void DisableWalls(Cell currentCell, Cell nextCell, int[] wallToBeDisabled)
+    public void DisableWalls(Cell currentCell, Cell nextCell, int[] wallToBeDisabled)
     {
         int[] currentCellIndex = currentCell.GetIndexInArray();
         List<int[]> currentCellIndexList = currentCell.GetIndexList();
@@ -385,6 +382,7 @@ public class MazeGenerator : MonoBehaviour
         int[] nextCellIndex = nextCell.GetIndexInArray();
         List<int[]> nextCellIndexList = nextCell.GetIndexList();
 
+        // make sure that current & next cell are within matrix bounds
         if (currentCellIndex[0] < 0 || nextCellIndex[0] < 0 || currentCellIndex[1] < 0 || nextCellIndex[1] < 0
             || currentCellIndex[0] >= X_Width || nextCellIndex[0] >= X_Width || 
             currentCellIndex[1] >= Z_Height || nextCellIndex[1] >= Z_Height)
@@ -408,8 +406,11 @@ public class MazeGenerator : MonoBehaviour
         DisableXVerticalWall(currentCell, nextCell, wallToBeDisabled, false);
     }
 
-    /*      DisableZHorizontalWall(Cell current, Cell next)
+    /*      DisableZHorizontalWall(Cell current, Cell next, int[] wallToBeDisabled, bool found)
      * 
+     * wallToBeDisabled = index of "1x1" cell in next( which is the same idex as the
+     *      wall to be disabled in current)
+     * found is used because the function calls itself to remove the same wall on opposite cell
      * current._zPosHorizontalWalls = a list of all the current cells "front" walls 
      *      (have a positive Z value relative to the center of the cell)
      *      (they basically store the cell on the other side of the wall)
@@ -426,14 +427,8 @@ public class MazeGenerator : MonoBehaviour
      * 
      * DisableXVerticalWall(Cell current, Cell next) does same shit but on x axis (left / right)
     */
-    private void DisableZHorizontalWall(Cell current, Cell next, int[] wallToBeDisabled, bool found)
+    public void DisableZHorizontalWall(Cell current, Cell next, int[] wallToBeDisabled, bool found)
     {
-        //if (wallToBeDisabled == null)
-        //{
-        //    wallToBeDisabled = new int[2];
-        //    wallToBeDisabled[0] = 
-        //}
-
         for (int j = 0; j < next._indexInArrayList.Count; j++)
         {
             if (CompareTwoArrays(wallToBeDisabled, next._indexInArrayList[j]))
@@ -442,9 +437,8 @@ public class MazeGenerator : MonoBehaviour
                 {
                     if (CompareTwoArrays(current._zPosHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
-                        //Debug.Log("Disable POS Z");
-                        //Debug.Log(current.name + ": " + current._zPosHorizontalWalls[i].GetMatrixX() + ", " + current._zPosHorizontalWalls[i].GetMatrixZ());
                         current._zPosHorizontalWalls[i].DisableWall();
+                        // removes opposite cell wall if first iteration
                         if (!found)
                         {
                             int[] newWallToBeDisabled = new int[2];
@@ -457,8 +451,6 @@ public class MazeGenerator : MonoBehaviour
                     }
                     if (CompareTwoArrays(current._zNegHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
-                        //Debug.Log("Disable NEG Z");
-                        //Debug.Log(current.name + ": " + current._zNegHorizontalWalls[i].GetMatrixX() + ", " + current._zNegHorizontalWalls[i].GetMatrixZ());
                         current._zNegHorizontalWalls[i].DisableWall();
                         if (!found)
                         {
@@ -468,8 +460,6 @@ public class MazeGenerator : MonoBehaviour
 
                             DisableZHorizontalWall(next, current, newWallToBeDisabled, true);
                         }
-                        //if (!found)
-                        //DisableZHorizontalWall(next, current, true);
                         return;
                     }
                 }
@@ -477,7 +467,7 @@ public class MazeGenerator : MonoBehaviour
         }
     }
 
-    private void DisableXVerticalWall(Cell current, Cell next, int[] wallToBeDisabled, bool found)
+    public void DisableXVerticalWall(Cell current, Cell next, int[] wallToBeDisabled, bool found)
     {
         for (int j = 0; j < next._indexInArrayList.Count; j++)
         {
@@ -487,11 +477,7 @@ public class MazeGenerator : MonoBehaviour
                 {
                     if (CompareTwoArrays(current._xPosVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
-                        //Debug.Log("Disable POS X");
-                        //Debug.Log(current.name + ": " + current._xPosVerticleWalls[i].GetMatrixX() + ", " + current._xPosVerticleWalls[i].GetMatrixZ());
                         current._xPosVerticleWalls[i].DisableWall();
-                        //if (!found)
-                        //DisableXVerticalWall(next, current, true);
                         if (!found)
                         {
                             int[] newWallToBeDisabled = new int[2];
@@ -504,8 +490,6 @@ public class MazeGenerator : MonoBehaviour
                     }
                     if (CompareTwoArrays(current._xNegVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
-                        //Debug.Log("Disable NEG X");
-                        //Debug.Log(current.name + ": " + current._xNegVerticleWalls[i].GetMatrixX() + ", " + current._xNegVerticleWalls[i].GetMatrixZ());
                         current._xNegVerticleWalls[i].DisableWall();
                         if (!found)
                         {
@@ -515,8 +499,6 @@ public class MazeGenerator : MonoBehaviour
 
                             DisableXVerticalWall(next, current, newWallToBeDisabled, true);
                         }
-                        //if (!found)
-                        //DisableXVerticalWall(next, current, true);
                         return;
                     }
                 }

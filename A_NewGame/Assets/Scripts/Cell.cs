@@ -67,26 +67,36 @@ public class Cell : MonoBehaviour
     public List<string> _deadCellListStr;
 
     private List<(int x, int z)> _deadCellListInt;
-    [HideInInspector]
+    //[HideInInspector]
+    public bool isTransitionCell = false;
+    public int transCellExitX = -1;
+    public int transCellExitZ = -1;
     public bool hasDeadCells;
 
     public List<CellWallData> _xPosVerticleWalls;
     public List<CellWallData> _xNegVerticleWalls;
     public List<CellWallData> _zPosHorizontalWalls;
     public List<CellWallData> _zNegHorizontalWalls;
+    private List<CellWall> _otherWalls;
 
     private List<CellFloor> _floors;
     private List<CellCeeling> _ceelings;
 
-    //[SerializeField, Tooltip("IF false, the wall renderers will be disabled & only planes used for graphics.")]
-    private bool keepCellWalls = true;
+    [SerializeField, Tooltip("IF false, the wall renderers will be disabled & only planes used for graphics.")]
+    private bool keepCellWalls;
+    //[SerializeField]
+    //private bool hasSecondFloor;
 
     public int xWidth = 1;
     public int zHeight = 1;
+    public int yFloors = 1;
 
     private int[] _indexInArray;
 
     private bool _hasWallMatrixId;
+
+    //[SerializeField]
+    //private bool _isYTransitionPrefab = false;
 
     private void Awake()
     {
@@ -98,6 +108,7 @@ public class Cell : MonoBehaviour
         _xNegVerticleWalls = new List<CellWallData>();
         _zPosHorizontalWalls = new List<CellWallData>();
         _zNegHorizontalWalls = new List<CellWallData>();
+        _otherWalls = new List<CellWall>();
         _floors = new List<CellFloor>();
         _ceelings = new List<CellCeeling>();
         _deadCellListInt = new List<(int x, int z)>();
@@ -124,8 +135,8 @@ public class Cell : MonoBehaviour
 
         if (_deadCellListStr != null && _deadCellListStr.Count > 0)
         {
+            //hasDeadCells = true;
             SetIntDeadCells();
-            hasDeadCells = true;
         }
 
         //if (_deadCellListInt == null || _deadCellListInt.Count == 0)
@@ -138,15 +149,13 @@ public class Cell : MonoBehaviour
     {
         for (int i = 0;  i < _deadCellListStr.Count;i++)
         {
-            //try
-            //{
                 if (_deadCellListStr[i].Length == 4)
                 {
                     _deadCellListInt.Add((_indexInArray[0] + GetXorZFrom2Char(_deadCellListStr[i][0], _deadCellListStr[i][1]), _indexInArray[1] + GetXorZFrom2Char(_deadCellListStr[i][2], _deadCellListStr[i][3])));
-                    Debug.Log("Dead Cell From Base: " + _indexInArray[0] + ", " + _indexInArray[1] + " at: " + _deadCellListInt[i].x + ", " + _deadCellListInt[i].z);
+                    //Debug.Log("Dead Cell From Base: " + _indexInArray[0] + ", " + _indexInArray[1] + " at: " + _deadCellListInt[i].x + ", " + _deadCellListInt[i].z);
                 }
-            //}
-            //catch { Debug.LogError("Dead Cell Name Wrong!!"); }
+                else
+                    Debug.LogError("Dead Cell Name Wrong!! Name: " + _deadCellListStr[i]);
         }
 
         
@@ -160,6 +169,11 @@ public class Cell : MonoBehaviour
         return result;
 
     }
+
+    //public bool IsATransitionCell()
+    //{
+    //    return _isYTransitionPrefab;
+    //}
 
     private int GetIntFromChar(char ch)
     {
@@ -195,7 +209,7 @@ public class Cell : MonoBehaviour
     {
         CellWall tempWall = null;
         CellWallData tempCellWallData;
-        for (int i = 0; i < 2*(xWidth+zHeight); i++)
+        for (int i = 0; i < 2*(xWidth+zHeight)*yFloors; i++)
         {
             try
             {
@@ -206,7 +220,11 @@ public class Cell : MonoBehaviour
                 // walls along x axis have x value incremented by 5 each time
                 // walls along z axis have x value incremented by 10 each time
                 // if no remainder from ...%10 then it must be on z axis
-                if (((float)tempWall.GetWallX() % 10.0f) == 0f)
+                if (tempWall.GetWallY() > 10)
+                {
+                    _otherWalls.Add(tempWall);
+                }
+                else if (((float)tempWall.GetWallX() % 10.0f) == 0f)
                 {
                     // if wall local z position is > 0 then its at the "front"
                     // i.e. it's above the cells center so add to positive Z walls
@@ -237,12 +255,13 @@ public class Cell : MonoBehaviour
 
 
             }
-            catch {
+            catch
+            {
                 Debug.Log("Couldn't Find Wall.");
             }
         }
 
-        FindFloors_FindCeelins();       ///--------------------
+        FindFloors_FindCeelins();       
 
 
         // then re enable all walls when done
@@ -254,7 +273,6 @@ public class Cell : MonoBehaviour
         ReOrganizeXWallLists();
     }
 
-    /// -------------------------------------------------------
     private void FindFloors_FindCeelins()
     {
         CellFloor tempFloor;
@@ -322,6 +340,15 @@ public class Cell : MonoBehaviour
             //_xNegVerticleWalls[i].wall.SetWallColor(_wallColor);
         }
 
+        if (yFloors > 1)
+        {
+            for (int i = 0; i < _otherWalls.Count; i++)
+            {
+                _otherWalls[i].gameObject.SetActive(true);
+                _otherWalls[i].SetWallMaterial(_wallMaterial);
+            }
+        }
+
         if (!keepCellWalls)
             DisableWallRenderers();
     }
@@ -337,6 +364,13 @@ public class Cell : MonoBehaviour
         {
             _xPosVerticleWalls[i].wall.DisableRenderer();
             _xNegVerticleWalls[i].wall.DisableRenderer();
+        }
+        if (yFloors > 1)
+        {
+            for (int i = 0; i < _otherWalls.Count; i++)
+            {
+                _otherWalls[i].DisableRenderer();
+            }
         }
     }
 
@@ -513,19 +547,50 @@ public class Cell : MonoBehaviour
             _xPosVerticleWalls[i].wall.gameObject.SetActive(true);
         }
     }
+
+    public void DisableCell()
+    {
+        DisableAllWalls();
+        DisableFloors();
+        DisableCeelings();
+    }
+
+    private void DisableFloors()
+    {
+        for (int i = 0; i < _floors.Count; i++)
+        {
+            _floors[i].gameObject.SetActive(false);
+        }
+    }
+
+    private void DisableCeelings()
+    {
+        for (int i = 0; i < _ceelings.Count; i++)
+        {
+            _ceelings[i].gameObject.SetActive(false);
+        }
+    }
     public void DisableAllWalls()
     {
         for (int i = 0; i < zHeight; i++)
         {
-            _zPosHorizontalWalls[i].wall.gameObject.SetActive(false);
-            _zNegHorizontalWalls[i].wall.gameObject.SetActive(false);
+            _xPosVerticleWalls[i].wall.gameObject.SetActive(false);
+            _xNegVerticleWalls[i].wall.gameObject.SetActive(false);
         }
         for (int i = 0; i < xWidth; i++)
         {
-            _xPosVerticleWalls[i].wall.gameObject.SetActive(false);
-            _xPosVerticleWalls[i].wall.gameObject.SetActive(false);
+            _zPosHorizontalWalls[i].wall.gameObject.SetActive(false);
+            _zNegHorizontalWalls[i].wall.gameObject.SetActive(false);
+        }
+        if (zHeight > 1)
+        {
+            for (int i = 0; i < _otherWalls.Count; i++)
+            {
+                _otherWalls[i].gameObject.SetActive(false);
+            }
         }
     }
+
     public void SwitchAllWallStatus()
     {
         for (int i = 0; i < zHeight; i++)

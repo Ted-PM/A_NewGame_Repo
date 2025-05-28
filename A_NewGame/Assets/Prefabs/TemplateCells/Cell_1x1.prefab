@@ -50,10 +50,12 @@ MonoBehaviour:
   _wallMaterial: {fileID: 2100000, guid: 3b5af2ff4f9bf7e42ad61b7b51026eed, type: 2}
   _floorMaterial: {fileID: 2100000, guid: b8a557ce193e416448ae2bbae08117dd, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 51b2214b3ffe9464d9744a776b10349c, type: 2}
-  _floors: []
-  _ceelings: []
+  _deadCellListStr: []
+  hasDeadCells: 0
+  keepCellWalls: 1
   xWidth: 1
   zHeight: 1
+  yFloors: 1
 --- !u!1 &1211550391880890795
 GameObject:
   m_ObjectHideFlags: 0
@@ -83,7 +85,7 @@ Transform:
   m_GameObject: {fileID: 1211550391880890795}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -901,7 +903,7 @@ Transform:
   m_GameObject: {fileID: 6789112612764012643}
   serializedVersion: 2
   m_LocalRotation: {x: 1, y: -0, z: -0, w: 0.00000058114523}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalPosition: {x: 0, y: 9.99, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
