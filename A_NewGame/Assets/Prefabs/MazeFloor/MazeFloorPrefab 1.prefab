@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1456617566257914524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4877910243038589509}
+  m_Layer: 0
+  m_Name: SpecialCells
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4877910243038589509
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456617566257914524}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5530275284263263467}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8444920341893074768
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5530275284263263467}
+  - component: {fileID: 7089912810592683632}
+  m_Layer: 0
+  m_Name: MazeFloorPrefab 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5530275284263263467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8444920341893074768}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4877910243038589509}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7089912810592683632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8444920341893074768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bc0b628c089584ea1b9bda7c6462b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startCell: {fileID: 342488833958512737, guid: d66f673b31086c04fbb9d18eea55e559, type: 3}
+  emptyCell: {fileID: 342488833958512737, guid: 44a809896f069024b867ffe5d1545dfa, type: 3}
+  _prefabs:
+  - {fileID: 342488833958512737, guid: ad2815f8add90894c8a6022f5e41c31a, type: 3}
+  - {fileID: 342488833958512737, guid: a8f3ea45cf3ddf54db72c0508c216e4f, type: 3}
+  - {fileID: 342488833958512737, guid: 0668be28fe1be4140a0c57ec5834814d, type: 3}
+  - {fileID: 342488833958512737, guid: b3217306f3bb3b24a849a255166da04c, type: 3}
+  - {fileID: 342488833958512737, guid: 99827d64ab9861a428056e82e6f573ae, type: 3}
+  - {fileID: 342488833958512737, guid: 3adb7f149c16ae745a192057e1eb0b55, type: 3}
+  - {fileID: 342488833958512737, guid: 09a8944d6342f0d43b0c798fd4f954b6, type: 3}
+  - {fileID: 342488833958512737, guid: 175e8480189043d45b89436847ed9b3b, type: 3}
+  - {fileID: 342488833958512737, guid: d66f673b31086c04fbb9d18eea55e559, type: 3}
+  _oddsOfChoosePrefab: 030000000200000002000000020000000200000001000000010000000100000001000000
+  _verticleTransitionPrefabs:
+  - {fileID: 342488833958512737, guid: 48fe0f1b90b277549ac497469353063c, type: 3}
+  - {fileID: 342488833958512737, guid: 0f12b7803b459ef44b95241625784fce, type: 3}
+  - {fileID: 342488833958512737, guid: 165702c5cd07835499a6d6b5ef59905e, type: 3}
+  - {fileID: 342488833958512737, guid: 2657d6ff049cc554abb1613be7fc3f03, type: 3}
+  - {fileID: 342488833958512737, guid: 130e5a38c2caa2344b6ebea56e137c3d, type: 3}
+  specialCells: {fileID: 1456617566257914524}
+  xWidth: 18
+  zHeight: 18
+  startX: 0
+  startZ: 0
+  floorLevel: 0
+  hasNextFloor: 0
+  nextFloorX: -1
+  nextFloorZ: -1

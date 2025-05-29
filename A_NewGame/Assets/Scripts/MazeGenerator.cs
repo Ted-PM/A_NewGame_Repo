@@ -33,6 +33,7 @@ public class MazeGenerator : MonoBehaviour
         Start_Z = spawnZ;
 
         Debug.Log("Maze Starting at: " + Start_X + ", " + Start_Z);
+        Debug.Log("Maze Dimensions: " + width_X + ", " + height_Z);
 
         if (CheckIfStartPointValid())
             GenerateMazeRecursive(cellMatrix, null, Start_X, Start_Z, null);
@@ -401,7 +402,7 @@ public class MazeGenerator : MonoBehaviour
             Debug.Log("\t" + nextCell._indexInArrayList[i][0] + nextCell._indexInArrayList[i][1]);
         }
         */
-        
+        //Debug.Log("(main)Walls to be disabled: " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
         DisableZHorizontalWall(currentCell, nextCell, wallToBeDisabled, false);
         DisableXVerticalWall(currentCell, nextCell, wallToBeDisabled, false);
     }
@@ -437,6 +438,7 @@ public class MazeGenerator : MonoBehaviour
                 {
                     if (CompareTwoArrays(current._zPosHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
+                        //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         current._zPosHorizontalWalls[i].DisableWall();
                         // removes opposite cell wall if first iteration
                         if (!found)
@@ -451,6 +453,7 @@ public class MazeGenerator : MonoBehaviour
                     }
                     if (CompareTwoArrays(current._zNegHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
+                        //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         current._zNegHorizontalWalls[i].DisableWall();
                         if (!found)
                         {
@@ -477,6 +480,7 @@ public class MazeGenerator : MonoBehaviour
                 {
                     if (CompareTwoArrays(current._xPosVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
+                        //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         current._xPosVerticleWalls[i].DisableWall();
                         if (!found)
                         {
@@ -490,6 +494,7 @@ public class MazeGenerator : MonoBehaviour
                     }
                     if (CompareTwoArrays(current._xNegVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
+                        //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         current._xNegVerticleWalls[i].DisableWall();
                         if (!found)
                         {

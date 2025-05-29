@@ -112,6 +112,8 @@ public class Cell : MonoBehaviour
         _floors = new List<CellFloor>();
         _ceelings = new List<CellCeeling>();
         _deadCellListInt = new List<(int x, int z)>();
+
+        keepCellWalls = false;          //---------------
     }
 
     void Start()

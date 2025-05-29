@@ -41,11 +41,6 @@ public class CellSpawner : MonoBehaviour
     private GameObject[] _yTransitionPrefabs;
     private List<int[]> _secondFloorCellsToDisable;
 
-    //public CellSpawner(GameObject parentSpawner)
-    //{
-    //    _parentSpawner = parentSpawner;
-    //}
-
     [SerializeField]
     private GameObject _secondFloorSpawner;
     private CellSpawner _secondFloor;
@@ -119,24 +114,6 @@ public class CellSpawner : MonoBehaviour
         transitionCellDimensions = new int[2];
         transitionalCellPos = new int[2];
 
-        //transitionCellDimensions = new int[2];
-
-        //if (_isSecondFloor)
-        //{
-        //    transitionCellDimensions = FindFirstObjectByType<CellSpawner>().GetTransitionalCellDimensions();
-        //}
-        //if (_isSecondFloor)
-        //{
-        //    try
-        //    {
-        //        //transitionCell = new Cell();
-        //        //_cellMatrixBool = this.GetComponentInParent<CellSpawner>()._cellMatrixBool;
-        //        this.transitionCell = this.GetComponentInParent<CellSpawner>().transitionCell;
-        //    }
-        //    catch { Debug.Log("NoParent"); }
-        //}
-
-
     }
     void Start()
     {
@@ -207,22 +184,6 @@ public class CellSpawner : MonoBehaviour
 
             for (int i = 0;i < relativePos.Count; i++)
             {
-                //current._zPosHorizontalWalls[i].DisableWall();
-                //try
-                //{
-                //    _generator.DisableZHorizontalWall(_cellMatrix[relativePos[i][0] + 1, relativePos[i][1]].GetComponent<Cell>(), 
-                //        _cellMatrix[relativePos[i][0], relativePos[i][1]].GetComponent<Cell>(), relativePos[i], false);
-                //    //DisableZHorizontalWall(Cell current, Cell next, int[] wallToBeDisabled, bool found)
-                //}
-                //catch { Debug.Log("No wall to right."); }
-                //try
-                //{
-                //    _generator.DisableXVerticalWall(_cellMatrix[relativePos[i][0], relativePos[i][1]+1].GetComponent<Cell>(), 
-                //        _cellMatrix[relativePos[i][0], relativePos[i][1]].GetComponent<Cell>(), relativePos[i], false);
-
-                //}
-                //catch { Debug.Log("No wall above."); }
-                
                 _cellMatrix[relativePos[i][0], relativePos[i][1]].GetComponent<Cell>().DisableCell();
             }
 
@@ -264,8 +225,6 @@ public class CellSpawner : MonoBehaviour
 
     private void SpawnCells()
     {
-
-
         if (Start_X >=0 && Start_X < X_Width && Start_Z >=0 && Start_Z < Z_Height) 
             SpawnCell(Start_X, Start_Z);
 

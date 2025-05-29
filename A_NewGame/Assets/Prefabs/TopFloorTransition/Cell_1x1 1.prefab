@@ -51,6 +51,9 @@ MonoBehaviour:
   _floorMaterial: {fileID: 2100000, guid: b8a557ce193e416448ae2bbae08117dd, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 51b2214b3ffe9464d9744a776b10349c, type: 2}
   _deadCellListStr: []
+  isTransitionCell: 0
+  transCellExitX: -1
+  transCellExitZ: -1
   hasDeadCells: 0
   keepCellWalls: 1
   xWidth: 1
