@@ -113,7 +113,7 @@ public class MazeFloor : MonoBehaviour
 
     public void SetPrevFloorData(Cell transitionCell, int transitionX, int transitionZ, int prevFloorLevel)
     {
-        Debug.Log("Trans Cell Passed: " + transitionCell.name);
+        //Debug.Log("Trans Cell Passed: " + transitionCell.name);
 
         _hasPrevFloor = true;
         _prevFloorX = transitionX;
@@ -138,16 +138,17 @@ public class MazeFloor : MonoBehaviour
                 tempTransCell[0] = x + newFloorXPos;    //
                 tempTransCell[1] = z + newFloorZPos;    //
                 _prevFloorTransitionCells.Add(tempTransCell);
-                Debug.Log("Adding Trans Cell: " + tempTransCell[0] + ", " + tempTransCell[1]);
+                //Debug.Log("Adding Trans Cell: " + tempTransCell[0] + ", " + tempTransCell[1]);
             }
         }
-        Debug.Log("Prev Floor Exit: " + _prevFloorExit[0] + ", " + _prevFloorExit[1]);
+        Debug.Log("New Floor Entrance: " + _prevFloorExit[0] + ", " + _prevFloorExit[1]);
 
         this.transform.position = new Vector3(floorLevel * 10, floorLevel * 10, floorLevel * 10);
     }
 
     public void SpawnFloor()
     {
+        Debug.Log("Creating Floor: " + floorLevel + " ----------------");
         if (hasNextFloor)
         { 
             LocateNextFloor();
@@ -193,7 +194,7 @@ public class MazeFloor : MonoBehaviour
 
     private void SpawnCells()
     {
-        Debug.Log("Spawning Cells");
+        //Debug.Log("Spawning Cells");
         for (int i = 0; i < xWidth; i++)
         {
             for (int j = 0; j < zHeight; j++)
@@ -202,12 +203,12 @@ public class MazeFloor : MonoBehaviour
                 {
                     if (CheckIfCellAbovePrevFloorTransitionals(i, j))
                     {
-                        Debug.Log("Spawning Empty Cell at: " + i + ", " + j);
+                        //Debug.Log("Spawning Empty Cell at: " + i + ", " + j);
                         SpawnEmptyCell(i, j);
                     }
                     else if (CellIsTransitional(i, j))
                     {
-                        Debug.Log("Next floor trans pos: " + i + ", " + j);
+                        //Debug.Log("Next floor trans pos: " + i + ", " + j);
                         SpawnTransitionalCell(i, j);
                     }
                     else
@@ -224,13 +225,13 @@ public class MazeFloor : MonoBehaviour
 
     private void SpawnEmptyCell(int x, int z)
     {
-        Debug.Log("Spawning Empty Cell at: " + x.ToString() + ", " + z.ToString());
+        //Debug.Log("Spawning Empty Cell at: " + x.ToString() + ", " + z.ToString());
         SpawnCell(emptyCell, x, z, specialCells, ("Above Trans Cell:  " + x.ToString() + ", " + z.ToString()));
     }
 
     private void SpawnTransitionalCell(int x, int z)
     {
-        Debug.Log("Spawning Trans Cell at: " + x + ", " + z);
+        //Debug.Log("Spawning Trans Cell at: " + x + ", " + z);
         bool cellSpawned = false;
         List<int> possibleCells = new List<int>();
         possibleCells = GetListOfPossiblePrefabs(_verticleTransitionPrefabs, true);
@@ -303,6 +304,9 @@ public class MazeFloor : MonoBehaviour
             result =  false;
         else if (!CellHasSpaceToSpawn(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
             result = false;
+        else if (!CanSpawnDeadCell(potentialPrefab, x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
+            result = false;
+
 
         return result;
 
@@ -321,6 +325,42 @@ public class MazeFloor : MonoBehaviour
         return IntPairIsInList(x, z, _prevFloorTransitionCells);
     }
 
+    private bool CanSpawnDeadCell(Cell potentialCell, int x, int z, int _xWidth, int _zHeight)
+    {
+        if (!potentialCell.HasDeadCell())
+            return true;
+
+        bool result = true;
+
+        for (int i = x; i < (x + _xWidth); i++)
+        {
+            for (int j = z; j < (z + _zHeight); j++)
+            {
+                if (!_hasPrevFloor && IntWithin3_OfOtherInt(i, startX) && IntWithin3_OfOtherInt(j, startZ))
+                {
+                    result = false;
+                    break;            
+                }
+                if (_hasPrevFloor && (IntWithin3_OfOtherInt(i, _prevFloorExit[0]) && IntWithin3_OfOtherInt(j, _prevFloorExit[1])))
+                {
+                    result = false;
+                    break;
+                }
+                if (hasNextFloor && (IntWithin3_OfOtherInt(i, nextFloorX) && IntWithin3_OfOtherInt(j, nextFloorZ)))
+                {
+                    result = false;
+                    break;
+                }
+            }
+        }
+
+        return result;  
+    }
+
+    private bool IntWithin3_OfOtherInt(int a, int b)
+    {
+        return (a <= (b + 3) && a >= (b - 3));
+    }
 
     private List<int> GetListOfPossiblePrefabs(GameObject[] prefabList, bool isTransitional)
     {
@@ -458,7 +498,7 @@ public class MazeFloor : MonoBehaviour
                 nextFloorZ = GetRandomNumber(4, zHeight - 3);  //
             }
         }
-        Debug.Log("Next Floor at: " + nextFloorX + ", " + nextFloorZ);
+        Debug.Log("Current Floor Entrance to next at: " + nextFloorX + ", " + nextFloorZ);
     }
 
     private void MarkDeadCells(Cell currentCell, int x, int z)
@@ -478,19 +518,19 @@ public class MazeFloor : MonoBehaviour
     {
         for (int i = 0; i < _prevFloorTransitionCells.Count; i++)
         {
-            Debug.Log("Prev Floor Exit: " + _prevFloorExit[0] +", " + _prevFloorExit[1]);
-            Debug.Log("Prev Floor Trans Cell: " + _prevFloorTransitionCells[i][0] + ", " + _prevFloorTransitionCells[i][1]);
+            //Debug.Log("Prev Floor Exit: " + _prevFloorExit[0] +", " + _prevFloorExit[1]);
+            //Debug.Log("Prev Floor Trans Cell: " + _prevFloorTransitionCells[i][0] + ", " + _prevFloorTransitionCells[i][1]);
             if (_prevFloorTransitionCells[i][0] != _prevFloorExit[0] ||
                 _prevFloorTransitionCells[i][1] != _prevFloorExit[1])
             {
-                Debug.Log("Visiting Cell:  + " + _prevFloorTransitionCells[i][0] + ", " + _prevFloorTransitionCells[i][1]);
+                //Debug.Log("Visiting Cell:  + " + _prevFloorTransitionCells[i][0] + ", " + _prevFloorTransitionCells[i][1]);
                 _cellMatrixBool[_prevFloorTransitionCells[i][0], _prevFloorTransitionCells[i][1]] = true;
             }
             else
             {
                 startX = _prevFloorTransitionCells[i][0];
                 startZ = _prevFloorTransitionCells[i][1];
-                Debug.Log("New Start At: " +  startX + ", " + startZ);
+                //Debug.Log("New Start At: " +  startX + ", " + startZ);
             }
         }
     }
@@ -499,7 +539,7 @@ public class MazeFloor : MonoBehaviour
     {
         for (int i = 0; i < _prevFloorTransitionCells.Count; i++)
         {
-            Debug.Log("Disabling Cell above trans at: " + _prevFloorTransitionCells[i][0] + ", " + _prevFloorTransitionCells[i][1]);
+            //Debug.Log("Disabling Cell above trans at: " + _prevFloorTransitionCells[i][0] + ", " + _prevFloorTransitionCells[i][1]);
             _cellMatrix[_prevFloorTransitionCells[i][0], _prevFloorTransitionCells[i][1]].GetComponent<Cell>().DisableCell();
         }
     }
@@ -538,7 +578,7 @@ public class MazeFloor : MonoBehaviour
         {
             if (x == list[i][0] && z == list[i][1])
             {
-                Debug.Log("PairInList");
+                //Debug.Log("PairInList");
                 result = true;
                 break;
             }

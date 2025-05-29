@@ -259,7 +259,7 @@ public class Cell : MonoBehaviour
             }
             catch
             {
-                Debug.Log("Couldn't Find Wall.");
+                //Debug.Log("Couldn't Find Wall.");
             }
         }
 

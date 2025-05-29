@@ -21,7 +21,7 @@ public class MazeGenerator : MonoBehaviour
     // calls the recursive function which acc generates the maze, also assigns variabls & cretaes bool matrix
     public void GenerateMaze(GameObject[,] cellMatrix, bool[,] cellMatrixBool, int width_X, int height_Z, int spawnX, int spawnZ)
     {
-        Debug.Log("Generating Maze");
+        Debug.Log("Generating New Maze ----------------");
         X_Width = width_X;
         Z_Height = height_Z;
 
