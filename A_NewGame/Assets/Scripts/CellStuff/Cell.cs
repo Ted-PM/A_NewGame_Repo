@@ -307,6 +307,8 @@ public class Cell : MonoBehaviour
 
             _floors[i].gameObject.SetActive(true);
             _floors[i].ChangeFloorMat(_floorMaterial);
+            _floors[i].gameObject.tag = "Ground";
+            _floors[i].gameObject.layer = 6;
         }
     }
 
@@ -557,7 +559,7 @@ public class Cell : MonoBehaviour
         DisableCeelings();
     }
 
-    private void DisableFloors()
+    public void DisableFloors()
     {
         for (int i = 0; i < _floors.Count; i++)
         {
@@ -565,14 +567,14 @@ public class Cell : MonoBehaviour
         }
     }
 
-    private void DisableCeelings()
+    public void DisableCeelings()
     {
         for (int i = 0; i < _ceelings.Count; i++)
         {
             _ceelings[i].gameObject.SetActive(false);
         }
     }
-    public void DisableAllWalls()
+    public void DisableAllWalls(bool alsoDisableHigherWalls = false)
     {
         for (int i = 0; i < zHeight; i++)
         {
@@ -584,7 +586,7 @@ public class Cell : MonoBehaviour
             _zPosHorizontalWalls[i].wall.gameObject.SetActive(false);
             _zNegHorizontalWalls[i].wall.gameObject.SetActive(false);
         }
-        if (zHeight > 1)
+        if (alsoDisableHigherWalls && yFloors > 1)
         {
             for (int i = 0; i < _otherWalls.Count; i++)
             {
@@ -604,6 +606,80 @@ public class Cell : MonoBehaviour
         {
             _xPosVerticleWalls[i].wall.gameObject.SetActive(_xPosVerticleWalls[i].wall.gameObject.activeSelf);
             _xPosVerticleWalls[i].wall.gameObject.SetActive(_xPosVerticleWalls[i].wall.gameObject.activeSelf);
+        }
+    }
+
+    public void DisablePosZWalls(bool alsoDisableHigherWalls = false)
+    {
+        for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
+        {
+            _zPosHorizontalWalls[i].wall.gameObject.SetActive(false);
+        }
+
+        if (alsoDisableHigherWalls && yFloors > 1)
+        {
+            for (int i = 0; i < _otherWalls.Count; i++)
+            {
+                if ((_otherWalls[i].GetWallX() % 10.0f) == 0f && _otherWalls[i].GetWallZ() > 0f)
+                {
+                    _otherWalls[i].gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    public void DisableNegZWalls(bool alsoDisableHigherWalls = false)
+    {
+        for (int i = 0; i < _zNegHorizontalWalls.Count; i++)
+        {
+            _zNegHorizontalWalls[i].wall.gameObject.SetActive(false);
+        }
+
+        if (alsoDisableHigherWalls && yFloors > 1)
+        {
+            for (int i = 0; i < _otherWalls.Count; i++)
+            {
+                if ((_otherWalls[i].GetWallX() % 10.0f) == 0f && _otherWalls[i].GetWallZ() <= 0f)
+                {
+                    _otherWalls[i].gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    public void DisablePosXWalls(bool alsoDisableHigherWalls = false)
+    {
+        for (int i = 0; i < _xPosVerticleWalls.Count; i++)
+        {
+            _xPosVerticleWalls[i].wall.gameObject.SetActive(false);
+        }
+        if (alsoDisableHigherWalls && yFloors > 1)
+        {
+            for (int i = 0; i < _otherWalls.Count; i++)
+            {
+                if ((_otherWalls[i].GetWallX() % 10.0f) != 0f && _otherWalls[i].GetWallX() > 0f)
+                {
+                    _otherWalls[i].gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    public void DisableNegXWalls(bool alsoDisableHigherWalls = false)
+    {
+        for (int i = 0; i < _xNegVerticleWalls.Count; i++)
+        {
+            _xNegVerticleWalls[i].wall.gameObject.SetActive(false);
+        }
+        if (alsoDisableHigherWalls && yFloors > 1)
+        {
+            for (int i = 0; i < _otherWalls.Count; i++)
+            {
+                if ((_otherWalls[i].GetWallX() % 10.0f) != 0f && _otherWalls[i].GetWallX() <= 0f)
+                {
+                    _otherWalls[i].gameObject.SetActive(false);
+                }
+            }
         }
     }
 

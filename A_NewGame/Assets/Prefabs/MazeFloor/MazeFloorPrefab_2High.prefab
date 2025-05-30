@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 5530275284263263467}
   - component: {fileID: 7089912810592683632}
   m_Layer: 0
-  m_Name: MazeFloorPrefab
+  m_Name: MazeFloorPrefab_2High
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,31 +79,21 @@ MonoBehaviour:
   startCell: {fileID: 342488833958512737, guid: d66f673b31086c04fbb9d18eea55e559, type: 3}
   emptyCell: {fileID: 342488833958512737, guid: 44a809896f069024b867ffe5d1545dfa, type: 3}
   _prefabs:
-  - {fileID: 342488833958512737, guid: ad2815f8add90894c8a6022f5e41c31a, type: 3}
-  - {fileID: 342488833958512737, guid: a8f3ea45cf3ddf54db72c0508c216e4f, type: 3}
-  - {fileID: 342488833958512737, guid: 0668be28fe1be4140a0c57ec5834814d, type: 3}
-  - {fileID: 342488833958512737, guid: b3217306f3bb3b24a849a255166da04c, type: 3}
-  - {fileID: 342488833958512737, guid: 99827d64ab9861a428056e82e6f573ae, type: 3}
-  - {fileID: 342488833958512737, guid: 3adb7f149c16ae745a192057e1eb0b55, type: 3}
-  - {fileID: 342488833958512737, guid: 09a8944d6342f0d43b0c798fd4f954b6, type: 3}
-  - {fileID: 342488833958512737, guid: 175e8480189043d45b89436847ed9b3b, type: 3}
-  - {fileID: 342488833958512737, guid: d66f673b31086c04fbb9d18eea55e559, type: 3}
-  - {fileID: 342488833958512737, guid: 109ef215008c44f4fb9017468490de98, type: 3}
-  - {fileID: 342488833958512737, guid: 509653cecfd2ee942b36229b65f857f8, type: 3}
-  _oddsOfChoosePrefab: 0300000002000000020000000200000002000000010000000100000001000000010000000400000004000000
+  - {fileID: 342488833958512737, guid: d11d01094a9f8bb4e871c271fd3fba7e, type: 3}
+  - {fileID: 342488833958512737, guid: 19491059a2bb13243b518c90be2af6e8, type: 3}
+  - {fileID: 342488833958512737, guid: a4ec30145812a5947803b403d0cd000d, type: 3}
+  - {fileID: 342488833958512737, guid: 7aabf24986dcf2242a2699eeaf5d335c, type: 3}
+  _oddsOfChoosePrefab: 01000000010000000100000001000000
   _verticleTransitionPrefabs:
-  - {fileID: 342488833958512737, guid: 48fe0f1b90b277549ac497469353063c, type: 3}
-  - {fileID: 342488833958512737, guid: 130e5a38c2caa2344b6ebea56e137c3d, type: 3}
-  - {fileID: 342488833958512737, guid: 0f12b7803b459ef44b95241625784fce, type: 3}
-  - {fileID: 342488833958512737, guid: 165702c5cd07835499a6d6b5ef59905e, type: 3}
-  - {fileID: 342488833958512737, guid: 2657d6ff049cc554abb1613be7fc3f03, type: 3}
-  - {fileID: 342488833958512737, guid: 130e5a38c2caa2344b6ebea56e137c3d, type: 3}
+  - {fileID: 342488833958512737, guid: e53d45aaa5029b84088835733c3d0f59, type: 3}
+  - {fileID: 342488833958512737, guid: f19e47e35790f864dab850fde4219f54, type: 3}
+  - {fileID: 342488833958512737, guid: 2782a1f3d1b8bb240a8aefb9b1899c92, type: 3}
   specialCells: {fileID: 1456617566257914524}
-  xWidth: 20
-  zHeight: 20
-  yDepth: 1
-  startX: 5
-  startZ: 5
+  xWidth: 18
+  zHeight: 18
+  yDepth: 2
+  startX: 0
+  startZ: 0
   floorLevel: 0
   hasNextFloor: 1
   nextFloorX: -1

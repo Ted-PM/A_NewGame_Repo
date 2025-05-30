@@ -6,11 +6,13 @@ using System.Xml.Linq;
 using System.Buffers.Text;
 using System.Collections;
 using NUnit.Framework;
+using System.Linq.Expressions;
 
 public class MazeFloor : MonoBehaviour
 {
     public GameObject startCell;
     public GameObject emptyCell;
+    public GameObject emptyFloorCell;
 
     [SerializeField, Tooltip("Must include atleast one 1x1 cell.")]
     private GameObject[] _prefabs;
@@ -28,16 +30,21 @@ public class MazeFloor : MonoBehaviour
 
     public int xWidth = 10;
     public int zHeight = 10;
+    public int yDepth = 1;
 
     public int startX = 0;
     public int startZ = 0;
 
     public int floorLevel = 0;
 
+    private List<int[]> _startCells;
+
     [Tooltip("Next Floor X & Z relative to this ones matrix.")]
     public bool hasNextFloor;
     public int nextFloorX = -1;
     public int nextFloorZ = -1;
+    private int nextFloorXWidth = -1;
+    private int nextFloorZHeight = -1;
 
     [Tooltip("Previous Floor X & Z relative to previous ones matrix.")]
     private bool _hasPrevFloor;
@@ -46,11 +53,14 @@ public class MazeFloor : MonoBehaviour
     private int[] _prevFloorExit;
     private List<int[]> _prevFloorTransitionCells;
 
+    public bool isEmptyFloor;
+
     private void Awake()
     {
         _hasPrevFloor = false;
         _prevFloorExit = new int[2];
         _prevFloorTransitionCells = new List<int[]>();
+        _startCells = new List<int[]>();
         //SetFloorDimensions();
         //CheckPrefabListAndOdds();
         //SpawnXContainers();
@@ -102,6 +112,23 @@ public class MazeFloor : MonoBehaviour
         }
     }
 
+    private void SetStartCells()
+    {
+        Cell start = startCell.GetComponent<Cell>();
+
+        int[] cellPos;
+        for (int x = (startX - 2); x < (start.GetCellXWidth() + 2); x++ )
+        {
+            for (int z = startZ - 2; z < (start.GetCellZHeight() + 2); z++ )
+            {
+                cellPos = new int[2];
+                cellPos[0] = x;
+                cellPos[1] = z;
+                _startCells.Add(cellPos);
+            }
+        }
+    }
+
     private void PopulatePrefabOdds()
     {
         _oddsOfChoosePrefab = null;
@@ -111,20 +138,39 @@ public class MazeFloor : MonoBehaviour
             _oddsOfChoosePrefab[i] = 1;
     }
 
-    public void SetPrevFloorData(Cell transitionCell, int transitionX, int transitionZ, int prevFloorLevel)
+    public void SetPrevFloorData(MazeFloor prevFloor, Cell transitionCell, int transitionX, int transitionZ, int prevFloorLevel)
     {
         //Debug.Log("Trans Cell Passed: " + transitionCell.name);
 
         _hasPrevFloor = true;
+
         _prevFloorX = transitionX;
         _prevFloorZ = transitionZ;
+
+        // Get Width / Height of previous floor
+        int prevFloorXWidth = prevFloor.GetFloorXWidth();       //
+        int prevFloorZHeight = prevFloor.GetFloorZHeight();     //
+
+        // get actual x & z position of previous floor
+        int prevFloorXPos = (prevFloor.GetFloorXPos()/10);
+        int prevFloorZPos = (prevFloor.GetFloorZPos()/10);
+
+        // find difference between width / height of current & previous floor
+        int xWidthDelta = (prevFloorXWidth - xWidth)/2;     //
+        int zHeightDelta = (prevFloorZHeight - zHeight)/2;  //
+
+        // if previous floor not starting at (0,0), move new floor so it's centered above others
+        int newFloorStartXPos = xWidthDelta + prevFloorXPos;
+        int newFloorStartZPos = zHeightDelta + prevFloorZPos;
+        int newFloorStartingY = (prevFloor.GetFloorYPos() / 10) + prevFloor.GetFloorYDepth();
+
         int transCellXWidth = transitionCell.GetCellXWidth();
         int transCellZHeight = transitionCell.GetCellZHeight();
         floorLevel = prevFloorLevel + 1;
         int[] tempTransCell;
 
-        int newFloorXPos = transitionX - 1;    //
-        int newFloorZPos = transitionZ - 1;    //
+        int newFloorXPos = transitionX - xWidthDelta;    //
+        int newFloorZPos = transitionZ - zHeightDelta;    //
 
         int[] transCellExit = new int[2];
         _prevFloorExit[0] = transitionCell.transCellExitX + newFloorXPos; //
@@ -143,7 +189,14 @@ public class MazeFloor : MonoBehaviour
         }
         Debug.Log("New Floor Entrance: " + _prevFloorExit[0] + ", " + _prevFloorExit[1]);
 
-        this.transform.position = new Vector3(floorLevel * 10, floorLevel * 10, floorLevel * 10);
+        //this.transform.position = new Vector3(floorLevel * 10, floorYDepth * 10, floorLevel * 10);
+        this.transform.position = new Vector3(10* newFloorStartXPos, newFloorStartingY * 10, 10 * newFloorStartZPos);
+    }
+
+    public void SetNextFloorDimensions(int x, int z)
+    {
+        nextFloorXWidth = x;
+        nextFloorZHeight = z;
     }
 
     public void SpawnFloor()
@@ -161,12 +214,14 @@ public class MazeFloor : MonoBehaviour
 
         if (!_hasPrevFloor)
         {
+            SetStartCells();
             SpawnStartCell(startX, startZ);
         }
         //else
         //{
         //    SpawnEmptyCell(startX, startZ);
         //}
+
 
         SpawnCells();
         StartCoroutine(WaitForABit());
@@ -176,6 +231,9 @@ public class MazeFloor : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         SetCellMatrixIds();
+
+        //if (isEmptyFloor)
+            //DisableEmptyFloorCellWalls();
 
         if (_hasPrevFloor)
             SetVisitTransitionCells();
@@ -212,7 +270,12 @@ public class MazeFloor : MonoBehaviour
                         SpawnTransitionalCell(i, j);
                     }
                     else
-                        SpawnNormalCell(i, j);
+                    {
+                        if (!isEmptyFloor)
+                            SpawnNormalCell(i, j);
+                        else
+                            SpawnEmptyFloorCells(i, j);
+                    }
                 }                
             }
         }
@@ -255,6 +318,61 @@ public class MazeFloor : MonoBehaviour
         if (possibleCells.Count <= 0)
         {
             Debug.LogError("Couldn't Find acceptable cell!!");
+        }
+    }
+
+    private void SpawnEmptyFloorCells(int x, int z)
+    {
+        if (emptyFloorCell == null)
+            Debug.LogError("EmptyFloorCell no set!!");
+        SpawnCell(emptyFloorCell, x, z, _XContainers[x], (x.ToString() + ", " + z.ToString()));
+
+        //if (x > 0 && x < xWidth - 1 && z > 0 && z < zHeight - 1)
+        //{
+        //    _cellMatrix[x, z].GetComponent<Cell>().DisableAllWalls();
+        //    return;
+        //}
+
+        //if (x > 0)
+        //    _cellMatrix[x, z].GetComponent<Cell>().DisableNegXWalls();
+        //if (z > 0)
+        //    _cellMatrix[x, z].GetComponent<Cell>().DisableNegZWalls();
+        //if (x < xWidth - 1)
+        //    _cellMatrix[x, z].GetComponent<Cell>().DisablePosXWalls();
+        //if (z < zHeight - 1)
+        //    _cellMatrix[x, z].GetComponent<Cell>().DisablePosZWalls();
+    }
+
+    public void DisableEmptyFloorCellWalls()
+    {
+        for (int i = 0; i < xWidth; i++)
+        {
+            for (int j = 0; j < zHeight; j++)
+            {
+                if (CheckIfCellAbovePrevFloorTransitionals(i, j))
+                {
+                    _cellMatrix[i, j].GetComponent<Cell>().DisableAllWalls(true);
+                    _cellMatrix[i, j].GetComponent<Cell>().DisableFloors();
+                }
+                else if (!CellIsTransitional(i, j))
+                {
+                    if (i > 0 && i < xWidth - 1 && j > 0 && j < zHeight - 1)
+                    {
+                        _cellMatrix[i, j].GetComponent<Cell>().DisableAllWalls(true);
+                        continue;
+                    }
+
+                    if (i > 0)
+                        _cellMatrix[i, j].GetComponent<Cell>().DisableNegXWalls(true);
+                    if (j > 0)
+                        _cellMatrix[i, j].GetComponent<Cell>().DisableNegZWalls(true);
+                    if (i < xWidth - 1)
+                        _cellMatrix[i, j].GetComponent<Cell>().DisablePosXWalls(true);
+                    if (j < zHeight - 1)
+                        _cellMatrix[i, j].GetComponent<Cell>().DisablePosZWalls(true);
+                }
+                
+            }
         }
     }
 
@@ -482,20 +600,57 @@ public class MazeFloor : MonoBehaviour
 
     public void LocateNextFloor()
     {
+        //(condition) ? expressionTrue : expressionFalse;
+
+
         if (hasNextFloor)
         {
-            if (xWidth < 8 || zHeight < 8)
+            int nextFloorMinX = (nextFloorXWidth <= xWidth) ? (xWidth - nextFloorXWidth) / 2 : 0;
+            int nextFloorMaxX = (nextFloorXWidth <= xWidth) ? nextFloorXWidth : xWidth;
+            nextFloorMaxX += nextFloorMinX;
+            nextFloorMinX += 2;
+            nextFloorMaxX -= 3;
+
+            int nextFloorMinZ = (nextFloorZHeight <= zHeight) ? (zHeight - nextFloorZHeight) / 2 : 0;
+            int nextFloorMaxZ = (nextFloorZHeight <= zHeight) ? nextFloorZHeight : zHeight;
+            nextFloorMaxZ += nextFloorMinZ;
+            nextFloorMinZ += 2;
+            nextFloorMaxZ -= 3;
+
+            Debug.Log("Next Floor min: " + nextFloorMinX + ", " + nextFloorMinZ);
+            Debug.Log("Next Floor Max: " + nextFloorMaxX + ", " + nextFloorMaxZ);
+
+            int counter = 0;
+            //if (xWidth < 8 || zHeight < 8)
+            //{
+            //    nextFloorX = -1;
+            //    nextFloorZ = -1;
+            //    return;
+            //}
+            if ((nextFloorMaxX - nextFloorMinX) <= 2 || (nextFloorMaxZ - nextFloorMinZ) <= 2)
             {
                 nextFloorX = -1;
                 nextFloorZ = -1;
+                hasNextFloor = false;
+                Debug.LogError("Couldn't Add Next Floor");
                 return;
             }
 
             while (nextFloorX == -1 || nextFloorZ == -1 ||
-                IntPairIsInList(nextFloorX, nextFloorZ, _prevFloorTransitionCells))
+                IntPairWithin3OfList(nextFloorX, nextFloorZ, _prevFloorTransitionCells) ||
+                IntPairWithin3OfList(nextFloorX, nextFloorZ, _startCells))
             {
-                nextFloorX = GetRandomNumber(4, xWidth - 3);   //
-                nextFloorZ = GetRandomNumber(4, zHeight - 3);  //
+                if (counter >= 15)
+                {
+                    nextFloorX = -1;
+                    nextFloorZ = -1;
+                    hasNextFloor = false;
+                    Debug.LogError("Couldn't Find Acceptable next floor pos");
+                    return;
+                }
+                nextFloorX = GetRandomNumber(nextFloorMinX, nextFloorMaxX);   //
+                nextFloorZ = GetRandomNumber(nextFloorMinZ, nextFloorMaxZ);  //
+                counter++;
             }
         }
         Debug.Log("Current Floor Entrance to next at: " + nextFloorX + ", " + nextFloorZ);
@@ -587,6 +742,25 @@ public class MazeFloor : MonoBehaviour
         return result;
     }
 
+    private bool IntPairWithin3OfList(int x, int z, List<int[]> list)
+    {
+        bool result = false;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            //IntWithin3_OfOtherInt(x, list[i][0])
+            if (IntWithin3_OfOtherInt(x, list[i][0]) && IntWithin3_OfOtherInt(z, list[i][1]))
+            {
+                //Debug.Log("PairInList");
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+
+    }
+
     private List<int> RandomizeIntList(List<int> list)
     {
         if (list.Count <= 0)
@@ -637,6 +811,25 @@ public class MazeFloor : MonoBehaviour
     public int GetTransitionZ()
     {
         return nextFloorZ;
+    }
+
+    public int GetFloorYDepth()
+    {
+        return yDepth;
+    }
+
+    public int GetFloorXPos()
+    {
+        return (int) this.transform.position.x;
+    }
+    public int GetFloorZPos()
+    {
+        return (int)this.transform.position.z;
+    }
+
+    public int GetFloorYPos()
+    {
+        return (int)this.transform.position.y;
     }
 
     private void OnDisable()

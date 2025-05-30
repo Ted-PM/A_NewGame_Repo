@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 5530275284263263467}
   - component: {fileID: 7089912810592683632}
   m_Layer: 0
-  m_Name: MazeFloorPrefab
+  m_Name: MazeFloorPrefab_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,12 +99,12 @@ MonoBehaviour:
   - {fileID: 342488833958512737, guid: 2657d6ff049cc554abb1613be7fc3f03, type: 3}
   - {fileID: 342488833958512737, guid: 130e5a38c2caa2344b6ebea56e137c3d, type: 3}
   specialCells: {fileID: 1456617566257914524}
-  xWidth: 20
-  zHeight: 20
+  xWidth: 22
+  zHeight: 22
   yDepth: 1
-  startX: 5
-  startZ: 5
+  startX: 0
+  startZ: 0
   floorLevel: 0
-  hasNextFloor: 1
+  hasNextFloor: 0
   nextFloorX: -1
   nextFloorZ: -1

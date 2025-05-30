@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 5530275284263263467}
   - component: {fileID: 7089912810592683632}
   m_Layer: 0
-  m_Name: MazeFloorPrefab
+  m_Name: MazeFloorPrefab_Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,6 +78,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startCell: {fileID: 342488833958512737, guid: d66f673b31086c04fbb9d18eea55e559, type: 3}
   emptyCell: {fileID: 342488833958512737, guid: 44a809896f069024b867ffe5d1545dfa, type: 3}
+  emptyFloorCell: {fileID: 0}
   _prefabs:
   - {fileID: 342488833958512737, guid: ad2815f8add90894c8a6022f5e41c31a, type: 3}
   - {fileID: 342488833958512737, guid: a8f3ea45cf3ddf54db72c0508c216e4f, type: 3}
@@ -92,15 +93,10 @@ MonoBehaviour:
   - {fileID: 342488833958512737, guid: 509653cecfd2ee942b36229b65f857f8, type: 3}
   _oddsOfChoosePrefab: 0300000002000000020000000200000002000000010000000100000001000000010000000400000004000000
   _verticleTransitionPrefabs:
-  - {fileID: 342488833958512737, guid: 48fe0f1b90b277549ac497469353063c, type: 3}
-  - {fileID: 342488833958512737, guid: 130e5a38c2caa2344b6ebea56e137c3d, type: 3}
-  - {fileID: 342488833958512737, guid: 0f12b7803b459ef44b95241625784fce, type: 3}
-  - {fileID: 342488833958512737, guid: 165702c5cd07835499a6d6b5ef59905e, type: 3}
-  - {fileID: 342488833958512737, guid: 2657d6ff049cc554abb1613be7fc3f03, type: 3}
-  - {fileID: 342488833958512737, guid: 130e5a38c2caa2344b6ebea56e137c3d, type: 3}
+  - {fileID: 342488833958512737, guid: 6df7bb4a0dc65c94096e9a352a414afd, type: 3}
   specialCells: {fileID: 1456617566257914524}
-  xWidth: 20
-  zHeight: 20
+  xWidth: 10
+  zHeight: 10
   yDepth: 1
   startX: 5
   startZ: 5
@@ -108,3 +104,4 @@ MonoBehaviour:
   hasNextFloor: 1
   nextFloorX: -1
   nextFloorZ: -1
+  isEmptyFloor: 0

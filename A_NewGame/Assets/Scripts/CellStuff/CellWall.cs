@@ -45,6 +45,15 @@ public class CellWall : MonoBehaviour
         }
     }
 
+    public void DisableWall()
+    {
+        _wallCollider.enabled = false;
+        _wallRenderer.enabled = false;
+        _wallPlane.SetActive(false);// = false;
+    }
+
+    //public void EnableW
+
     public void DisableCollider()
     {
         _wallCollider.enabled = false;

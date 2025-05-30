@@ -1,5 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FloorSpawner : MonoBehaviour
@@ -17,6 +19,8 @@ public class FloorSpawner : MonoBehaviour
     [SerializeField]
     private MazeGenerator _generator;
 
+    private List<int[]> _floorDimensions;
+
     private void Awake()
     {
         if (numberOfFloors > mazeFloorPrefabs.Length && !generateDefault)
@@ -24,11 +28,13 @@ public class FloorSpawner : MonoBehaviour
 
         _mazeFloorContainer = new GameObject("MazeFloors");
         _mazeFloors = new MazeFloor[numberOfFloors];
+        _floorDimensions = new List<int[]>();
     }
 
     private void Start()
     {
         //SpawnFloor(0);
+        PopulateFloorDimensionList();
         SpawnFloors();
     }
 
@@ -39,20 +45,34 @@ public class FloorSpawner : MonoBehaviour
             if (generateDefault)
                 SpawnFloorDefault(i);
             else
-                SpawnFloor(i);
+                SpawnFloorCustom(i);
         }
         //
+    }
+
+    private void PopulateFloorDimensionList()
+    {
+        int[] tempDim;
+        for (int i = 0; i < numberOfFloors; ++i)
+        {
+            tempDim = new int[2];
+            tempDim[0] = mazeFloorPrefabs[i].GetComponent<MazeFloor>().GetFloorXWidth();
+            tempDim[1] = mazeFloorPrefabs[i].GetComponent<MazeFloor>().GetFloorZHeight();
+            _floorDimensions.Add(tempDim);
+            Debug.Log("Floor: " + i + " - Added Floor Dimensions: " + _floorDimensions[i][0] + ", " + _floorDimensions[i][1]);
+        }
     }
 
     private void SpawnFloorDefault(int floorIndex)
     {
         if (baseX - (2 * floorIndex) < 8 || baseZ - (2 * floorIndex) < 8)
                 return;
+
         GameObject newFloor = Instantiate(mazeFloorPrefabs[0], _mazeFloorContainer.transform);
         _mazeFloors[floorIndex] = newFloor.GetComponent<MazeFloor>();
         _mazeFloors[floorIndex].InitializeFloor((baseX - (2 * floorIndex)), (baseZ - (2 * floorIndex)));
         if (floorIndex > 0)
-            _mazeFloors[floorIndex].SetPrevFloorData(_mazeFloors[floorIndex - 1].GetTransitionalCell(),
+            _mazeFloors[floorIndex].SetPrevFloorData(_mazeFloors[floorIndex - 1], _mazeFloors[floorIndex - 1].GetTransitionalCell(),
                 _mazeFloors[floorIndex - 1].GetTransitionX(), _mazeFloors[floorIndex - 1].GetTransitionZ(),
                 (floorIndex - 1));
         if (floorIndex == numberOfFloors - 1)
@@ -61,30 +81,121 @@ public class FloorSpawner : MonoBehaviour
         StartCoroutine(WaitThenGenerateMaze(floorIndex));
     }
 
-    private void SpawnFloor(int floorIndex)
+    private void SpawnFloorCustom(int floorIndex)
     {
         GameObject newFloor = Instantiate(mazeFloorPrefabs[floorIndex], _mazeFloorContainer.transform);
         _mazeFloors[floorIndex] = newFloor.GetComponent<MazeFloor>();
         _mazeFloors[floorIndex].InitializeFloor(baseX, baseZ);
         if (floorIndex > 0)
-            _mazeFloors[floorIndex].SetPrevFloorData(_mazeFloors[floorIndex - 1].GetTransitionalCell(),
+            _mazeFloors[floorIndex].SetPrevFloorData(_mazeFloors[floorIndex - 1], _mazeFloors[floorIndex - 1].GetTransitionalCell(),
                 _mazeFloors[floorIndex - 1].GetTransitionX(), _mazeFloors[floorIndex - 1].GetTransitionZ(),
                 (floorIndex - 1));
+
+        if (floorIndex != numberOfFloors - 1)
+        {
+            _mazeFloors[floorIndex].SetNextFloorDimensions(_floorDimensions[floorIndex + 1][0], _floorDimensions[floorIndex + 1][1]);
+        }
+
         _mazeFloors[floorIndex].SpawnFloor();
-        StartCoroutine(WaitThenGenerateMaze(floorIndex));
+
+        if (!_mazeFloors[floorIndex].isEmptyFloor)
+            StartCoroutine(WaitThenGenerateMaze(floorIndex));
+        else
+            StartCoroutine(WaitThenGenerateEmptyFloor(floorIndex));
     }
 
     private IEnumerator WaitThenGenerateMaze(int floorIndex)
     {
         yield return new WaitForSeconds(1f);
-        GenerateMaze(floorIndex);
+        GenerateMazeFloor(floorIndex);
     }
 
-    private void GenerateMaze(int floorIndex)
+    private IEnumerator WaitThenGenerateEmptyFloor(int floorIndex)
+    {
+        yield return new WaitForSeconds(1f);
+        _mazeFloors[floorIndex].DisableEmptyFloorCellWalls();
+    }
+
+    private void GenerateMazeFloor(int floorIndex)
     {
         _generator.GenerateMaze(_mazeFloors[floorIndex].GetCellMatrix(), _mazeFloors[floorIndex].GetCellMatrixBool(), _mazeFloors[floorIndex].GetFloorXWidth(), _mazeFloors[floorIndex].GetFloorZHeight(), _mazeFloors[floorIndex].GetStartX(), _mazeFloors[floorIndex].GetStartZ());
         if (floorIndex > 0)
             _mazeFloors[floorIndex].DisableCellsAboveTransitional();
     }
+
+    public Vector2 GetPlayerSpawnPoint()
+    {
+        int playerX = _mazeFloors[0].GetStartX();
+        int playerZ = _mazeFloors[0].GetStartZ();
+
+        return new Vector2(playerX*10, playerZ*10);
+    }
+
+    //private bool CanGenerateMaze(int floorIndex)
+    //{
+    //    bool result = true;
+
+    //    try
+    //    {
+    //        GameObject[,] tempMatrix = _mazeFloors[floorIndex].GetCellMatrix();
+    //    }
+    //    catch
+    //    {
+    //        Debug.LogWarning("Couldn't Get Floor Cell Matrix.");
+    //        result = false;
+    //    }
+    //    try
+    //    {
+    //        bool[,] tempBoolMatrix = _mazeFloors[floorIndex].GetCellMatrixBool();
+    //    }
+    //    catch
+    //    {
+    //        Debug.LogWarning("Couldn't Get Floor Bool Matrix.");
+    //        result = false;
+    //    }
+    //    try
+    //    {
+    //        int tempX = _mazeFloors[floorIndex].GetFloorXWidth();
+    //        Debug.Log("XWidt: " + tempX);
+    //    }
+    //    catch
+    //    {
+    //        Debug.LogWarning("Couldn't Get Floor X Width.");
+    //        result = false;
+    //    }
+    //    try
+    //    {
+    //        int tempZ = _mazeFloors[floorIndex].GetFloorZHeight();
+    //        Debug.Log("ZHeight: " + tempZ);
+
+    //    }
+    //    catch
+    //    {
+    //        Debug.LogWarning("Couldn't Get Floor Z Height.");
+    //        result = false;
+    //    }
+    //    try
+    //    {
+    //        int startX = _mazeFloors[floorIndex].GetStartX();
+    //        Debug.Log("start X: " + startX);
+    //    }
+    //    catch
+    //    {
+    //        Debug.LogWarning("Couldn't Get Floor Start X.");
+    //        result = false;
+    //    }
+    //    try
+    //    {
+    //        int startZ = _mazeFloors[floorIndex].GetStartZ();
+    //        Debug.Log("start Z: " + startZ);
+    //    }
+    //    catch
+    //    {
+    //        Debug.LogWarning("Couldn't Get Floor Start Z.");
+    //        result = false;
+    //    }
+
+    //    return result;
+    //}
 
 }

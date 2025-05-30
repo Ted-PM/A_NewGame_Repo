@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2141007937606861475
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7189174023818029768}
+  - component: {fileID: 6926656138163808242}
+  - component: {fileID: 5700242832225063526}
+  m_Layer: 0
+  m_Name: FloorSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7189174023818029768
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141007937606861475}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6926656138163808242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141007937606861475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d2968bfd9be2bd4494ab138b21373e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mazeFloorPrefabs:
+  - {fileID: 8444920341893074768, guid: b10a61659ba7ad14fa6191ee7d7b2dd7, type: 3}
+  - {fileID: 8444920341893074768, guid: f59bc572d172611418ddcdf2bd53b241, type: 3}
+  - {fileID: 8444920341893074768, guid: b10a61659ba7ad14fa6191ee7d7b2dd7, type: 3}
+  - {fileID: 8444920341893074768, guid: 380a780a967808046ac82cfa1f8fc0b5, type: 3}
+  - {fileID: 8444920341893074768, guid: a20239921b3010a4bbd6c48b9197a6c1, type: 3}
+  - {fileID: 8444920341893074768, guid: bc677d9d7ea23854388201c3069d9018, type: 3}
+  - {fileID: 8444920341893074768, guid: 8a885dd1e024c6640bb34dcd1b4f2484, type: 3}
+  numberOfFloors: 7
+  baseX: -1
+  baseZ: -1
+  generateDefault: 0
+  _generator: {fileID: 5700242832225063526}
+--- !u!114 &5700242832225063526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141007937606861475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8bd8adbfe4dd53448cb762258ac661f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
