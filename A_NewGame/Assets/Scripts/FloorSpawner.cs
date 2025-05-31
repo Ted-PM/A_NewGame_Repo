@@ -34,6 +34,7 @@ public class FloorSpawner : MonoBehaviour
     private void Start()
     {
         //SpawnFloor(0);
+
         PopulateFloorDimensionList();
         SpawnFloors();
     }
@@ -53,11 +54,21 @@ public class FloorSpawner : MonoBehaviour
     private void PopulateFloorDimensionList()
     {
         int[] tempDim;
+
         for (int i = 0; i < numberOfFloors; ++i)
         {
+            
             tempDim = new int[2];
-            tempDim[0] = mazeFloorPrefabs[i].GetComponent<MazeFloor>().GetFloorXWidth();
-            tempDim[1] = mazeFloorPrefabs[i].GetComponent<MazeFloor>().GetFloorZHeight();
+            if (!generateDefault)
+            {
+                tempDim[0] = mazeFloorPrefabs[i].GetComponent<MazeFloor>().GetFloorXWidth();
+                tempDim[1] = mazeFloorPrefabs[i].GetComponent<MazeFloor>().GetFloorZHeight();
+            }
+            else
+            {
+                tempDim[0] = mazeFloorPrefabs[0].GetComponent<MazeFloor>().GetFloorXWidth();
+                tempDim[1] = mazeFloorPrefabs[0].GetComponent<MazeFloor>().GetFloorZHeight();
+            }
             _floorDimensions.Add(tempDim);
             Debug.Log("Floor: " + i + " - Added Floor Dimensions: " + _floorDimensions[i][0] + ", " + _floorDimensions[i][1]);
         }
@@ -71,12 +82,22 @@ public class FloorSpawner : MonoBehaviour
         GameObject newFloor = Instantiate(mazeFloorPrefabs[0], _mazeFloorContainer.transform);
         _mazeFloors[floorIndex] = newFloor.GetComponent<MazeFloor>();
         _mazeFloors[floorIndex].InitializeFloor((baseX - (2 * floorIndex)), (baseZ - (2 * floorIndex)));
+
+        if (floorIndex == 0)
+            _mazeFloors[floorIndex].SetStartCells();
+
         if (floorIndex > 0)
             _mazeFloors[floorIndex].SetPrevFloorData(_mazeFloors[floorIndex - 1], _mazeFloors[floorIndex - 1].GetTransitionalCell(),
                 _mazeFloors[floorIndex - 1].GetTransitionX(), _mazeFloors[floorIndex - 1].GetTransitionZ(),
                 (floorIndex - 1));
         if (floorIndex == numberOfFloors - 1)
             _mazeFloors[floorIndex].hasNextFloor = false;
+
+        if (floorIndex != numberOfFloors - 1)
+        {
+            _mazeFloors[floorIndex].SetNextFloorDimensions(_floorDimensions[floorIndex + 1][0], _floorDimensions[floorIndex + 1][1]);
+        }
+
         _mazeFloors[floorIndex].SpawnFloor();
         StartCoroutine(WaitThenGenerateMaze(floorIndex));
     }
@@ -86,6 +107,10 @@ public class FloorSpawner : MonoBehaviour
         GameObject newFloor = Instantiate(mazeFloorPrefabs[floorIndex], _mazeFloorContainer.transform);
         _mazeFloors[floorIndex] = newFloor.GetComponent<MazeFloor>();
         _mazeFloors[floorIndex].InitializeFloor(baseX, baseZ);
+
+        if (floorIndex == 0)
+            _mazeFloors[floorIndex].SetStartCells();
+
         if (floorIndex > 0)
             _mazeFloors[floorIndex].SetPrevFloorData(_mazeFloors[floorIndex - 1], _mazeFloors[floorIndex - 1].GetTransitionalCell(),
                 _mazeFloors[floorIndex - 1].GetTransitionX(), _mazeFloors[floorIndex - 1].GetTransitionZ(),

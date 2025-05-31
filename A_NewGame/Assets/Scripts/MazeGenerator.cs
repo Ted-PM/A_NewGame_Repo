@@ -439,7 +439,10 @@ public class MazeGenerator : MonoBehaviour
                     if (CompareTwoArrays(current._zPosHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
-                        current._zPosHorizontalWalls[i].DisableWall();
+                        
+                        //current._zPosHorizontalWalls[i].DisableWall();
+                        current.DisableSpecificPosZWall(i, found);
+
                         // removes opposite cell wall if first iteration
                         if (!found)
                         {
@@ -454,7 +457,10 @@ public class MazeGenerator : MonoBehaviour
                     if (CompareTwoArrays(current._zNegHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
-                        current._zNegHorizontalWalls[i].DisableWall();
+                        
+                        //current._zNegHorizontalWalls[i].DisableWall();
+                        current.DisableSpecificNegZWall(i, found);
+
                         if (!found)
                         {
                             int[] newWallToBeDisabled = new int[2];
@@ -481,7 +487,10 @@ public class MazeGenerator : MonoBehaviour
                     if (CompareTwoArrays(current._xPosVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
-                        current._xPosVerticleWalls[i].DisableWall();
+                        
+                        //current._xPosVerticleWalls[i].DisableWall();
+                        current.DisableSpecificPosXWall(i, found);
+
                         if (!found)
                         {
                             int[] newWallToBeDisabled = new int[2];
@@ -495,7 +504,10 @@ public class MazeGenerator : MonoBehaviour
                     if (CompareTwoArrays(current._xNegVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
-                        current._xNegVerticleWalls[i].DisableWall();
+                        
+                        //current._xNegVerticleWalls[i].DisableWall();
+                        current.DisableSpecificNegXWall(i, found);
+
                         if (!found)
                         {
                             int[] newWallToBeDisabled = new int[2];

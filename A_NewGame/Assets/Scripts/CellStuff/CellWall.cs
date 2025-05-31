@@ -79,7 +79,11 @@ public class CellWall : MonoBehaviour
     {
         _wallRenderer.enabled = !_wallRenderer.enabled;
     }
-   
+    
+    public Vector3 GetWallPosition()
+    {
+        return transform.position;
+    }
     public float GetWallX()
     {
         return transform.localPosition.x;

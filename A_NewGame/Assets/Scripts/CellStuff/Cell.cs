@@ -38,11 +38,20 @@ public struct CellWallData
         //idSet = true;
         //Debug.Log("ID: " + wallMatrixID[0] + ", " + wallMatrixID[1]);
     }
+
+    public Vector3 GetWallPos()
+    {
+        Vector3 pos = wall.GetWallPosition();
+        return new Vector3(pos.x, (pos.y - 5), pos.z); 
+    }
     public int[] GetMatrixID() { return wallMatrixID; }
     public int GetMatrixX() {  return wallMatrixID[0]; }
     public int GetMatrixZ() {  return wallMatrixID[1]; }
 
-    public void DisableWall() { wall.gameObject.SetActive(false); }
+    public void DisableWall() 
+    { 
+        wall.gameObject.SetActive(false);
+    }
     public void EnableWall() { wall.gameObject.SetActive(true); }
 
     //public void SetID(bool _id) {  idSet = _id; }
@@ -61,6 +70,9 @@ public class Cell : MonoBehaviour
     private Color _wallColor;
 
     public List<int[]> _indexInArrayList;
+
+    public GameObject doorwayPrefab;
+    private List<GameObject> _doorways;
 
 
     [Tooltip("Add the dead cells as XXZZ, no spaces, must have 4 characters")]
@@ -112,7 +124,7 @@ public class Cell : MonoBehaviour
         _floors = new List<CellFloor>();
         _ceelings = new List<CellCeeling>();
         _deadCellListInt = new List<(int x, int z)>();
-
+        _doorways = new List<GameObject> ();
         keepCellWalls = false;          //---------------
     }
 
@@ -681,6 +693,62 @@ public class Cell : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void DisableSpecificPosZWall(int index, bool addDoor = false)
+    {
+        if (addDoor && doorwayPrefab != null)
+        {
+            Vector3 newDoorPos = _zPosHorizontalWalls[index].GetWallPos();
+            GameObject newDoor = Instantiate(doorwayPrefab, this.transform);
+            newDoor.transform.position = newDoorPos;
+            newDoor.transform.rotation = Quaternion.Euler(0, 90, 0);
+            _doorways.Add(newDoor);
+        }
+
+        _zPosHorizontalWalls[index].DisableWall();
+    }
+
+    public void DisableSpecificNegZWall(int index, bool addDoor = false)
+    {
+        if (addDoor && doorwayPrefab != null)
+        {
+            Vector3 newDoorPos = _zNegHorizontalWalls[index].GetWallPos();
+            GameObject newDoor = Instantiate(doorwayPrefab, this.transform);
+            newDoor.transform.position = newDoorPos;
+            newDoor.transform.rotation = Quaternion.Euler(0, 90, 0);
+            _doorways.Add(newDoor);
+        }
+
+        _zNegHorizontalWalls[index].DisableWall();
+    }
+
+    public void DisableSpecificPosXWall(int index, bool addDoor = false)
+    {
+        if (addDoor && doorwayPrefab != null)
+        {
+            Vector3 newDoorPos = _xPosVerticleWalls[index].GetWallPos();
+            GameObject newDoor = Instantiate(doorwayPrefab, this.transform);
+            newDoor.transform.position = newDoorPos;
+            newDoor.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _doorways.Add(newDoor);
+        }
+
+        _xPosVerticleWalls[index].DisableWall();
+    }
+
+    public void DisableSpecificNegXWall(int index, bool addDoor = false)
+    {
+        if (addDoor && doorwayPrefab != null)
+        {
+            Vector3 newDoorPos = _xNegVerticleWalls[index].GetWallPos();
+            GameObject newDoor = Instantiate(doorwayPrefab, this.transform);
+            newDoor.transform.position = newDoorPos;
+            newDoor.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _doorways.Add(newDoor);
+        }
+
+        _xNegVerticleWalls[index].DisableWall();
     }
 
     public int GetCellXWidth()

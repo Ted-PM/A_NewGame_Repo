@@ -312,11 +312,15 @@ public class PlayerController : MonoBehaviour
         // must use relaive velocity > rb.linearvelocity because linear is not relative
         Vector3 relativeVelocity = Quaternion.Inverse(transform.rotation) * _rb.linearVelocity;
 
-        if (_playerInput.x == 0 && (relativeVelocity.x > 0.5 || relativeVelocity.x < -0.5))
-            _rb.AddRelativeForce(new Vector3(-(relativeVelocity.x / 2), 0f, 0f), ForceMode.Impulse);
+        //if (_playerInput.x == 0 && (relativeVelocity.x > 0.5 || relativeVelocity.x < -0.5))
+        if (_playerInput.x == 0 && (relativeVelocity.x != 0))
+            _rb.AddRelativeForce(new Vector3(-(relativeVelocity.x), 0f, 0f), ForceMode.Impulse);
+            //_rb.AddRelativeForce(new Vector3(-(relativeVelocity.x / 2), 0f, 0f), ForceMode.Impulse);
 
-        if (_playerInput.z == 0 && (relativeVelocity.z > 0.5 || relativeVelocity.z < -0.5))
-            _rb.AddRelativeForce(new Vector3(0f, 0f, -(relativeVelocity.z / 2)), ForceMode.Impulse);
+        //if (_playerInput.z == 0 && (relativeVelocity.z > 0.5 || relativeVelocity.z < -0.5))
+        if (_playerInput.z == 0 && (relativeVelocity.z != 0))
+            _rb.AddRelativeForce(new Vector3(0f, 0f, -(relativeVelocity.z)), ForceMode.Impulse);
+            //_rb.AddRelativeForce(new Vector3(0f, 0f, -(relativeVelocity.z / 2)), ForceMode.Impulse);
     }
 
     // changes the y value to zero

@@ -103,7 +103,7 @@ public class MazeFloor : MonoBehaviour
     {
         if (_prefabs.Length <= 0)
             Debug.LogError("No Prefabs in List!");
-        if (_verticleTransitionPrefabs.Length <= 0)
+        if (hasNextFloor && _verticleTransitionPrefabs.Length <= 0)
             Debug.LogError("No Transitional Prefabs in List!");
         if (_oddsOfChoosePrefab.Length < _prefabs.Length)
         {
@@ -112,20 +112,26 @@ public class MazeFloor : MonoBehaviour
         }
     }
 
-    private void SetStartCells()
+    public void SetStartCells()
     {
         Cell start = startCell.GetComponent<Cell>();
 
         int[] cellPos;
-        for (int x = (startX - 2); x < (start.GetCellXWidth() + 2); x++ )
+        for (int x = startX; x < (startX+ start.GetCellXWidth()); x++ )
         {
-            for (int z = startZ - 2; z < (start.GetCellZHeight() + 2); z++ )
+            for (int z = startZ; z < (startZ + start.GetCellZHeight()); z++ )
             {
                 cellPos = new int[2];
                 cellPos[0] = x;
                 cellPos[1] = z;
                 _startCells.Add(cellPos);
             }
+        }
+
+        Debug.Log("StartCells: ");
+        for(int i = 0; i < _startCells.Count; i++) 
+        {
+            Debug.Log(_startCells[i][0] + ", " + _startCells[i][1]);
         }
     }
 
@@ -214,7 +220,7 @@ public class MazeFloor : MonoBehaviour
 
         if (!_hasPrevFloor)
         {
-            SetStartCells();
+            
             SpawnStartCell(startX, startZ);
         }
         //else
@@ -422,7 +428,7 @@ public class MazeFloor : MonoBehaviour
             result =  false;
         else if (!CellHasSpaceToSpawn(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
             result = false;
-        else if (!CanSpawnDeadCell(potentialPrefab, x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
+        else if (!CanSpawnDeadCell(potentialPrefab, x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
             result = false;
 
 
@@ -443,7 +449,7 @@ public class MazeFloor : MonoBehaviour
         return IntPairIsInList(x, z, _prevFloorTransitionCells);
     }
 
-    private bool CanSpawnDeadCell(Cell potentialCell, int x, int z, int _xWidth, int _zHeight)
+    private bool CanSpawnDeadCell(Cell potentialCell, int x, int z, int _xWidth, int _zHeight, bool isTransitional)
     {
         if (!potentialCell.HasDeadCell())
             return true;
@@ -464,7 +470,7 @@ public class MazeFloor : MonoBehaviour
                     result = false;
                     break;
                 }
-                if (hasNextFloor && (IntWithin3_OfOtherInt(i, nextFloorX) && IntWithin3_OfOtherInt(j, nextFloorZ)))
+                if (hasNextFloor && !isTransitional && (IntWithin3_OfOtherInt(i, nextFloorX) && IntWithin3_OfOtherInt(j, nextFloorZ)))
                 {
                     result = false;
                     break;
@@ -595,7 +601,9 @@ public class MazeFloor : MonoBehaviour
 
     private void SetCellName(int x, int z, string _name)
     {
-        _cellMatrix[x, z].name = _name;
+        string suffix = _cellMatrix[x, z].GetComponent<Cell>().GetCellXWidth().ToString();
+        suffix += ", " + _cellMatrix[x, z].GetComponent<Cell>().GetCellZHeight().ToString();
+        _cellMatrix[x, z].name = _name +" -- " +  suffix;
     }
 
     public void LocateNextFloor()
@@ -605,14 +613,14 @@ public class MazeFloor : MonoBehaviour
 
         if (hasNextFloor)
         {
-            int nextFloorMinX = (nextFloorXWidth <= xWidth) ? (xWidth - nextFloorXWidth) / 2 : 0;
-            int nextFloorMaxX = (nextFloorXWidth <= xWidth) ? nextFloorXWidth : xWidth;
+            int nextFloorMinX = (nextFloorXWidth < xWidth) ? (xWidth - nextFloorXWidth) / 2 : 0;
+            int nextFloorMaxX = (nextFloorXWidth < xWidth) ? nextFloorXWidth : xWidth;
             nextFloorMaxX += nextFloorMinX;
             nextFloorMinX += 2;
             nextFloorMaxX -= 3;
 
-            int nextFloorMinZ = (nextFloorZHeight <= zHeight) ? (zHeight - nextFloorZHeight) / 2 : 0;
-            int nextFloorMaxZ = (nextFloorZHeight <= zHeight) ? nextFloorZHeight : zHeight;
+            int nextFloorMinZ = (nextFloorZHeight < zHeight) ? (zHeight - nextFloorZHeight) / 2 : 0;
+            int nextFloorMaxZ = (nextFloorZHeight < zHeight) ? nextFloorZHeight : zHeight;
             nextFloorMaxZ += nextFloorMinZ;
             nextFloorMinZ += 2;
             nextFloorMaxZ -= 3;
@@ -636,6 +644,8 @@ public class MazeFloor : MonoBehaviour
                 return;
             }
 
+            Debug.Log("Trying Find next Floor: ");
+
             while (nextFloorX == -1 || nextFloorZ == -1 ||
                 IntPairWithin3OfList(nextFloorX, nextFloorZ, _prevFloorTransitionCells) ||
                 IntPairWithin3OfList(nextFloorX, nextFloorZ, _startCells))
@@ -648,8 +658,10 @@ public class MazeFloor : MonoBehaviour
                     Debug.LogError("Couldn't Find Acceptable next floor pos");
                     return;
                 }
+
                 nextFloorX = GetRandomNumber(nextFloorMinX, nextFloorMaxX);   //
                 nextFloorZ = GetRandomNumber(nextFloorMinZ, nextFloorMaxZ);  //
+                Debug.Log("Trying (" + nextFloorX + ", " + nextFloorZ + ")");
                 counter++;
             }
         }
