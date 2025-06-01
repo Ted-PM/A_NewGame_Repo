@@ -57,12 +57,18 @@ MonoBehaviour:
   _maxCrouchSpeed: 5
   _timeToCrouch: 0.1
   _jumpForce: 6
+  _gravityForce: -4
+  _climbSpeed: 15
+  _maxClimbSpeed: 4
   _lookLimit: 60
   _lookSpeed: 5
   _playerCenter: {fileID: 869506749097910351}
   _groundMask:
     serializedVersion: 2
     m_Bits: 64
+  _interactableMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!136 &6316189238504003692
 CapsuleCollider:
   m_ObjectHideFlags: 0

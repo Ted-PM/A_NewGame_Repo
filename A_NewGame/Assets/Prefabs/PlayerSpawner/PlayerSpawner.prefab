@@ -45,5 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerControllerPrefab: {fileID: 46268534858292321, guid: 883212aabaddd554c9c74a90828126b6, type: 3}
-  _playerPrefab: {fileID: 46268534858292321, guid: fd2c3e522e8b3e847a82bdbeac06fa22, type: 3}
+  _playerPrefab: {fileID: 924765764225885155, guid: 4d749c81cdb52904d85482fd15df898c, type: 3}
   usePlayerController: 1

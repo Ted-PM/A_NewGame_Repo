@@ -8,6 +8,10 @@ TagManager:
   - Ceeling
   - Wall
   - Ground
+  - Climb
+  - StartClimb
+  - StopClimb
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -16,7 +20,7 @@ TagManager:
   - Water
   - UI
   - GroundLayer
-  - 
+  - InteractableLayer
   - 
   - 
   - 

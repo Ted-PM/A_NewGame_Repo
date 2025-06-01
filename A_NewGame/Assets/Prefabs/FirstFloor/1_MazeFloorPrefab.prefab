@@ -80,7 +80,7 @@ MonoBehaviour:
   emptyCell: {fileID: 342488833958512737, guid: 44a809896f069024b867ffe5d1545dfa, type: 3}
   emptyFloorCell: {fileID: 342488833958512737, guid: 24c080c237418a340868aa3282e2dd88, type: 3}
   _prefabs:
-  - {fileID: 342488833958512737, guid: 8b3eb2b6c44c6bd4c9fa10880e4fc505, type: 3}
+  - {fileID: 342488833958512737, guid: 447bc7511a5fb74458fdd0b843f08d71, type: 3}
   - {fileID: 342488833958512737, guid: be806af4a9fb76f48ae92e4daf5f7d9c, type: 3}
   - {fileID: 342488833958512737, guid: bf86e75f534e4ba4f9d99cf447d28bd9, type: 3}
   - {fileID: 342488833958512737, guid: 004540c15b8213b458ad1d0631c0ef65, type: 3}
@@ -88,12 +88,10 @@ MonoBehaviour:
   - {fileID: 342488833958512737, guid: 0fefccbc81ad62948966aef6c77f2c05, type: 3}
   - {fileID: 342488833958512737, guid: a8b30feef281ccb468dfb1919eda2f7d, type: 3}
   - {fileID: 342488833958512737, guid: 453053d6ac3ee2e42bacae7140ca6e04, type: 3}
-  _oddsOfChoosePrefab: 01000000
+  - {fileID: 342488833958512737, guid: 8b3eb2b6c44c6bd4c9fa10880e4fc505, type: 3}
+  _oddsOfChoosePrefab: 020000000200000002000000020000000200000002000000020000000200000001000000
   _verticleTransitionPrefabs:
-  - {fileID: 6654550370120178806, guid: edab7c3c23884a94ebd587de8624f679, type: 3}
-  - {fileID: 6336140377568486564, guid: 3530d4ef71a92d44892a113f9b9a02ec, type: 3}
-  - {fileID: 342488833958512737, guid: 38c3ba6654f219e4b8ec48b91f2c3041, type: 3}
-  - {fileID: 342488833958512737, guid: 44a809896f069024b867ffe5d1545dfa, type: 3}
+  - {fileID: 9152071213757157107, guid: be68171a82c0bd747b6cc0ba393c3356, type: 3}
   specialCells: {fileID: 1456617566257914524}
   xWidth: 20
   zHeight: 20

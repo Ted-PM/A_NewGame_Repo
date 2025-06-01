@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 
 
 public struct CellWallData
@@ -72,7 +73,9 @@ public class Cell : MonoBehaviour
     public List<int[]> _indexInArrayList;
 
     public GameObject doorwayPrefab;
+    public GameObject doorPrefab;
     private List<GameObject> _doorways;
+    private List<GameObject> _doors;
 
 
     [Tooltip("Add the dead cells as XXZZ, no spaces, must have 4 characters")]
@@ -125,6 +128,7 @@ public class Cell : MonoBehaviour
         _ceelings = new List<CellCeeling>();
         _deadCellListInt = new List<(int x, int z)>();
         _doorways = new List<GameObject> ();
+        _doors = new List<GameObject>();
         keepCellWalls = false;          //---------------
     }
 
@@ -700,10 +704,16 @@ public class Cell : MonoBehaviour
         if (addDoor && doorwayPrefab != null)
         {
             Vector3 newDoorPos = _zPosHorizontalWalls[index].GetWallPos();
-            GameObject newDoor = Instantiate(doorwayPrefab, this.transform);
-            newDoor.transform.position = newDoorPos;
-            newDoor.transform.rotation = Quaternion.Euler(0, 90, 0);
-            _doorways.Add(newDoor);
+            GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
+            GameObject newDoor;
+            if (doorPrefab != null)
+            {
+                newDoor = Instantiate(doorPrefab, newDoorWay.transform);
+                _doors.Add(newDoor);
+            }
+            newDoorWay.transform.position = newDoorPos;
+            newDoorWay.transform.rotation = Quaternion.Euler(0, 90, 0);
+            _doorways.Add(newDoorWay);
         }
 
         _zPosHorizontalWalls[index].DisableWall();
@@ -714,10 +724,16 @@ public class Cell : MonoBehaviour
         if (addDoor && doorwayPrefab != null)
         {
             Vector3 newDoorPos = _zNegHorizontalWalls[index].GetWallPos();
-            GameObject newDoor = Instantiate(doorwayPrefab, this.transform);
-            newDoor.transform.position = newDoorPos;
-            newDoor.transform.rotation = Quaternion.Euler(0, 90, 0);
-            _doorways.Add(newDoor);
+            GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
+            GameObject newDoor;
+            if (doorPrefab != null)
+            {
+                newDoor = Instantiate(doorPrefab, newDoorWay.transform);
+                _doors.Add(newDoor);
+            }
+            newDoorWay.transform.position = newDoorPos;
+            newDoorWay.transform.rotation = Quaternion.Euler(0, 90, 0);
+            _doorways.Add(newDoorWay);
         }
 
         _zNegHorizontalWalls[index].DisableWall();
@@ -728,10 +744,16 @@ public class Cell : MonoBehaviour
         if (addDoor && doorwayPrefab != null)
         {
             Vector3 newDoorPos = _xPosVerticleWalls[index].GetWallPos();
-            GameObject newDoor = Instantiate(doorwayPrefab, this.transform);
-            newDoor.transform.position = newDoorPos;
-            newDoor.transform.rotation = Quaternion.Euler(0, 0, 0);
-            _doorways.Add(newDoor);
+            GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
+            GameObject newDoor;
+            if (doorPrefab != null)
+            {
+                newDoor = Instantiate(doorPrefab, newDoorWay.transform);
+                _doors.Add(newDoor);
+            }
+            newDoorWay.transform.position = newDoorPos;
+            newDoorWay.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _doorways.Add(newDoorWay);
         }
 
         _xPosVerticleWalls[index].DisableWall();
@@ -742,10 +764,18 @@ public class Cell : MonoBehaviour
         if (addDoor && doorwayPrefab != null)
         {
             Vector3 newDoorPos = _xNegVerticleWalls[index].GetWallPos();
-            GameObject newDoor = Instantiate(doorwayPrefab, this.transform);
-            newDoor.transform.position = newDoorPos;
-            newDoor.transform.rotation = Quaternion.Euler(0, 0, 0);
-            _doorways.Add(newDoor);
+            GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
+            GameObject newDoor;
+
+            if (doorPrefab != null)
+            {
+                newDoor = Instantiate(doorPrefab, newDoorWay.transform);
+                _doors.Add(newDoor);
+            }
+
+            newDoorWay.transform.position = newDoorPos;
+            newDoorWay.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _doorways.Add(newDoorWay);
         }
 
         _xNegVerticleWalls[index].DisableWall();

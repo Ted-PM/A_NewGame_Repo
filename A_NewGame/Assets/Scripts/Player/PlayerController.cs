@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -39,7 +41,17 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Multiplier applied to the Impulse when the player jumps.(4f)")]
     [SerializeField] private float _jumpForce = 4f;
 
+    [Tooltip("Multiplier applied to the Impulse when the player is in the air but hasn't jumped.(-9.98f)")]
+    [SerializeField] private float _gravityForce = -9.98f;
+
+    [Tooltip("Multiplier applied to the Force when the player is in contact with a Climbing object.(8f)")]
+    [SerializeField] private float _climbSpeed = 8f;
+
+    [Tooltip("The maximum speed a player can move at while climbing a Climbing object.(4f)")]
+    [SerializeField] private float _maxClimbSpeed = 4f;
+
     private bool _isGrounded = true;
+    private bool _isClimbing = false;
     private Vector3 _playerInput = Vector3.zero;
 
     // for handling player rotation
@@ -61,6 +73,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Position of player center, used for determining if they are grounded with RayCast.")]
     [SerializeField] private Transform _playerCenter;
     [SerializeField] private LayerMask _groundMask;
+    [SerializeField] private LayerMask _interactableMask;
 
     // holds the info to freeze x and z rotation
     private RigidbodyConstraints _XZFreeze;
@@ -74,8 +87,9 @@ public class PlayerController : MonoBehaviour
         {"Back", KeyCode.S },
         {"Right", KeyCode.D },
         {"Crouch", KeyCode.C },                  // CROUCH
-        {"Jump", KeyCode.Space },          // JUMP
-        {"Sprint", KeyCode.LeftShift }   // SPRINT
+        {"Jump", KeyCode.Space },         // JUMP
+        {"Sprint", KeyCode.LeftShift },   // SPRINT
+        {"Interact", KeyCode.E }          // INTERACT 
     };
 
     private void Awake()
@@ -139,6 +153,10 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         HandleNoInput();
+
+        //if (_isGrounded && PlayerNotGrounded())
+        ApplyGravity();
+
         HandleMouseInput();
     }
 
@@ -216,7 +234,7 @@ public class PlayerController : MonoBehaviour
     // applies forces to the players rigidbody as a result of the input
     private void HandleInput()
     {
-        if (_playerInput == Vector3.zero)
+        if (_playerInput == Vector3.zero || _isClimbing)
             return;
 
         if (_playerInput.y > 0)
@@ -340,6 +358,79 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private IEnumerator Climb()
+    {
+        yield return null;
+        //_rb.constraints = RigidbodyConstraints.None;
+        //_rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | _XZFreeze;
+        Vector3 climbDirection;
+        _rb.useGravity = false;
+        float timeBeforeUnclimb = 0;
+        bool backOnGround = false;
+
+        //Debug.Log("Start Climbing");
+        Vector3 relativeVelocity;// = Quaternion.Inverse(transform.rotation) * _rb.linearVelocity;
+        while (_isClimbing)
+        {
+            climbDirection = GetInput();
+            relativeVelocity = Quaternion.Inverse(transform.rotation) * _rb.linearVelocity;
+
+            if (climbDirection.y > 0 || backOnGround)
+            {
+                _isClimbing = false;               
+                break;
+            }
+            //if (climbDirection.z != 0f)
+            //{
+            //    //_rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | _XZFreeze;
+            //}
+            if (climbDirection.z > 0 && relativeVelocity.y < _maxClimbSpeed)
+            {
+                //Debug.Log("Climbing UP");
+
+                _rb.AddRelativeForce(new Vector3(0f, 1f, 0f) * _climbSpeed, ForceMode.Force);
+            }
+            if (climbDirection.z < 0 && relativeVelocity.y > -_maxClimbSpeed)
+            {
+                //Debug.Log("Climbing DOWN");
+                _rb.AddRelativeForce(new Vector3(0f, -1f, 0f) * _climbSpeed, ForceMode.Force);
+            }
+            if ((relativeVelocity.y >= 0.1f || relativeVelocity.y <= -0.1f) && climbDirection.z == 0)
+            {
+                //Debug.Log("Not Moving");
+                _rb.linearVelocity = Vector3.zero;
+                //_rb.AddRelativeForce(new Vector3(0f, -(relativeVelocity.y)/2, 0f), ForceMode.Impulse);
+                //_rb.constraints = RigidbodyConstraints.FreezePosition;// | _XZFreeze;
+                
+            }
+            //yield return new WaitForSeconds(0.2f);
+            yield return null;
+
+            if (timeBeforeUnclimb >= 0.5f)
+                backOnGround = !PlayerNotGrounded();
+            else
+                timeBeforeUnclimb += Time.deltaTime;
+        }
+
+        _rb.useGravity = true;
+        yield return null;
+
+        //if (!backOnGround)
+        
+
+        //Debug.Log("Stop Climbing");
+
+        //_rb.constraints = _XZFreeze;
+    }
+
+    private void ApplyGravity()
+    {
+        if (PlayerNotGrounded() && _isGrounded && !_isClimbing)
+        {
+            _rb.AddForce(new Vector3(0, 1, 0) * _gravityForce, ForceMode.Impulse);
+        }
+    }
+
     // Returns true if there are new keys being pressed, or released.
     private bool CheckForInput()
     {
@@ -430,8 +521,38 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(_inputKeys["Jump"]))
             playerInput += new Vector3(0, 1f, 0);
 
+        if (Input.GetKeyDown(_inputKeys["Interact"]) && InteractablePresent())
+            Interact();
+
         return playerInput.normalized;
         //return playerInput;
+    }
+
+    private void Interact()
+    {
+        Debug.Log("Interacting");
+        RaycastHit hit;
+        Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit);
+
+        try
+        {
+            CellDoor door = hit.collider.GetComponentInParent<CellDoor>();
+            Debug.Log("Interacting with Dorr");
+            //if ((door.transform.position.z - transform.position.z) < 0)
+            if ((-door.transform.position.x + door.transform.position.z) <= (-transform.position.x + transform.position.z))
+                door.InteractWithDoor(true);
+            else
+                door.InteractWithDoor();
+        }
+        catch
+        { Debug.Log("Parent Doesn't Have Door"); }
+
+        ////CellDoor door;
+
+        //if (hit.collider.TryGetComponent<CellDoor>(out door))
+        //{
+            
+        //}
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -450,12 +571,60 @@ public class PlayerController : MonoBehaviour
 
         if (collision.gameObject.tag == "Ground")
             _isGrounded = true;
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other == null || other.gameObject == null)
+        {
+            Debug.LogWarning("(ENTER) Trigger gameobject is null!");
+            return;
+        }
+
+        if (other.gameObject.tag == "Climb")
+        {
+            _isClimbing = true;
+            //Debug.Log("StartClimbing collision");
+            StartCoroutine(Climb());
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other == null || other.gameObject == null)
+        {
+            Debug.LogWarning("(EXIT) Trigger gameobject is null!");
+            return;
+        }
+
+        if (other.gameObject.tag == "Climb")
+        {
+            //Debug.Log("StopClimbing collision");
+            if (_isClimbing)
+            {
+                _isClimbing = false;
+                _rb.AddRelativeForce(new Vector3(0f, 2f, 0f), ForceMode.Impulse);
+                _rb.AddRelativeForce(new Vector3(0f, 0f, 2f), ForceMode.Impulse);
+            }
+            _isClimbing = false;
+        }
     }
 
     // check if player is currently on a solid surface (ray tracing)
     private bool PlayerIsGrounded()
     {
         return (_isGrounded && Physics.Raycast(_playerCenter.position, Vector3.down, _playerCenter.localPosition.y + 0.5f, _groundMask));
+    }
+
+    private bool PlayerNotGrounded()
+    {
+        return !Physics.Raycast(_playerCenter.position, Vector3.down, _playerCenter.localPosition.y + 0.7f, _groundMask);
+    }
+
+    private bool InteractablePresent()
+    {
+        return Physics.Raycast(_camera.transform.position, _camera.transform.forward, 7f, _interactableMask);
     }
 
     private void Respawn()
@@ -469,5 +638,6 @@ public enum MovementStates
     None,
     Crouch,
     Walk,
-    Sprint
+    Sprint,
+    Climb
 };
