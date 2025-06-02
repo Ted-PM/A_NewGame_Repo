@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
 public class CellDoor : MonoBehaviour
 {
     [SerializeField]
@@ -10,6 +9,10 @@ public class CellDoor : MonoBehaviour
     [SerializeField]
     private GameObject _doorObject;
     private Collider _doorCollider;
+    private Renderer _doorRenderer;
+
+    [SerializeField]
+    private Material _doorMaterial;
 
     [SerializeField]
     private Transform _start;
@@ -18,43 +21,52 @@ public class CellDoor : MonoBehaviour
     [SerializeField]
     private Transform _endNegative;
     [SerializeField]
-    private float _timeToOpenDoor;
+    private float _timeToOpenDoor = 1f;
+    [SerializeField]
+    private float _timeToCloseDoor = 1f;
 
     private bool _doorOpen = false;
     private bool _canInteractWithDoor = true;
-
-    //private Quaternion _open = new Quaternion(0f, 27.5f, 0f, 0f);
 
     private void Awake()
     {
         if (!_doorObject.TryGetComponent<Collider>(out _doorCollider))
             Debug.LogError("No Door Collider!");
-        //_doorCollider = _doorObject.GetComponent<Collider>();
-        //_doorRenderer = GetComponent<Renderer>();
-        //_closedPos = this.transform;
+        if (!_doorObject.TryGetComponent<Renderer>(out _doorRenderer))
+            Debug.LogError("No Door Renderer!");
+
+        SetDoorMaterial();
     }
 
-    public void InteractWithDoor(bool openPosDir = false)
+    public void InteractWithDoor(Vector3 playerPos)
     {
         if (!_canInteractWithDoor)
             return;
+
         StartCoroutine(WaitBeforeCanInteractAgain());
         Transform currentPos = _doorPivot.transform;
-        //_doorCollider.enabled = false;
 
         if (!_doorOpen)
         {
             _doorOpen = true;
-            if (openPosDir)
-                StartCoroutine(OpenDoor(currentPos, _endPositive));
-            else
-                StartCoroutine(OpenDoor(currentPos, _endNegative));
+            StartCoroutine(OpenDoor(currentPos, FindDirectionToOpenDoor(playerPos)));
         }
         else
         {
             _doorOpen = false;
             StartCoroutine(CloseDoor(currentPos));
         }
+    }
+
+    private Transform FindDirectionToOpenDoor(Vector3 playerPos)
+    {
+        float distanceToPosEnd = Vector3.Distance(playerPos, _endPositive.transform.position);
+        float distanceToNegEnd = Vector3.Distance(playerPos, _endNegative.transform.position);
+
+        if (distanceToPosEnd > distanceToNegEnd)
+            return _endPositive;
+        else
+            return _endNegative;
     }
 
     private IEnumerator WaitBeforeCanInteractAgain()
@@ -79,7 +91,6 @@ public class CellDoor : MonoBehaviour
             _doorPivot.transform.localRotation = Quaternion.Lerp(currentPos.localRotation, newPos.localRotation, t);
             yield return null;
         }
-        //_doorCollider.enabled = true;
     }
 
     private IEnumerator CloseDoor(Transform currentPos)
@@ -92,20 +103,20 @@ public class CellDoor : MonoBehaviour
 
         while (t < 1 && !_doorOpen)
         {
-            t = time / _timeToOpenDoor;
+            t = time / _timeToCloseDoor;
             time += Time.deltaTime;
 
             _doorPivot.transform.localRotation = Quaternion.Lerp(currentPos.localRotation, _start.localRotation, t);
             yield return null;
         }
 
-        //_doorCollider.enabled = true;
     }
 
-
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.G))
-    //        InteractWithDoor();
-    //}
+    private void SetDoorMaterial()
+    {
+        if (_doorMaterial != null && _doorRenderer != null)
+        {
+            _doorRenderer.material = _doorMaterial;
+        }
+    }
 }

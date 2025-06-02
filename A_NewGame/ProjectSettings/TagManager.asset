@@ -12,6 +12,8 @@ TagManager:
   - StartClimb
   - StopClimb
   - Door
+  - Death
+  - CellDoStuff
   layers:
   - Default
   - TransparentFX

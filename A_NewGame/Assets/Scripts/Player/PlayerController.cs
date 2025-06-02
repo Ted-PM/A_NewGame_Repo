@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using Unity.Mathematics;
 using Unity.VisualScripting;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -155,6 +154,7 @@ public class PlayerController : MonoBehaviour
         HandleNoInput();
 
         //if (_isGrounded && PlayerNotGrounded())
+
         ApplyGravity();
 
         HandleMouseInput();
@@ -206,83 +206,93 @@ public class PlayerController : MonoBehaviour
     // perpetually runs when input is recorded, calls another function when there is non which waits for new input
     private IEnumerator HandleContinuousInput()
     {
-        Vector3 _currentInput = _playerInput;
+        //Vector3 _currentInput = _playerInput;
 
         //Debug.Log("Curr Input: " + _currentInput.x + ", " + _currentInput.z);
         while (_playerInput != Vector3.zero)
         {
             //Debug.Log("Player Input: " + _playerInput.x + ", " + _playerInput.z);
             HandleInput();
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
         StartCoroutine(WaitForInput());
-        yield break;
+        //yield break;
     }
 
     // perpetually runs until input is recorded, then calls a coroutine to handle said input
     private IEnumerator WaitForInput()
     {
         yield return null;
+
         while (_playerInput == Vector3.zero)
         {
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
         StartCoroutine(HandleContinuousInput());
-        yield break;
+        //yield break;
     }
 
     // applies forces to the players rigidbody as a result of the input
     private void HandleInput()
     {
-        if (_playerInput == Vector3.zero || _isClimbing)
+        Vector3 CurrentPlayerInput = _playerInput;
+
+        MovementStates currentMovementState = _movementStates;
+        if (CurrentPlayerInput == Vector3.zero || _isClimbing)
             return;
 
-        if (_playerInput.y > 0)
+        if (CurrentPlayerInput.y > 0)
             Jump();
 
         //ResetYVaue(ref _playerInput);
 
         //Debug.Log("MovementSTate: " + _movementStates + ", velocity: " + _rb.linearVelocity);
 
-        switch (_movementStates)
+        switch (currentMovementState)
         {
             case MovementStates.None:
                 break;
             case MovementStates.Crouch:
-                MovePlayer(_crouchSpeed, _maxCrouchSpeed);
+                MovePlayer(_crouchSpeed, _maxCrouchSpeed, CurrentPlayerInput);
                 break;
             case MovementStates.Walk:
-                MovePlayer(_speed, _maxSpeed);
+                MovePlayer(_speed, _maxSpeed, CurrentPlayerInput);
                 break;
             case MovementStates.Sprint:
-                MovePlayer(_sprintSpeed, _maxSprintSpeed);
+                MovePlayer(_sprintSpeed, _maxSprintSpeed, CurrentPlayerInput);
                 break;
         }
 
     }
 
     // handels adding force to player rigidbody (or removing force if switching movement states)
-    private void MovePlayer(float speed, float maxSpeed)
+    private void MovePlayer(float speed, float maxSpeed, Vector3 currentPlayerInput)
     {
+        //Vector3 currentPlayerInput = playerInputPassed;
+
+        if (currentPlayerInput != _playerInput)
+            return;
+
         if (_rb.linearVelocity.magnitude < maxSpeed)
         {
             if (_rb.linearVelocity.magnitude < (maxSpeed / 2))
-                _rb.AddRelativeForce(new Vector3(_playerInput.x, 0f, _playerInput.z) * (maxSpeed), ForceMode.Impulse);
-
-            _rb.AddRelativeForce(new Vector3 (_playerInput.x, 0f, _playerInput.z) * speed, ForceMode.Force);
+                _rb.AddRelativeForce(new Vector3(currentPlayerInput.x, 0f, currentPlayerInput.z) * (maxSpeed/4), ForceMode.Impulse);
+            else
+                _rb.AddRelativeForce(new Vector3 (currentPlayerInput.x, 0f, currentPlayerInput.z) * speed, ForceMode.Force);
         }
         else
         {
             Vector3 relativeVelocity = Quaternion.Inverse(transform.rotation) * _rb.linearVelocity;
             // to fast forwards
-            if (relativeVelocity.x > maxSpeed * _playerInput.x || relativeVelocity.x < maxSpeed * _playerInput.x)
-                _rb.AddRelativeForce(new Vector3((maxSpeed * _playerInput.x - relativeVelocity.x)/2, 0f, 0), ForceMode.Impulse);
+
+            if (relativeVelocity.x > maxSpeed * currentPlayerInput.x || relativeVelocity.x < maxSpeed * currentPlayerInput.x)
+                _rb.AddRelativeForce(new Vector3((maxSpeed * currentPlayerInput.x - relativeVelocity.x), 0f, 0), ForceMode.Force);
             // too fast back
             //else if (relativeVelocity.x < maxSpeed * _playerInput.x)
                 //_rb.AddRelativeForce(new Vector3((maxSpeed * _playerInput.x - relativeVelocity.x), 0f, 0), ForceMode.Impulse);
             // too fast to right
-            if (relativeVelocity.z > maxSpeed * _playerInput.z || relativeVelocity.z < maxSpeed * _playerInput.z)
-                _rb.AddRelativeForce(new Vector3(0f, 0f, (maxSpeed * _playerInput.z - relativeVelocity.z)/2), ForceMode.Impulse);
+            if (relativeVelocity.z > maxSpeed * currentPlayerInput.z || relativeVelocity.z < maxSpeed * currentPlayerInput.z)
+                _rb.AddRelativeForce(new Vector3(0f, 0f, (maxSpeed * currentPlayerInput.z - relativeVelocity.z)), ForceMode.Force);
             // too fast to left
             //else if (relativeVelocity.z < maxSpeed * _playerInput.z)
                 //_rb.AddRelativeForce(new Vector3(0f, 0f, (maxSpeed * _playerInput.z - relativeVelocity.z)), ForceMode.Impulse);
@@ -534,25 +544,23 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit);
 
-        try
+        if (hit.collider == null)
+        {
+            Debug.LogError("Interactable is null");
+            return;
+        }
+        
+        if (hit.collider.tag == "Door")
         {
             CellDoor door = hit.collider.GetComponentInParent<CellDoor>();
-            Debug.Log("Interacting with Dorr");
-            //if ((door.transform.position.z - transform.position.z) < 0)
-            if ((-door.transform.position.x + door.transform.position.z) <= (-transform.position.x + transform.position.z))
-                door.InteractWithDoor(true);
-            else
-                door.InteractWithDoor();
+            if (door == null)
+            {
+                Debug.LogError("Door Interactable parent is null");
+                return;
+            }
+
+            door.InteractWithDoor(transform.position);
         }
-        catch
-        { Debug.Log("Parent Doesn't Have Door"); }
-
-        ////CellDoor door;
-
-        //if (hit.collider.TryGetComponent<CellDoor>(out door))
-        //{
-            
-        //}
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -587,6 +595,11 @@ public class PlayerController : MonoBehaviour
             _isClimbing = true;
             //Debug.Log("StartClimbing collision");
             StartCoroutine(Climb());
+        }
+
+        if (other.gameObject.tag == "CellDoStuff")
+        {
+            other.GetComponent<CellDoStuff>().DoStuff(0);
         }
     }
 

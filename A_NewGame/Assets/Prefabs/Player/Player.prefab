@@ -49,19 +49,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ce3e1989d58964d8b59e885916087e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 15
+  _speed: 10
   _maxSpeed: 8
-  _sprintSpeed: 20
+  _sprintSpeed: 15
   _maxSprintSpeed: 12
-  _crouchSpeed: 10
+  _crouchSpeed: 7
   _maxCrouchSpeed: 5
   _timeToCrouch: 0.1
   _jumpForce: 6
   _gravityForce: -4
-  _climbSpeed: 15
+  _climbSpeed: 5
   _maxClimbSpeed: 4
   _lookLimit: 60
-  _lookSpeed: 5
+  _lookSpeed: 10
   _playerCenter: {fileID: 869506749097910351}
   _groundMask:
     serializedVersion: 2

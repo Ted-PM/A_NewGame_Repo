@@ -53,6 +53,8 @@ public struct CellWallData
     { 
         wall.gameObject.SetActive(false);
     }
+
+    public bool WallIsDisabled() { return !wall.gameObject.activeSelf; }
     public void EnableWall() { wall.gameObject.SetActive(true); }
 
     //public void SetID(bool _id) {  idSet = _id; }
@@ -76,6 +78,9 @@ public class Cell : MonoBehaviour
     public GameObject doorPrefab;
     private List<GameObject> _doorways;
     private List<GameObject> _doors;
+
+    //[SerializeField]
+    //private CellDoStuff _stuffForCellToDo;
 
 
     [Tooltip("Add the dead cells as XXZZ, no spaces, must have 4 characters")]
@@ -701,7 +706,7 @@ public class Cell : MonoBehaviour
 
     public void DisableSpecificPosZWall(int index, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null)
+        if (addDoor && doorwayPrefab != null && !_zPosHorizontalWalls[index].WallIsDisabled())
         {
             Vector3 newDoorPos = _zPosHorizontalWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
@@ -721,7 +726,7 @@ public class Cell : MonoBehaviour
 
     public void DisableSpecificNegZWall(int index, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null)
+        if (addDoor && doorwayPrefab != null && !_zNegHorizontalWalls[index].WallIsDisabled())
         {
             Vector3 newDoorPos = _zNegHorizontalWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
@@ -741,7 +746,7 @@ public class Cell : MonoBehaviour
 
     public void DisableSpecificPosXWall(int index, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null)
+        if (addDoor && doorwayPrefab != null && !_xPosVerticleWalls[index].WallIsDisabled())
         {
             Vector3 newDoorPos = _xPosVerticleWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
@@ -761,7 +766,7 @@ public class Cell : MonoBehaviour
 
     public void DisableSpecificNegXWall(int index, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null)
+        if (addDoor && doorwayPrefab != null && !_xNegVerticleWalls[index].WallIsDisabled())
         {
             Vector3 newDoorPos = _xNegVerticleWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
@@ -795,4 +800,10 @@ public class Cell : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+    //public void DoStuff()
+    //{
+    //    if (_stuffForCellToDo != null)
+    //        _stuffForCellToDo.DoStuff(0);
+    //}
 }
