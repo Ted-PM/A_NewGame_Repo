@@ -1,6 +1,7 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(Transform), typeof(Collider), typeof(Renderer))]
+[RequireComponent(typeof(Transform), typeof(Collider))]
 public class CellWall : MonoBehaviour
 {
     //[SerializeField]
@@ -15,41 +16,54 @@ public class CellWall : MonoBehaviour
     private void Awake()
     {
         _wallCollider = GetComponent<Collider>();
-        _wallRenderer = GetComponent<Renderer>();
+        //if (!TryGetComponent<Renderer>(out _wallRenderer))
+            //con;
+            //Debug.Log("No Wall Renderer");
     }
 
     public void SetWallMaterial(Material wallMaterial)
     {
-        _wallRenderer.material = wallMaterial;
-        
-        try
-        {
-            _wallPlane.GetComponent<Renderer>().material = wallMaterial;
-        }
-        catch
-        {
-            Debug.LogError("Wall Plane Not Found!!");
-        }
+        if (_wallRenderer != null) 
+            _wallRenderer.material = wallMaterial;
+
+        Renderer wallRenderer;
+        if (_wallPlane != null && _wallPlane.TryGetComponent<Renderer>(out wallRenderer))
+            wallRenderer.material = wallMaterial;
+        //try
+        //{
+            
+        //}
+        //catch
+        //{
+        //    Debug.LogError("Wall Plane Not Found!!");
+        //}
     }
     public void SetWallColor(Color wallColor)
     {
-        _wallRenderer.material.color = wallColor;
+        if (_wallRenderer != null)
+            _wallRenderer.material.color = wallColor;
 
-        try
-        {
-            _wallPlane.GetComponent<Renderer>().material.color = wallColor;
-        }
-        catch
-        {
-            Debug.LogError("Wall Plane Not Found!!");
-        }
+        Renderer wallRenderer;
+        if (_wallPlane != null && _wallPlane.TryGetComponent<Renderer>(out wallRenderer))
+            wallRenderer.material.color = wallColor;
+
+        //try
+        //{
+        //    _wallPlane.GetComponent<Renderer>().material.color = wallColor;
+        //}
+        //catch
+        //{
+        //    Debug.LogError("Wall Plane Not Found!!");
+        //}
     }
 
     public void DisableWall()
     {
         _wallCollider.enabled = false;
-        _wallRenderer.enabled = false;
-        _wallPlane.SetActive(false);// = false;
+        if (_wallRenderer != null)
+            _wallRenderer.enabled = false;
+        if (_wallPlane != null)
+            _wallPlane.SetActive(false);// = false;
     }
 
     //public void EnableW
@@ -69,15 +83,18 @@ public class CellWall : MonoBehaviour
 
     public void DisableRenderer()
     {
-        _wallRenderer.enabled = false;
+        if (_wallRenderer != null && _wallRenderer.enabled == true)
+            _wallRenderer.enabled = false;
     }
     public void EnableRenderer()
     {
-        _wallRenderer.enabled = true;
+        if (_wallRenderer != null && _wallRenderer.enabled == false)
+            _wallRenderer.enabled = true;
     }
     public void SwitchRendererStatus()
     {
-        _wallRenderer.enabled = !_wallRenderer.enabled;
+        if (_wallRenderer != null)
+            _wallRenderer.enabled = !_wallRenderer.enabled;
     }
     
     public Vector3 GetWallPosition()

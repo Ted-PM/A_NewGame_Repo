@@ -49,6 +49,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The maximum speed a player can move at while climbing a Climbing object.(4f)")]
     [SerializeField] private float _maxClimbSpeed = 4f;
 
+    [Tooltip("The outer collider on the player which has no friction, for walls.")]
+    [SerializeField] private Collider _outerCollider;
+
     private bool _isGrounded = true;
     private bool _isClimbing = false;
     private Vector3 _playerInput = Vector3.zero;
@@ -153,6 +156,7 @@ public class PlayerController : MonoBehaviour
     {
         HandleNoInput();
 
+        //HandleInput();
         //if (_isGrounded && PlayerNotGrounded())
 
         ApplyGravity();
@@ -206,16 +210,23 @@ public class PlayerController : MonoBehaviour
     // perpetually runs when input is recorded, calls another function when there is non which waits for new input
     private IEnumerator HandleContinuousInput()
     {
-        //Vector3 _currentInput = _playerInput;
+        Vector3 _currentInput = _playerInput;
 
         //Debug.Log("Curr Input: " + _currentInput.x + ", " + _currentInput.z);
-        while (_playerInput != Vector3.zero)
+
+        while (_playerInput != Vector3.zero && _currentInput == _playerInput)
         {
             //Debug.Log("Player Input: " + _playerInput.x + ", " + _playerInput.z);
             HandleInput();
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
-        StartCoroutine(WaitForInput());
+        if (_currentInput != _playerInput)
+        {
+            _playerInput = GetInput();
+            StartCoroutine(HandleContinuousInput());
+        }
+        else 
+            StartCoroutine(WaitForInput());
         //yield break;
     }
 
@@ -226,7 +237,7 @@ public class PlayerController : MonoBehaviour
 
         while (_playerInput == Vector3.zero)
         {
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
         StartCoroutine(HandleContinuousInput());
         //yield break;
@@ -273,29 +284,40 @@ public class PlayerController : MonoBehaviour
         if (currentPlayerInput != _playerInput)
             return;
 
+        Vector3 relativeVelocity = Quaternion.Inverse(transform.rotation) * _rb.linearVelocity;
+
         if (_rb.linearVelocity.magnitude < maxSpeed)
         {
             if (_rb.linearVelocity.magnitude < (maxSpeed / 2))
-                _rb.AddRelativeForce(new Vector3(currentPlayerInput.x, 0f, currentPlayerInput.z) * (maxSpeed/4), ForceMode.Impulse);
+                _rb.AddRelativeForce(new Vector3(currentPlayerInput.x, 0f, currentPlayerInput.z) * (maxSpeed/2), ForceMode.Impulse);
+            else if (relativeVelocity.x > (maxSpeed * currentPlayerInput.x) || relativeVelocity.x < (maxSpeed * currentPlayerInput.x)
+                || relativeVelocity.z > (maxSpeed * currentPlayerInput.z) || relativeVelocity.z < (maxSpeed * currentPlayerInput.z))
+            {
+                _rb.AddRelativeForce((new Vector3((maxSpeed * currentPlayerInput.x - relativeVelocity.x), 0f, 0f)), ForceMode.Impulse);
+                _rb.AddRelativeForce((new Vector3(0f, 0f, (maxSpeed * currentPlayerInput.z - relativeVelocity.z))), ForceMode.Impulse);
+            }
             else
                 _rb.AddRelativeForce(new Vector3 (currentPlayerInput.x, 0f, currentPlayerInput.z) * speed, ForceMode.Force);
         }
         else
         {
-            Vector3 relativeVelocity = Quaternion.Inverse(transform.rotation) * _rb.linearVelocity;
             // to fast forwards
-
-            if (relativeVelocity.x > maxSpeed * currentPlayerInput.x || relativeVelocity.x < maxSpeed * currentPlayerInput.x)
-                _rb.AddRelativeForce(new Vector3((maxSpeed * currentPlayerInput.x - relativeVelocity.x), 0f, 0), ForceMode.Force);
+            //Debug.Log("Relative Velocity: " + relativeVelocity.x + ", " + relativeVelocity.z);
+            //Debug.Log("Player Desired Speed: " + maxSpeed * currentPlayerInput.x + ", " + maxSpeed * currentPlayerInput.z);
+            //Debug.Log("Correction being made: " + (maxSpeed * currentPlayerInput.x - relativeVelocity.x) + ", " + (maxSpeed * currentPlayerInput.z - relativeVelocity.z));
+            
+            if (relativeVelocity.x > (maxSpeed * currentPlayerInput.x) || relativeVelocity.x < (maxSpeed * currentPlayerInput.x))
+                _rb.AddRelativeForce((new Vector3((maxSpeed * currentPlayerInput.x - relativeVelocity.x), 0f, 0f)), ForceMode.Impulse);
             // too fast back
             //else if (relativeVelocity.x < maxSpeed * _playerInput.x)
                 //_rb.AddRelativeForce(new Vector3((maxSpeed * _playerInput.x - relativeVelocity.x), 0f, 0), ForceMode.Impulse);
             // too fast to right
-            if (relativeVelocity.z > maxSpeed * currentPlayerInput.z || relativeVelocity.z < maxSpeed * currentPlayerInput.z)
-                _rb.AddRelativeForce(new Vector3(0f, 0f, (maxSpeed * currentPlayerInput.z - relativeVelocity.z)), ForceMode.Force);
+            if (relativeVelocity.z  > (maxSpeed * currentPlayerInput.z) || relativeVelocity.z < (maxSpeed * currentPlayerInput.z))
+                _rb.AddRelativeForce((new Vector3(0f, 0f, (maxSpeed * currentPlayerInput.z - relativeVelocity.z))), ForceMode.Impulse);
             // too fast to left
             //else if (relativeVelocity.z < maxSpeed * _playerInput.z)
-                //_rb.AddRelativeForce(new Vector3(0f, 0f, (maxSpeed * _playerInput.z - relativeVelocity.z)), ForceMode.Impulse);
+               //_rb.AddRelativeForce(new Vector3(0f, 0f, (maxSpeed * _playerInput.z - relativeVelocity.z)), ForceMode.Impulse);
+            
         }
     }
 
@@ -592,7 +614,10 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.tag == "Climb")
         {
+            if (_outerCollider !=  null)
+                _outerCollider.enabled = false;
             _isClimbing = true;
+            _isGrounded = true;
             //Debug.Log("StartClimbing collision");
             StartCoroutine(Climb());
         }
@@ -616,12 +641,25 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("StopClimbing collision");
             if (_isClimbing)
             {
-                _isClimbing = false;
-                _rb.AddRelativeForce(new Vector3(0f, 2f, 0f), ForceMode.Impulse);
-                _rb.AddRelativeForce(new Vector3(0f, 0f, 2f), ForceMode.Impulse);
+                _rb.AddForce(new Vector3(0, 1, 0) * _jumpForce, ForceMode.Impulse);
+                _rb.AddRelativeForce(new Vector3(_playerInput.x, 0f, _playerInput.z) * (_speed/2), ForceMode.Impulse);
+                //_isClimbing = false;
+                //_rb.AddRelativeForce(new Vector3(0f, 2f, 0f), ForceMode.Impulse);
+                //_rb.AddRelativeForce(new Vector3(0f, 0f, 2f), ForceMode.Impulse);
             }
-            _isClimbing = false;
+
+            if (_outerCollider != null)
+                _outerCollider.enabled=true;
+            //_isGrounded = true;
+            //_rb.useGravity = true;
+            StartCoroutine(WaitTheDisableClimbing());
         }
+    }
+
+    private IEnumerator WaitTheDisableClimbing()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _isClimbing = false;
     }
 
     // check if player is currently on a solid surface (ray tracing)

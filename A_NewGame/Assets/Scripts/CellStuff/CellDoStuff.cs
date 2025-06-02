@@ -34,14 +34,6 @@ public class CellDoStuff : MonoBehaviour
         //}
     }
 
-    private void Stuff1()
-    {
-        if (cellDoor != null)
-        {
-            StartCoroutine(WaitThenCloseDoor());
-            //cellDoor.InteractWithDoor(transform.position);
-        }
-    }
 
     private IEnumerator WaitThenCloseDoor()
     {

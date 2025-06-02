@@ -60,8 +60,9 @@ MonoBehaviour:
   _gravityForce: -4
   _climbSpeed: 5
   _maxClimbSpeed: 4
+  _outerCollider: {fileID: 7924028343138690699}
   _lookLimit: 60
-  _lookSpeed: 10
+  _lookSpeed: 7
   _playerCenter: {fileID: 869506749097910351}
   _groundMask:
     serializedVersion: 2

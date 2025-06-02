@@ -207,6 +207,7 @@ public class MazeFloor : MonoBehaviour
     public void SpawnFloor()
     {
         Debug.Log("Creating Floor: " + floorLevel + " ----------------");
+        
         if (hasNextFloor)
         { 
             LocateNextFloor();
@@ -218,10 +219,14 @@ public class MazeFloor : MonoBehaviour
         }
 
         if (!_hasPrevFloor)
-        {
-            
+        {            
             SpawnStartCell(startX, startZ);
         }
+        if (hasNextFloor)
+        {
+            SpawnTransitionalCell(nextFloorX, nextFloorZ);
+        }
+
         //else
         //{
         //    SpawnEmptyCell(startX, startZ);
@@ -269,11 +274,6 @@ public class MazeFloor : MonoBehaviour
                         //Debug.Log("Spawning Empty Cell at: " + i + ", " + j);
                         SpawnEmptyCell(i, j);
                     }
-                    else if (CellIsTransitional(i, j))
-                    {
-                        //Debug.Log("Next floor trans pos: " + i + ", " + j);
-                        SpawnTransitionalCell(i, j);
-                    }
                     else
                     {
                         if (!isEmptyFloor)
@@ -281,7 +281,12 @@ public class MazeFloor : MonoBehaviour
                         else
                             SpawnEmptyFloorCells(i, j);
                     }
-                }                
+                    //else if (CellIsTransitional(i, j))
+                    //{
+                    //    //Debug.Log("Next floor trans pos: " + i + ", " + j);
+                    //    SpawnTransitionalCell(i, j);
+                    //}
+                }
             }
         }
     }
