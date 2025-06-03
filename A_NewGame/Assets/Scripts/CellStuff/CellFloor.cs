@@ -12,6 +12,16 @@ public class CellFloor : MonoBehaviour
         _floorRenderer = GetComponent<Renderer>();
     }
 
+    public void DisableFloorRenderer()
+    {
+        _floorRenderer.enabled = false;
+    }
+
+    public void EnableFloorRenderer()
+    {
+        _floorRenderer.enabled = true;
+    }
+
     public void ChangeFloorMat(Material mat)
     {
         _floorRenderer.material = mat;
@@ -22,15 +32,5 @@ public class CellFloor : MonoBehaviour
         _floorRenderer.enabled = false;
         _floorCollider.enabled = false;
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

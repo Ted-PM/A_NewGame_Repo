@@ -52,6 +52,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The outer collider on the player which has no friction, for walls.")]
     [SerializeField] private Collider _outerCollider;
 
+    [Tooltip("The trigger above the player which triggers events when player enters a cell, for CellStuff.")]
+    [SerializeField] private Collider _playerTrigger;
+
     private bool _isGrounded = true;
     private bool _isClimbing = false;
     private Vector3 _playerInput = Vector3.zero;
@@ -290,11 +293,11 @@ public class PlayerController : MonoBehaviour
         {
             if (_rb.linearVelocity.magnitude < (maxSpeed / 2))
                 _rb.AddRelativeForce(new Vector3(currentPlayerInput.x, 0f, currentPlayerInput.z) * (maxSpeed/2), ForceMode.Impulse);
-            else if (relativeVelocity.x > (maxSpeed * currentPlayerInput.x) || relativeVelocity.x < (maxSpeed * currentPlayerInput.x)
-                || relativeVelocity.z > (maxSpeed * currentPlayerInput.z) || relativeVelocity.z < (maxSpeed * currentPlayerInput.z))
+            else if (_isGrounded && (relativeVelocity.x > (maxSpeed * currentPlayerInput.x) || relativeVelocity.x < (maxSpeed * currentPlayerInput.x)
+                || relativeVelocity.z > (maxSpeed * currentPlayerInput.z) || relativeVelocity.z < (maxSpeed * currentPlayerInput.z)))
             {
-                _rb.AddRelativeForce((new Vector3((maxSpeed * currentPlayerInput.x - relativeVelocity.x), 0f, 0f)), ForceMode.Impulse);
-                _rb.AddRelativeForce((new Vector3(0f, 0f, (maxSpeed * currentPlayerInput.z - relativeVelocity.z))), ForceMode.Impulse);
+                _rb.AddRelativeForce((new Vector3((maxSpeed * currentPlayerInput.x - relativeVelocity.x), 0f, (maxSpeed * currentPlayerInput.z - relativeVelocity.z))), ForceMode.Impulse);
+                //_rb.AddRelativeForce((new Vector3(0f, 0f, )), ForceMode.Impulse);
             }
             else
                 _rb.AddRelativeForce(new Vector3 (currentPlayerInput.x, 0f, currentPlayerInput.z) * speed, ForceMode.Force);
@@ -616,15 +619,12 @@ public class PlayerController : MonoBehaviour
         {
             if (_outerCollider !=  null)
                 _outerCollider.enabled = false;
+            if (_playerTrigger != null) 
+                _playerTrigger.enabled = false;
             _isClimbing = true;
             _isGrounded = true;
             //Debug.Log("StartClimbing collision");
             StartCoroutine(Climb());
-        }
-
-        if (other.gameObject.tag == "CellDoStuff")
-        {
-            other.GetComponent<CellDoStuff>().DoStuff(0);
         }
     }
 
@@ -649,7 +649,10 @@ public class PlayerController : MonoBehaviour
             }
 
             if (_outerCollider != null)
-                _outerCollider.enabled=true;
+                _outerCollider.enabled = true;
+
+            if (_playerTrigger != null)
+                _playerTrigger.enabled = true;
             //_isGrounded = true;
             //_rb.useGravity = true;
             StartCoroutine(WaitTheDisableClimbing());
@@ -676,6 +679,11 @@ public class PlayerController : MonoBehaviour
     private bool InteractablePresent()
     {
         return Physics.Raycast(_camera.transform.position, _camera.transform.forward, 7f, _interactableMask);
+    }
+
+    public Transform GetPlayerCenterTransform()
+    {
+        return _playerCenter;
     }
 
     private void Respawn()

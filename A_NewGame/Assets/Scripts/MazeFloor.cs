@@ -6,6 +6,9 @@ using System.Buffers.Text;
 using System.Collections;
 using NUnit.Framework;
 using System.Linq.Expressions;
+using Unity.AI.Navigation;
+using Unity.VisualScripting;
+using UnityEngine.AI;
 
 public class MazeFloor : MonoBehaviour
 {
@@ -54,12 +57,19 @@ public class MazeFloor : MonoBehaviour
 
     public bool isEmptyFloor;
 
+    public LayerMask navMeshSurfaceLayers;
+
+    [SerializeField]
+    private GameObject _floorNavMeshSurface;
+
     private void Awake()
     {
         _hasPrevFloor = false;
         _prevFloorExit = new int[2];
         _prevFloorTransitionCells = new List<int[]>();
         _startCells = new List<int[]>();
+
+
         //SetFloorDimensions();
         //CheckPrefabListAndOdds();
         //SpawnXContainers();
@@ -85,6 +95,8 @@ public class MazeFloor : MonoBehaviour
 
         _cellMatrix = new GameObject[xWidth, zHeight];
         _cellMatrixBool = new bool[xWidth, zHeight];
+
+        
         //_XContainers = new GameObject[xWidth];
     }
 
@@ -723,6 +735,79 @@ public class MazeFloor : MonoBehaviour
             return 1;
         }
         return UnityEngine.Random.Range(min, max);
+    }
+
+    public void AddNavmeshSurfaceData()
+    {
+        if (_floorNavMeshSurface == null)
+            Debug.LogError("NoNavmesh surface!!!!");
+        else
+        {
+            _floorNavMeshSurface.AddComponent<NavMeshSurface>();
+            //_floorNavMeshSurface.AddComponent<NavMeshModifierVolume>();
+            //_floorNavMeshSurface.transform.localScale = new Vector3(xWidth, 1f, zHeight);
+            _floorNavMeshSurface.transform.localPosition = new Vector3((10 * (xWidth - 1)) / 2, 0, (10 * (zHeight - 1)) / 2);
+            _floorNavMeshSurface.name = floorLevel.ToString() + ": NavMeshSurface";
+            _floorNavMeshSurface.GetComponent<NavMeshSurface>().layerMask = navMeshSurfaceLayers;
+            _floorNavMeshSurface.GetComponent<NavMeshSurface>().collectObjects = CollectObjects.Volume;       //
+            _floorNavMeshSurface.GetComponent<NavMeshSurface>().center = Vector3.zero;
+            //_floorNavMeshSurface.GetComponent<NavMeshModifierVolume>().size = new Vector3(xWidth*10, 1f, zHeight*10);
+            _floorNavMeshSurface.GetComponent<NavMeshSurface>().size = new Vector3(xWidth*10, 1f, zHeight*10);
+            //_floorNavMeshSurface.GetComponent<NavMeshSurface>().minRegionArea = 8;    //
+            //_floorNavMeshSurface.GetComponent<NavMeshSurface>().GetComponent<NavMeshModifierVolume>().size = new Vector3(xWidth*10, 1f, zHeight*10);
+            _floorNavMeshSurface.GetComponent<NavMeshSurface>().BuildNavMesh();
+        }
+    }
+
+    public void DisableFloorRenderers(int playerFloorLevel)
+    {
+        for (int x = 0; x < xWidth; x++)
+        {
+            for (int z = 0; z < zHeight; z++)
+            {
+                if (_hasPrevFloor && playerFloorLevel == (floorLevel - 1) && IntPairWithin3OfList(x,z,_prevFloorTransitionCells))
+                {
+                    if (_cellMatrix[x, z] != null && !_cellMatrix[x, z].GetComponent<Cell>().CellRenderersEnabled())
+                    {
+                        _cellMatrix[x, z].GetComponent<Cell>().EnableCellRenderers();
+                    }
+                    continue;
+                }
+                //if (IntPlusMinusEqualToOther(playerFloorLevel, floorLevel) && floorLevel == 0 && IntPairWithin3OfList(x, z, _startCells))
+                    //continue;
+                if (hasNextFloor && playerFloorLevel == (floorLevel + 1) && IntWithin3_OfOtherInt(x, nextFloorX) && IntWithin3_OfOtherInt(z, nextFloorZ))
+                {
+                    if (_cellMatrix[x, z] != null && !_cellMatrix[x, z].GetComponent<Cell>().CellRenderersEnabled())
+                    {
+                        _cellMatrix[x, z].GetComponent<Cell>().EnableCellRenderers();
+                    }
+                    continue;
+                }
+                if (playerFloorLevel != floorLevel && _cellMatrix[x, z] != null && _cellMatrix[x, z].GetComponent<Cell>().CellRenderersEnabled())
+                {
+                    _cellMatrix[x, z].GetComponent<Cell>().DisableCellRenderers();
+                }
+            }
+        }
+    }
+
+    public void EnableFloorRenderers()
+    {
+        for (int x = 0; x < xWidth; x++)
+        {
+            for (int z = 0; z < zHeight; z++)
+            {
+                if (_cellMatrix[x, z] != null && !_cellMatrix[x, z].GetComponent<Cell>().CellRenderersEnabled())
+                {
+                    _cellMatrix[x, z].GetComponent<Cell>().EnableCellRenderers();
+                }
+            }
+        }
+    }
+
+    public bool IntPlusMinusEqualToOther(int a, int b)
+    {
+        return (a==b || a == b-1 || a == b+1);
     }
 
     private bool IntPairIsInList(int[] pair, List<int[]> list)

@@ -21,6 +21,9 @@ public class FloorSpawner : MonoBehaviour
 
     private List<int[]> _floorDimensions;
 
+    [HideInInspector]
+    public bool mazeGenerated = false;
+
     private void Awake()
     {
         if (numberOfFloors > mazeFloorPrefabs.Length && !generateDefault)
@@ -33,10 +36,10 @@ public class FloorSpawner : MonoBehaviour
 
     private void Start()
     {
-        //SpawnFloor(0);
-
         PopulateFloorDimensionList();
         SpawnFloors();
+        mazeGenerated = true;
+        //StartCoroutine(DisableFloorRenderers());
     }
 
     private void SpawnFloors()
@@ -48,8 +51,33 @@ public class FloorSpawner : MonoBehaviour
             else
                 SpawnFloorCustom(i);
         }
+
+        
         //
     }
+
+    //private IEnumerator WaitThenStateMazeDone()
+    //{
+    //    yield return new WaitForSeconds(0.5f);
+    //    mazeGenerated = true;
+    //}
+
+    //public IEnumerator DisableInitialFloorRenderers()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    for (int i = 0; i < numberOfFloors; i++)
+    //    {
+    //        //if (i == 1)
+    //        //    _mazeFloors[i].DisableFloorRenderers(0);
+    //        //else
+    //            _mazeFloors[i].DisableFloorRenderers(0);
+    //    }
+
+    //    yield return new WaitForFixedUpdate();
+    //    mazeGenerated = true;
+    //    //foreach (MazeFloor floor in _mazeFloors)
+
+    //}
 
     private void PopulateFloorDimensionList()
     {
@@ -133,12 +161,16 @@ public class FloorSpawner : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         GenerateMazeFloor(floorIndex);
+        yield return new WaitForFixedUpdate();
+        _mazeFloors[floorIndex].AddNavmeshSurfaceData();
     }
 
     private IEnumerator WaitThenGenerateEmptyFloor(int floorIndex)
     {
         yield return new WaitForSeconds(1f);
         _mazeFloors[floorIndex].DisableEmptyFloorCellWalls();
+        yield return new WaitForFixedUpdate();
+        _mazeFloors[floorIndex].AddNavmeshSurfaceData();
     }
 
     private void GenerateMazeFloor(int floorIndex)
@@ -154,6 +186,11 @@ public class FloorSpawner : MonoBehaviour
         int playerZ = _mazeFloors[0].GetStartZ();
 
         return new Vector2(playerX*10, playerZ*10);
+    }
+
+    public MazeFloor[] GetMazeFloors()
+    {
+        return _mazeFloors;
     }
 
     //private bool CanGenerateMaze(int floorIndex)

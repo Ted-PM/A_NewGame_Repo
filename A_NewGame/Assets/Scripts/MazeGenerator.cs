@@ -441,7 +441,7 @@ public class MazeGenerator : MonoBehaviour
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         
                         //current._zPosHorizontalWalls[i].DisableWall();
-                        current.DisableSpecificPosZWall(i, found);
+                        current.DestroySpecificPosZWall(i, found);
 
                         // removes opposite cell wall if first iteration
                         if (!found)
@@ -459,7 +459,7 @@ public class MazeGenerator : MonoBehaviour
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         
                         //current._zNegHorizontalWalls[i].DisableWall();
-                        current.DisableSpecificNegZWall(i, found);
+                        current.DestroySpecificNegZWall(i, found);
 
                         if (!found)
                         {
@@ -489,7 +489,7 @@ public class MazeGenerator : MonoBehaviour
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         
                         //current._xPosVerticleWalls[i].DisableWall();
-                        current.DisableSpecificPosXWall(i, found);
+                        current.DestroySpecificPosXWall(i, found);
 
                         if (!found)
                         {
@@ -506,7 +506,7 @@ public class MazeGenerator : MonoBehaviour
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         
                         //current._xNegVerticleWalls[i].DisableWall();
-                        current.DisableSpecificNegXWall(i, found);
+                        current.DestroySpecificNegXWall(i, found);
 
                         if (!found)
                         {

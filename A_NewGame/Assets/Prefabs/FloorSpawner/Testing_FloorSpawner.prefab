@@ -47,11 +47,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mazeFloorPrefabs:
   - {fileID: 8444920341893074768, guid: 58324df8bdfb5cd43b5f6211b249e2d5, type: 3}
-  numberOfFloors: 3
+  numberOfFloors: 2
   baseX: 20
   baseZ: 20
   generateDefault: 1
   _generator: {fileID: 5700242832225063526}
+  mazeGenerated: 0
 --- !u!114 &5700242832225063526
 MonoBehaviour:
   m_ObjectHideFlags: 0

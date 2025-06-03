@@ -55,6 +55,7 @@ MonoBehaviour:
   _endPositive: {fileID: 574208272014768456}
   _endNegative: {fileID: 6414092624728834470}
   _timeToOpenDoor: 1
+  _timeToCloseDoor: 1
 --- !u!1 &2925095504410417506
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,62 +8,40 @@ public class CellWall : MonoBehaviour
     //private WallID _wallID;
 
     private Collider _wallCollider;
-    private Renderer _wallRenderer;
-    
+    //private Renderer _wallRenderer;
+
+    [SerializeField]
+    private GameObject _wallProps;
     [SerializeField]
     private GameObject _wallPlane;
+    private Renderer _planeRenderer;
 
     private void Awake()
     {
         _wallCollider = GetComponent<Collider>();
-        //if (!TryGetComponent<Renderer>(out _wallRenderer))
-            //con;
-            //Debug.Log("No Wall Renderer");
+        if (!_wallPlane.TryGetComponent<Renderer>(out _planeRenderer))
+            Debug.Log("No Plane Renderer");
     }
 
     public void SetWallMaterial(Material wallMaterial)
     {
-        if (_wallRenderer != null) 
-            _wallRenderer.material = wallMaterial;
-
-        Renderer wallRenderer;
-        if (_wallPlane != null && _wallPlane.TryGetComponent<Renderer>(out wallRenderer))
-            wallRenderer.material = wallMaterial;
-        //try
-        //{
-            
-        //}
-        //catch
-        //{
-        //    Debug.LogError("Wall Plane Not Found!!");
-        //}
+        if (_planeRenderer != null )
+            _planeRenderer.material = wallMaterial;
     }
     public void SetWallColor(Color wallColor)
     {
-        if (_wallRenderer != null)
-            _wallRenderer.material.color = wallColor;
-
-        Renderer wallRenderer;
-        if (_wallPlane != null && _wallPlane.TryGetComponent<Renderer>(out wallRenderer))
-            wallRenderer.material.color = wallColor;
-
-        //try
-        //{
-        //    _wallPlane.GetComponent<Renderer>().material.color = wallColor;
-        //}
-        //catch
-        //{
-        //    Debug.LogError("Wall Plane Not Found!!");
-        //}
+        if (_planeRenderer != null)
+            _planeRenderer.material.color = wallColor;
     }
 
     public void DisableWall()
     {
         _wallCollider.enabled = false;
-        if (_wallRenderer != null)
-            _wallRenderer.enabled = false;
+
         if (_wallPlane != null)
             _wallPlane.SetActive(false);// = false;
+        if (_wallProps != null)
+            _wallProps.SetActive(false);
     }
 
     //public void EnableW
@@ -83,18 +61,24 @@ public class CellWall : MonoBehaviour
 
     public void DisableRenderer()
     {
-        if (_wallRenderer != null && _wallRenderer.enabled == true)
-            _wallRenderer.enabled = false;
+        if (_planeRenderer != null)
+            _planeRenderer.enabled = false;
+        if (_wallProps != null)
+            _wallProps.SetActive(false);
     }
     public void EnableRenderer()
     {
-        if (_wallRenderer != null && _wallRenderer.enabled == false)
-            _wallRenderer.enabled = true;
+        if (_planeRenderer != null)
+            _planeRenderer.enabled = true;
+        if (_wallProps != null)
+            _wallProps.SetActive(true);
     }
     public void SwitchRendererStatus()
     {
-        if (_wallRenderer != null)
-            _wallRenderer.enabled = !_wallRenderer.enabled;
+        if (_planeRenderer != null)
+            _planeRenderer.enabled = !_planeRenderer.enabled;
+        if (_wallProps != null)
+            _wallProps.SetActive(!_wallProps.activeSelf);
     }
     
     public Vector3 GetWallPosition()

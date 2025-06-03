@@ -17,6 +17,16 @@ public class CellCeeling : MonoBehaviour
         _ceelingRenderer.material = mat;
     }
 
+    public void DisableCeelingRenderer()
+    {
+        _ceelingRenderer.enabled = false;
+    }
+
+    public void EnableCeelingRenderer()
+    {
+        _ceelingRenderer.enabled = true;
+    }
+
     public void DisableCeeling()
     {
         _ceelingRenderer.enabled = false;

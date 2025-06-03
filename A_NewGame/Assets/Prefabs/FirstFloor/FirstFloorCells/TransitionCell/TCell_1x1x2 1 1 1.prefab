@@ -67,6 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 3457952276583866765}
 --- !u!1 &666938041671911749
 GameObject:
@@ -651,6 +652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 8985996482366898363}
 --- !u!1 &1240312041963402559
 GameObject:
@@ -754,6 +756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 8183822432538030606}
 --- !u!1 &2375406767633516259
 GameObject:
@@ -1447,6 +1450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 2937851534409558236}
 --- !u!1 &2903774232261982116
 GameObject:
@@ -1570,6 +1574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 7611290723728292091}
 --- !u!1 &2937851534409558236
 GameObject:
@@ -2615,6 +2620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 2375406767633516259}
 --- !u!1 &4488782699013228554
 GameObject:
@@ -2683,6 +2689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 666938041671911749}
 --- !u!1 &6507336796770031070
 GameObject:
@@ -2711,7 +2718,7 @@ Transform:
   m_GameObject: {fileID: 6507336796770031070}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5, z: 0.3}
+  m_LocalPosition: {x: 0, y: 6.18, z: 0.3}
   m_LocalScale: {x: 1, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2744,7 +2751,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.5, z: 0.75}
+  m_Size: {x: 1, y: 0.75, z: 0.75}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6588731919280044021
 GameObject:
@@ -3289,6 +3296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 2599823918948246132}
 --- !u!1 &8183822432538030606
 GameObject:
@@ -3692,3 +3700,4 @@ MonoBehaviour:
   xWidth: 1
   zHeight: 1
   yFloors: 2
+  cellDoStuffObject: {fileID: 0}

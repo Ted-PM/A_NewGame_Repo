@@ -13,6 +13,7 @@ public struct CellWallData
     public int[] wallMatrixID;
     public int relativeX;
     public int relativeZ;
+    private bool wallDestroyed;
     //public bool idSet;
 
     public CellWallData(CellWall _wall, int _relativeX, int _relativeZ, int[] _wallMatrixID = null)//, bool id = false)
@@ -21,6 +22,7 @@ public struct CellWallData
         relativeX = _relativeX;
         relativeZ = _relativeZ;
         wallMatrixID = new int[2];
+        wallDestroyed = false;
         //wallMatrixID = _wallMatrixID;
         //idSet = id;
     }
@@ -42,8 +44,17 @@ public struct CellWallData
 
     public Vector3 GetWallPos()
     {
-        Vector3 pos = wall.GetWallPosition();
-        return new Vector3(pos.x, (pos.y - 5), pos.z); 
+        if (wall != null)
+        {
+            Vector3 pos = wall.GetWallPosition();
+
+            return new Vector3(pos.x, (pos.y - 5), pos.z); 
+        }
+        else
+        {
+            Debug.LogError("That wall wa destroyed");
+            return Vector3.zero;
+        }
     }
     public int[] GetMatrixID() { return wallMatrixID; }
     public int GetMatrixX() {  return wallMatrixID[0]; }
@@ -54,7 +65,14 @@ public struct CellWallData
         wall.gameObject.SetActive(false);
     }
 
+    public void DestroyWall()
+    {
+        wallDestroyed = true;
+    }
+
     public bool WallIsDisabled() { return !wall.gameObject.activeSelf; }
+
+    public bool WallIsDestroyed() { return wallDestroyed; }
     public void EnableWall() { wall.gameObject.SetActive(true); }
 
     //public void SetID(bool _id) {  idSet = _id; }
@@ -115,6 +133,13 @@ public class Cell : MonoBehaviour
 
     private bool _hasWallMatrixId;
 
+    private bool _renderersEnabled = true;
+
+    public GameObject cellDoStuffObject;
+
+    [SerializeField]
+    private List<EnemyController> _enemyList;
+
     //[SerializeField]
     //private bool _isYTransitionPrefab = false;
 
@@ -134,7 +159,7 @@ public class Cell : MonoBehaviour
         _deadCellListInt = new List<(int x, int z)>();
         _doorways = new List<GameObject> ();
         _doors = new List<GameObject>();
-        keepCellWalls = false;          //---------------
+        keepCellWalls = true;          //---------------
     }
 
     void Start()
@@ -382,19 +407,48 @@ public class Cell : MonoBehaviour
     {
         for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
         {
-            _zPosHorizontalWalls[i].wall.DisableRenderer();
-            _zNegHorizontalWalls[i].wall.DisableRenderer();
+            if (!_zPosHorizontalWalls[i].WallIsDestroyed())
+                _zPosHorizontalWalls[i].wall.DisableRenderer();
+            if (!_zNegHorizontalWalls[i].WallIsDestroyed())
+                _zNegHorizontalWalls[i].wall.DisableRenderer();
         }
         for (int i = 0; i < _xPosVerticleWalls.Count; i++)
         {
-            _xPosVerticleWalls[i].wall.DisableRenderer();
-            _xNegVerticleWalls[i].wall.DisableRenderer();
+            if (!_xPosVerticleWalls[i].WallIsDestroyed())
+                _xPosVerticleWalls[i].wall.DisableRenderer();
+            if (!_xNegVerticleWalls[i].WallIsDestroyed())
+                _xNegVerticleWalls[i].wall.DisableRenderer();
         }
         if (yFloors > 1)
         {
             for (int i = 0; i < _otherWalls.Count; i++)
             {
                 _otherWalls[i].DisableRenderer();
+            }
+        }
+    }
+
+    public void EnableWallRenderers()
+    {
+        for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
+        {
+            if (!_zPosHorizontalWalls[i].WallIsDestroyed())
+                _zPosHorizontalWalls[i].wall.EnableRenderer();
+            if (!_zNegHorizontalWalls[i].WallIsDestroyed())
+                _zNegHorizontalWalls[i].wall.EnableRenderer();
+        }
+        for (int i = 0; i < _xPosVerticleWalls.Count; i++)
+        {
+            if (!_xPosVerticleWalls[i].WallIsDestroyed())
+                _xPosVerticleWalls[i].wall.EnableRenderer();
+            if (!_xNegVerticleWalls[i].WallIsDestroyed())
+                _xNegVerticleWalls[i].wall.EnableRenderer();
+        }
+        if (yFloors > 1)
+        {
+            for (int i = 0; i < _otherWalls.Count; i++)
+            {
+                _otherWalls[i].EnableRenderer();
             }
         }
     }
@@ -573,6 +627,102 @@ public class Cell : MonoBehaviour
         }
     }
 
+    public void DisableCellRenderers()
+    {
+        DisableWallRenderers();
+        DisableFloorRenderers();
+        DisableCeelingRenderers();
+        DisableCellDoors();
+        DisableCellDoStuffObject();
+        DisableEnemies();
+        _renderersEnabled = false;
+    }
+
+    private void DisableFloorRenderers()
+    {
+        foreach (CellFloor floor in _floors)
+            floor.DisableFloorRenderer();
+    }
+
+    private void DisableCeelingRenderers()
+    {
+        foreach (CellCeeling ceeling in _ceelings)
+            ceeling.DisableCeelingRenderer();
+    }
+
+    private void DisableCellDoors()
+    {
+        foreach (GameObject doorWay in _doorways)
+            doorWay.SetActive(false);
+        foreach (GameObject door in _doors)
+            door.SetActive(false);
+    }
+
+    private void DisableCellDoStuffObject()
+    {
+        if (cellDoStuffObject != null)
+        cellDoStuffObject.SetActive(false);
+    }
+
+    private void DisableEnemies()
+    {
+        foreach (EnemyController enemy in _enemyList)
+            enemy.DisableEnemy();
+    }
+
+    //private bool EnemyHasntLeftCell(int enemyIndex)
+    //{
+    //    return (Vector3.Distance(_enemyList[enemyIndex].transform.position, transform.position) <= 20 )
+    //}
+
+    public void EnableCellRenderers()
+    {
+        EnableWallRenderers();
+        EnableFloorRenderers();
+        EnableCeelingRenderers();
+        EnableCellDoors();
+        EnableCellDoStuffObject();
+        EnableEnemies();
+        _renderersEnabled = true;
+    }
+
+    private void EnableFloorRenderers()
+    {
+        foreach (CellFloor floor in _floors)
+            floor.EnableFloorRenderer();
+    }
+
+    private void EnableCeelingRenderers()
+    {
+        foreach (CellCeeling ceeling in _ceelings)
+            ceeling.EnableCeelingRenderer();
+    }
+
+    private void EnableCellDoors()
+    {
+        foreach (GameObject doorWay in _doorways)
+            doorWay.SetActive(true);
+        foreach (GameObject door in _doors)
+            door.SetActive(true);
+    }
+
+    private void EnableCellDoStuffObject()
+    {
+        if (cellDoStuffObject != null)
+            cellDoStuffObject.SetActive(true);
+    }
+
+    private void EnableEnemies()
+    {
+        foreach (EnemyController enemy in _enemyList)
+            enemy.EnableEnemy();
+    }
+
+    public bool CellRenderersEnabled()
+    {
+        return _renderersEnabled;
+    }
+
     public void DisableCell()
     {
         DisableAllWalls();
@@ -704,9 +854,9 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void DisableSpecificPosZWall(int index, bool addDoor = false)
+    public void DestroySpecificPosZWall(int index, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null && !_zPosHorizontalWalls[index].WallIsDisabled())
+        if (addDoor && doorwayPrefab != null && !_zPosHorizontalWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _zPosHorizontalWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
@@ -721,12 +871,16 @@ public class Cell : MonoBehaviour
             _doorways.Add(newDoorWay);
         }
 
-        _zPosHorizontalWalls[index].DisableWall();
+        //CellWallData tempData = _zPosHorizontalWalls[index];
+        //_zPosHorizontalWalls.RemoveAt(index);
+        _zPosHorizontalWalls[index].DestroyWall();
+        Destroy(_zPosHorizontalWalls[index].wall.gameObject);
+        //_zPosHorizontalWalls[index].DisableWall();
     }
 
-    public void DisableSpecificNegZWall(int index, bool addDoor = false)
+    public void DestroySpecificNegZWall(int index, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null && !_zNegHorizontalWalls[index].WallIsDisabled())
+        if (addDoor && doorwayPrefab != null && !_zNegHorizontalWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _zNegHorizontalWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
@@ -741,12 +895,16 @@ public class Cell : MonoBehaviour
             _doorways.Add(newDoorWay);
         }
 
-        _zNegHorizontalWalls[index].DisableWall();
+        //CellWallData tempData = _zNegHorizontalWalls[index];
+        _zNegHorizontalWalls[index].DestroyWall();//_zNegHorizontalWalls.RemoveAt(index);
+        Destroy(_zNegHorizontalWalls[index].wall.gameObject);
+
+        //_zNegHorizontalWalls[index].DisableWall();
     }
 
-    public void DisableSpecificPosXWall(int index, bool addDoor = false)
+    public void DestroySpecificPosXWall(int index, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null && !_xPosVerticleWalls[index].WallIsDisabled())
+        if (addDoor && doorwayPrefab != null && !_xPosVerticleWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _xPosVerticleWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
@@ -761,12 +919,16 @@ public class Cell : MonoBehaviour
             _doorways.Add(newDoorWay);
         }
 
-        _xPosVerticleWalls[index].DisableWall();
+        //CellWallData tempData = _xPosVerticleWalls[index];
+        //_xPosVerticleWalls.RemoveAt(index);
+        _xPosVerticleWalls[index].DestroyWall();
+        Destroy(_xPosVerticleWalls[index].wall.gameObject);
+        //_xPosVerticleWalls[index].DisableWall();
     }
 
-    public void DisableSpecificNegXWall(int index, bool addDoor = false)
+    public void DestroySpecificNegXWall(int index, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null && !_xNegVerticleWalls[index].WallIsDisabled())
+        if (addDoor && doorwayPrefab != null && !_xNegVerticleWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _xNegVerticleWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
@@ -783,7 +945,12 @@ public class Cell : MonoBehaviour
             _doorways.Add(newDoorWay);
         }
 
-        _xNegVerticleWalls[index].DisableWall();
+        //CellWallData tempData = _xNegVerticleWalls[index];
+        //_xNegVerticleWalls.RemoveAt(index);
+        _xNegVerticleWalls[index].DestroyWall();
+        Destroy(_xNegVerticleWalls[index].wall.gameObject);
+
+        //_xNegVerticleWalls[index].DisableWall();
     }
 
     public int GetCellXWidth()

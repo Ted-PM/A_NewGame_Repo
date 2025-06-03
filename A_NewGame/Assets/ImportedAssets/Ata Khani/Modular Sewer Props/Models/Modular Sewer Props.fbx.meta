@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: e58e58329129f0a43a2d7d34e68d0b52
+AssetOrigin:
+  serializedVersion: 1
+  productId: 277458
+  packageName: Modular Sewer Props
+  packageVersion: 1.0
+  assetPath: Assets/Ata Khani/Modular Sewer Props/Models/Modular Sewer Props.fbx
+  uploadId: 713236
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -45,7 +52,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
@@ -120,10 +127,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 277458
-  packageName: Modular Sewer Props
-  packageVersion: 1.0
-  assetPath: Assets/Ata Khani/Modular Sewer Props/Models/Modular Sewer Props.fbx
-  uploadId: 713236
