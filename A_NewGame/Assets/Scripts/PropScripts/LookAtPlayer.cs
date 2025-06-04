@@ -45,9 +45,10 @@ public class LookAtPlayer : MonoBehaviour
     private IEnumerator LookAtPlayer_1()
     {
         isLooking = true;
-        yield return new WaitForSeconds(0.25f);
+        //yield return new WaitForSeconds(0.25f);
+        yield return new WaitForFixedUpdate();
         
-        transform.LookAt(_gameObject.transform);
+        transform.LookAt(new Vector3(_gameObject.transform.position.x, transform.position.y, _gameObject.transform.position.z));
 
         isLooking = false;
     }

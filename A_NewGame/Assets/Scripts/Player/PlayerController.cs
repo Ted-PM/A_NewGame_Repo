@@ -136,6 +136,18 @@ public class PlayerController : MonoBehaviour
         {
             Respawn();
         }
+        if (Input.GetKeyDown(KeyCode.Z))
+            ChangePlayerSens(false);
+        if (Input.GetKeyDown(KeyCode.X))
+            ChangePlayerSens(true);
+    }
+
+    private void ChangePlayerSens(bool more)
+    {
+        if (more)
+            _lookSpeed++;
+        else    
+            _lookSpeed--;
     }
 
     private void PlayerZooped()
@@ -191,7 +203,7 @@ public class PlayerController : MonoBehaviour
     // rotate the camera vertically
     private void HandleMouseVerticleInput()
     {
-        rotationX += -Input.GetAxis("Mouse Y") * _lookSpeed;
+        rotationX += -Input.GetAxis("Mouse Y") * _lookSpeed*0.75f;
         rotationX = Mathf.Clamp(rotationX, -_lookLimit, _lookLimit);
         _camera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
     }
@@ -565,7 +577,7 @@ public class PlayerController : MonoBehaviour
 
     private void Interact()
     {
-        Debug.Log("Interacting");
+        //Debug.Log("Interacting");
         RaycastHit hit;
         Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit);
 

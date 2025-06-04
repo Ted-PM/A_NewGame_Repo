@@ -78,7 +78,7 @@ public class CellDoor : MonoBehaviour
 
     private IEnumerator OpenDoor(Transform currentPos, Transform newPos)
     {
-        Debug.Log("Opening Door");
+        //Debug.Log("Opening Door");
         float t = 0f;
         float time = 0f;
         yield return null;
@@ -95,7 +95,7 @@ public class CellDoor : MonoBehaviour
 
     private IEnumerator CloseDoor(Transform currentPos)
     {
-        Debug.Log("Closing Door");
+        //Debug.Log("Closing Door");
 
         float t = 0f;
         float time = 0f;
@@ -118,5 +118,10 @@ public class CellDoor : MonoBehaviour
         {
             _doorRenderer.material = _doorMaterial;
         }
+    }
+
+    public bool DoorIsOpen()
+    {
+        return _doorOpen;
     }
 }

@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2960486812599874194}
   - component: {fileID: 1912203721068566426}
-  m_Layer: 7
+  - component: {fileID: 7089020526471125583}
+  m_Layer: 0
   m_Name: DoorRect 1
   m_TagString: Door
   m_Icon: {fileID: 0}
@@ -56,6 +57,27 @@ MonoBehaviour:
   _endNegative: {fileID: 2830972675050162535}
   _timeToOpenDoor: 1
   _timeToCloseDoor: 1
+--- !u!65 &7089020526471125583
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590602543854284924}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.1, y: 1, z: 4}
+  m_Center: {x: 0, y: -2, z: 0}
 --- !u!1 &2547128494235577361
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,7 +416,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1582719158940345235}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: StartPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1351,7 +1373,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2830972675050162535}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: EndPosNegative
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1366,7 +1388,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4645199203793413061}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7071065, z: -0, w: 0.7071071}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -1.7, y: 0, z: -2}
   m_LocalScale: {x: 10, y: 8, z: 8}
   m_ConstrainProportionsScale: 0
@@ -1382,7 +1404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1463496880893294443}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: DoorPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1416,7 +1438,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5466497630309934668}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: EndPosPositive
   m_TagString: Untagged
   m_Icon: {fileID: 0}

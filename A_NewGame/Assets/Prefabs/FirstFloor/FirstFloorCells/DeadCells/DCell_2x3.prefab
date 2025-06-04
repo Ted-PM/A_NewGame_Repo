@@ -275,6 +275,7 @@ MonoBehaviour:
   zHeight: 3
   yFloors: 1
   cellDoStuffObject: {fileID: 4168151692496002785}
+  _enemyList: []
 --- !u!1 &486184086290829213
 GameObject:
   m_ObjectHideFlags: 0
@@ -4517,7 +4518,7 @@ MonoBehaviour:
   cellDoors:
   - {fileID: 4207765809332348343}
   - {fileID: 3211897430653101990}
-  timetoToDoDoorStuff: 1
+  timetoToDoDoorStuff: 0.5
 --- !u!1 &4201513913564193460
 GameObject:
   m_ObjectHideFlags: 0

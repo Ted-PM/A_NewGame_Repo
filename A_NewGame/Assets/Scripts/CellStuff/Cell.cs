@@ -16,13 +16,14 @@ public struct CellWallData
     private bool wallDestroyed;
     //public bool idSet;
 
-    public CellWallData(CellWall _wall, int _relativeX, int _relativeZ, int[] _wallMatrixID = null)//, bool id = false)
+    public CellWallData(CellWall _wall, int _relativeX, int _relativeZ, int[] _wallMatrixID = null, bool _wallDestroyed = false)//, bool id = false)
     {
         wall = _wall;
         relativeX = _relativeX;
         relativeZ = _relativeZ;
         wallMatrixID = new int[2];
-        wallDestroyed = false;
+        //wallDestroyed = new bool();
+        wallDestroyed = _wallDestroyed;
         //wallMatrixID = _wallMatrixID;
         //idSet = id;
     }
@@ -629,12 +630,12 @@ public class Cell : MonoBehaviour
 
     public void DisableCellRenderers()
     {
+        DisableEnemies();
         DisableWallRenderers();
         DisableFloorRenderers();
         DisableCeelingRenderers();
         DisableCellDoors();
         DisableCellDoStuffObject();
-        DisableEnemies();
         _renderersEnabled = false;
     }
 
@@ -871,11 +872,10 @@ public class Cell : MonoBehaviour
             _doorways.Add(newDoorWay);
         }
 
-        //CellWallData tempData = _zPosHorizontalWalls[index];
-        //_zPosHorizontalWalls.RemoveAt(index);
-        _zPosHorizontalWalls[index].DestroyWall();
-        Destroy(_zPosHorizontalWalls[index].wall.gameObject);
-        //_zPosHorizontalWalls[index].DisableWall();
+        CellWallData wallData = _zPosHorizontalWalls[index];
+        wallData.DestroyWall();
+        Destroy(wallData.wall.gameObject);
+        _zPosHorizontalWalls[index] = wallData;
     }
 
     public void DestroySpecificNegZWall(int index, bool addDoor = false)
@@ -895,11 +895,10 @@ public class Cell : MonoBehaviour
             _doorways.Add(newDoorWay);
         }
 
-        //CellWallData tempData = _zNegHorizontalWalls[index];
-        _zNegHorizontalWalls[index].DestroyWall();//_zNegHorizontalWalls.RemoveAt(index);
-        Destroy(_zNegHorizontalWalls[index].wall.gameObject);
-
-        //_zNegHorizontalWalls[index].DisableWall();
+        CellWallData wallData = _zNegHorizontalWalls[index];
+        wallData.DestroyWall();
+        Destroy(wallData.wall.gameObject);
+        _zNegHorizontalWalls[index] = wallData;
     }
 
     public void DestroySpecificPosXWall(int index, bool addDoor = false)
@@ -919,11 +918,10 @@ public class Cell : MonoBehaviour
             _doorways.Add(newDoorWay);
         }
 
-        //CellWallData tempData = _xPosVerticleWalls[index];
-        //_xPosVerticleWalls.RemoveAt(index);
-        _xPosVerticleWalls[index].DestroyWall();
-        Destroy(_xPosVerticleWalls[index].wall.gameObject);
-        //_xPosVerticleWalls[index].DisableWall();
+        CellWallData wallData = _xPosVerticleWalls[index];
+        wallData.DestroyWall();
+        Destroy(wallData.wall.gameObject);
+        _xPosVerticleWalls[index] = wallData;
     }
 
     public void DestroySpecificNegXWall(int index, bool addDoor = false)
@@ -945,12 +943,10 @@ public class Cell : MonoBehaviour
             _doorways.Add(newDoorWay);
         }
 
-        //CellWallData tempData = _xNegVerticleWalls[index];
-        //_xNegVerticleWalls.RemoveAt(index);
-        _xNegVerticleWalls[index].DestroyWall();
-        Destroy(_xNegVerticleWalls[index].wall.gameObject);
-
-        //_xNegVerticleWalls[index].DisableWall();
+        CellWallData wallData = _xNegVerticleWalls[index];
+        wallData.DestroyWall();
+        Destroy(wallData.wall.gameObject);
+        _xNegVerticleWalls[index] = wallData;
     }
 
     public int GetCellXWidth()
