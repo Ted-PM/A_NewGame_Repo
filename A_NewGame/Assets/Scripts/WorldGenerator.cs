@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -9,17 +10,26 @@ public class WorldGenerator : MonoBehaviour
     private GameObject myPlayerSpawner;
     [SerializeField]
     private WorldRenderManager _worldRenderManager;
+    [SerializeField]
+    private WorldAudioManager _worldAudioManager;
     //[SerializeField]
     //public GameObject myWorldRenderManager;
 
     public bool spawnPlayer;
     public bool useRenderCulling;
+    public bool useAbmientAudio;
 
     private FloorSpawner _floorSpawner;
     private PlayerSpawner _playerSpawner;
     
 
+    private PlayerController _player;
     private MazeFloor[] _mazeFloors;
+
+    private bool _worldReady = false;
+    private bool _renderManagerReady = false;
+    private bool _playerReady = false;
+    private int _playerFloorLevel = -1;
 
     private void Awake()
     {
@@ -40,6 +50,41 @@ public class WorldGenerator : MonoBehaviour
         }
         if (spawnPlayer)
             StartCoroutine(WaitThenSpawnPlayer());
+
+        StartCoroutine(WaitTillWorldReady());
+    }
+
+    private void FixedUpdate()
+    {
+        if (_worldReady && _playerFloorLevel != GetPlayerFloorLevel())
+        {
+            _playerFloorLevel = GetPlayerFloorLevel();
+            if (useRenderCulling)
+                _worldRenderManager.UpdateRenderers(_playerFloorLevel);
+            if (useAbmientAudio)
+                _worldAudioManager.PlayFloorAmbiance(_mazeFloors[_playerFloorLevel].GetFloorAmbientAudioClip());
+        }
+    }
+
+    private IEnumerator WaitTillWorldReady()
+    {
+        _playerReady = !spawnPlayer;
+        _renderManagerReady = !useRenderCulling;
+
+        while (!_playerReady || !_renderManagerReady)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+
+        if (useAbmientAudio)
+            _worldAudioManager.SetWorldAudioSource(_player.GetPlayerAudioSource());
+
+        _worldReady = true;
+    }
+
+    private int GetPlayerFloorLevel()
+    {
+        return (int)(((int)_player.transform.position.y) / 10);
     }
 
     private IEnumerator WaitThenEnableWorldRenderer()
@@ -56,6 +101,7 @@ public class WorldGenerator : MonoBehaviour
         _mazeFloors = _floorSpawner.GetMazeFloors();
         if (_worldRenderManager != null)
             _worldRenderManager.SetMazeFloors(_mazeFloors);
+        _renderManagerReady = true;
             //StartCoroutine(_floorSpawner.DisableInitialFloorRenderers());
     }
 
@@ -77,6 +123,13 @@ public class WorldGenerator : MonoBehaviour
     {
         GameObject playerSpawnerObject = Instantiate(myPlayerSpawner, this.transform.parent);
         _playerSpawner = playerSpawnerObject.GetComponent<PlayerSpawner>();
-        _playerSpawner.SpawnPlayer(x, z);
+        GameObject newPlayer = _playerSpawner.SpawnPlayer(x, z);
+
+        if (!newPlayer.TryGetComponent<PlayerController>(out _player))
+        {
+            Debug.LogError("Can't Find Player!!");
+            return;
+        }
+        _playerReady = true;
     }
 }

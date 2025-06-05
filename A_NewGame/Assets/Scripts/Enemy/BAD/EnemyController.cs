@@ -5,11 +5,7 @@ using static UnityEngine.GraphicsBuffer;
 using Unity.VisualScripting;
 
 
-public enum EnemyType
-{
-    Crawler,
-    Manequin
-};
+
 
 public class EnemyController : MonoBehaviour
 {
@@ -18,6 +14,7 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField]
     private NavMeshAgent agent;
+
     [SerializeField]
     private GameObject _enemyBody;
     private Renderer _enemyRenderer;
@@ -128,6 +125,7 @@ public class EnemyController : MonoBehaviour
             _playerCam = Camera.allCameras[0];
             _camPixelWidth = _playerCam.pixelWidth;
             _camPixelHeight = _playerCam.pixelHeight;
+
             playerTransform = FindAnyObjectByType<PlayerController>().gameObject;
             playerFound = true;
 
@@ -273,6 +271,8 @@ public class EnemyController : MonoBehaviour
             StartCoroutine(EnemySeenForFirstTime());
         }
     }
+
+
 
     private void OnTriggerEnter(Collider other)
     {

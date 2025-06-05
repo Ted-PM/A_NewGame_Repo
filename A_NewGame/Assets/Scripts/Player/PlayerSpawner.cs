@@ -12,7 +12,7 @@ public class PlayerSpawner : MonoBehaviour
 
     //public bool usePlayerController;
 
-    public void SpawnPlayer(int x, int z, int y = 0)
+    public GameObject SpawnPlayer(int x, int z, int y = 0)
     {
         //if (usePlayerController)
         //{
@@ -27,6 +27,8 @@ public class PlayerSpawner : MonoBehaviour
             _player = newPlayer;
             _player.transform.position = new Vector3(x, y, z);
             _player.name = "Player";
+
+        return _player;
         //}
     }
 

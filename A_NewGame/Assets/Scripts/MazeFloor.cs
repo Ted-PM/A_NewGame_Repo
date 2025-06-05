@@ -62,6 +62,9 @@ public class MazeFloor : MonoBehaviour
     [SerializeField]
     private GameObject _floorNavMeshSurface;
 
+    [SerializeField]
+    private AudioClip _floorAmbiance;
+
     private void Awake()
     {
         _hasPrevFloor = false;
@@ -824,6 +827,16 @@ public class MazeFloor : MonoBehaviour
         }
 
         return result;
+    }
+
+    public AudioClip GetFloorAmbientAudioClip()
+    {
+        if (_floorAmbiance == null)
+        {
+            Debug.LogError("No Floor Ambiance AudioClip!!");
+            return null;
+        }
+        return _floorAmbiance;
     }
 
     private bool IntPairIsInList(int x, int z, List<int[]> list)

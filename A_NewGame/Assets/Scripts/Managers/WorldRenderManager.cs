@@ -4,37 +4,37 @@ using System.Collections;
 
 public class WorldRenderManager : MonoBehaviour
 {
-    private int playerFloorLevel = 0;
+    //private int playerFloorLevel = 0;
     private MazeFloor[] _mazeFloors;
-    private GameObject playerTransform;
-    private bool playerFound = false;
+    //private GameObject playerTransform;
+    //private bool playerFound = false;
 
     public void SetMazeFloors(MazeFloor[] mazeFloors)
     {
         _mazeFloors = mazeFloors;
     }
 
-    private IEnumerator TryFindPlayer()
-    {
-        yield return null;
+    //private IEnumerator TryFindPlayer()
+    //{
+    //    yield return null;
 
-        while (Camera.allCamerasCount <= 0)
-        {
-            yield return new WaitForSeconds(1f);
-        }
+    //    while (Camera.allCamerasCount <= 0)
+    //    {
+    //        yield return new WaitForSeconds(1f);
+    //    }
 
-        if (Camera.allCamerasCount == 1)
-        {
-            playerTransform = FindAnyObjectByType<PlayerController>().gameObject;
-            playerFound = true;
-        }
-    }
+    //    if (Camera.allCamerasCount == 1)
+    //    {
+    //        playerTransform = FindAnyObjectByType<PlayerController>().gameObject;
+    //        playerFound = true;
+    //    }
+    //}
 
-    private void Start()
-    {
-        //StartCoroutine(WaitTheDisableInitialFloors());
-        StartCoroutine(TryFindPlayer());
-    }
+    //private void Start()
+    //{
+    //    //StartCoroutine(WaitTheDisableInitialFloors());
+    //    StartCoroutine(TryFindPlayer());
+    //}
 
     //private IEnumerator WaitTheDisableInitialFloors()
     //{
@@ -58,23 +58,28 @@ public class WorldRenderManager : MonoBehaviour
     //    }
     //}
 
-    private void FixedUpdate()
+    //private void FixedUpdate()
+    //{
+    //    if (playerFound && _mazeFloors != null)
+    //    {
+    //        UpdateRenderers();
+    //    }
+    //}
+
+    public void UpdateRenderers(int floorLevel)
     {
-        if (playerFound && _mazeFloors != null)
+        if (_mazeFloors[floorLevel] == null)
         {
-            UpdateRenderers();
+            Debug.LogError("Maze Floor not in Render Manager!!");
+            return;
         }
-    }
+        //playerFloorLevel =(int) (((int)playerTransform.transform.position.y) / 10);
 
-    private void UpdateRenderers()
-    {
-        playerFloorLevel =(int) (((int)playerTransform.transform.position.y) / 10);
-
-        _mazeFloors[playerFloorLevel].EnableFloorRenderers();
+        _mazeFloors[floorLevel].EnableFloorRenderers();
         for (int i = 0; i < _mazeFloors.Length; i++)
         {
             //if (i == 1)
-            _mazeFloors[i].DisableFloorRenderers(playerFloorLevel);
+            _mazeFloors[i].DisableFloorRenderers(floorLevel);
             //else
             //    _mazeFloors[i].DisableFloorRenderers(playerFloorLevel);
         }

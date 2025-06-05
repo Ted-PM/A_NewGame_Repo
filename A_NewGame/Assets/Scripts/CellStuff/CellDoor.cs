@@ -24,6 +24,12 @@ public class CellDoor : MonoBehaviour
     private float _timeToOpenDoor = 1f;
     [SerializeField]
     private float _timeToCloseDoor = 1f;
+    [SerializeField]
+    private AudioSource _doorAudioSource;
+    [SerializeField]
+    private AudioClip _doorOpenClip;
+    [SerializeField]
+    private AudioClip _doorCloseClip;
 
     private bool _doorOpen = false;
     private bool _canInteractWithDoor = true;
@@ -79,6 +85,7 @@ public class CellDoor : MonoBehaviour
     private IEnumerator OpenDoor(Transform currentPos, Transform newPos)
     {
         //Debug.Log("Opening Door");
+        PlayAudioClip(_doorOpenClip);
         float t = 0f;
         float time = 0f;
         yield return null;
@@ -96,7 +103,7 @@ public class CellDoor : MonoBehaviour
     private IEnumerator CloseDoor(Transform currentPos)
     {
         //Debug.Log("Closing Door");
-
+        PlayAudioClip(_doorCloseClip);
         float t = 0f;
         float time = 0f;
         yield return null;
@@ -110,6 +117,18 @@ public class CellDoor : MonoBehaviour
             yield return null;
         }
 
+    }
+
+    private void PlayAudioClip(AudioClip clip)
+    {
+        if (clip == null)
+        {
+            Debug.LogError("Door audio Clip not set!!");
+            return;
+        }
+        _doorAudioSource.Stop();
+        _doorAudioSource.clip = clip;
+        _doorAudioSource.Play();
     }
 
     private void SetDoorMaterial()

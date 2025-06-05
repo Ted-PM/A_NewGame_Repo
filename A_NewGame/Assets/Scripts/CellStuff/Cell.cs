@@ -139,7 +139,8 @@ public class Cell : MonoBehaviour
     public GameObject cellDoStuffObject;
 
     [SerializeField]
-    private List<EnemyController> _enemyList;
+    private List<EnemyBaseClass> _enemyList;
+    //private List<EnemyController> _enemyList;
 
     //[SerializeField]
     //private bool _isYTransitionPrefab = false;
@@ -667,7 +668,7 @@ public class Cell : MonoBehaviour
 
     private void DisableEnemies()
     {
-        foreach (EnemyController enemy in _enemyList)
+        foreach (EnemyBaseClass enemy in _enemyList)
             enemy.DisableEnemy();
     }
 
@@ -715,7 +716,7 @@ public class Cell : MonoBehaviour
 
     private void EnableEnemies()
     {
-        foreach (EnemyController enemy in _enemyList)
+        foreach (EnemyBaseClass enemy in _enemyList)
             enemy.EnableEnemy();
     }
 

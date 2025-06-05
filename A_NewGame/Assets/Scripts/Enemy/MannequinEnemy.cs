@@ -1,0 +1,91 @@
+using UnityEngine;
+using UnityEngine.AI;
+using System.Collections;
+using UnityEngine.ProBuilder.Shapes;
+
+public class MannequinEnemy : EnemyBaseClass
+{
+    [SerializeField]
+    private AudioClip _enemyPassiveAudio;
+    [SerializeField]
+    private AudioClip _enemyAgroAudio;
+    private bool _playerCanSeeEnemy;
+
+    public override void GoToPlayer()
+    {
+        _playerCanSeeEnemy = EnemyVisibleToPlayer();
+
+        if (!_enemyMoved && _enemyState == EnemyStates.Agro)
+        {
+            _enemyAnimator.SetBool("Static", false);
+            PlayOneShotAudio(_enemyAgroAudio);
+            _enemyMoved = true;
+        }
+
+        ToggleAnimator();
+
+        if (!_playerCanSeeEnemy && _enemyState != EnemyStates.Disabled)
+            base.SetEnemyPath();
+    }
+
+    private void ToggleAnimator()
+    {
+        Debug.Log("Mannequin Toggle Animator");
+        _enemyAnimator.enabled = !_playerCanSeeEnemy;
+        agent.isStopped = _playerCanSeeEnemy;
+
+        if (_playerCanSeeEnemy)
+            agent.velocity = Vector3.zero;
+    }
+
+    protected override IEnumerator WaitThenEnableAgent()
+    {
+        if (_enemyState != EnemyStates.Disabled)
+        {
+            StartCoroutine(base.WaitThenEnableAgent());
+            _enemyAnimator.enabled = true;
+        }
+        yield break;
+    }
+
+    protected override IEnumerator EnemySeenForFirstTime()
+    {
+        if (_enemyState != EnemyStates.Disabled)
+            StartCoroutine(base.EnemySeenForFirstTime());
+        yield break;
+    }
+
+    protected override void OnTriggerEnter(Collider other)
+    {
+        if (other == null || other.gameObject == null)
+        {
+            Debug.LogWarning("(ENTER) Enemy Trigger gameobject is null!");
+            return;
+        }
+
+        if (other.gameObject.tag == "Door")
+        {
+            CellDoor door = other.gameObject.GetComponentInParent<CellDoor>();
+
+            if (door == null)
+            {
+                Debug.LogError("Door Interactable parent is null");
+                return;
+            }
+            if (!door.DoorIsOpen())
+            {
+                StartCoroutine(WaitTillEnemyNotSeen(door));
+            }
+        }
+    }
+
+    private IEnumerator WaitTillEnemyNotSeen(CellDoor door)
+    {
+        while (EnemyVisibleToPlayer())
+        {
+            yield return new WaitForFixedUpdate();
+        }
+
+        door.InteractWithDoor(transform.position);
+    }
+}

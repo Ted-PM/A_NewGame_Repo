@@ -67,6 +67,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How much the camera reacts to changes in mouse position.(2f)")]
     [SerializeField] private float _lookSpeed = 2f;
 
+    [Tooltip("Audio Source used for world ambient audio")]
+    [SerializeField] private AudioSource _playerAudioSource;
+
     float rotationX = 0f;   // rotation on x axis = vertical tilt
     float rotationY = 0f;   // rotation on y axis = horizontal rotation
 
@@ -598,6 +601,16 @@ public class PlayerController : MonoBehaviour
 
             door.InteractWithDoor(transform.position);
         }
+    }
+
+    public AudioSource GetPlayerAudioSource()
+    {
+        if (_playerAudioSource == null)
+        {
+            Debug.LogError("No Player Audio Source!!");
+            return null;
+        }
+        return _playerAudioSource;
     }
 
     private void OnCollisionEnter(Collision collision)
