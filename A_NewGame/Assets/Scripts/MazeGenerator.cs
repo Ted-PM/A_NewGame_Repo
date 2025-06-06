@@ -441,7 +441,7 @@ public class MazeGenerator : MonoBehaviour
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         
                         //current._zPosHorizontalWalls[i].DisableWall();
-                        current.DestroySpecificPosZWall(i, found);
+                        current.DestroySpecificPosZWall(i, found, !OneInFourChance());
 
                         // removes opposite cell wall if first iteration
                         if (!found)
@@ -459,7 +459,7 @@ public class MazeGenerator : MonoBehaviour
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         
                         //current._zNegHorizontalWalls[i].DisableWall();
-                        current.DestroySpecificNegZWall(i, found);
+                        current.DestroySpecificNegZWall(i, found, !OneInFourChance());
 
                         if (!found)
                         {
@@ -489,7 +489,7 @@ public class MazeGenerator : MonoBehaviour
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         
                         //current._xPosVerticleWalls[i].DisableWall();
-                        current.DestroySpecificPosXWall(i, found);
+                        current.DestroySpecificPosXWall(i, found, !OneInFourChance());
 
                         if (!found)
                         {
@@ -506,7 +506,7 @@ public class MazeGenerator : MonoBehaviour
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
                         
                         //current._xNegVerticleWalls[i].DisableWall();
-                        current.DestroySpecificNegXWall(i, found);
+                        current.DestroySpecificNegXWall(i, found, !OneInFourChance());
 
                         if (!found)
                         {
@@ -534,6 +534,28 @@ public class MazeGenerator : MonoBehaviour
             { result = false; }
 
         return result;
+    }
+
+    private bool OneInTwoChance()
+    {
+        return UnityEngine.Random.Range(0, 2) == 0;
+    }
+
+    private bool OneInThreeChance()
+    {
+        return UnityEngine.Random.Range(0, 3) == 0;
+    }
+
+    private bool OneInFourChance()
+    {
+        return UnityEngine.Random.Range(0, 4) == 0;
+    }
+
+    private bool OneInXChance(int max = 0)
+    {
+        if (max <= 0)
+            return true;
+        return UnityEngine.Random.Range(0, max) == 0;
     }
 
     private void OnDisable()

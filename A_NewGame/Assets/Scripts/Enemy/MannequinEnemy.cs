@@ -53,7 +53,19 @@ public class MannequinEnemy : EnemyBaseClass
         }
         yield break;
     }
+    /// ------------
+    protected override IEnumerator CheckIfEnemyAgroed()
+    {
+        StartCoroutine(base.CheckIfEnemyAgroed());
+        yield return null;
+    }
 
+    protected override IEnumerator CheckIfEnemyDeAgroed()
+    {
+        StartCoroutine(base.CheckIfEnemyDeAgroed());
+        yield return null;
+    }
+    /// ------------
     protected override IEnumerator EnemySeenForFirstTime()
     {
         if (_enemyState != EnemyStates.Disabled)

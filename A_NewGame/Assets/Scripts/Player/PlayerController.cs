@@ -571,7 +571,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(_inputKeys["Jump"]))
             playerInput += new Vector3(0, 1f, 0);
 
-        if (Input.GetKey(_inputKeys["Interact"]) && InteractablePresent())
+        if (Input.GetKeyDown(_inputKeys["Interact"]) && InteractablePresent())
             Interact();
 
         return playerInput.normalized;

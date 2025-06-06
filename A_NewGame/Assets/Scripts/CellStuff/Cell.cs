@@ -138,6 +138,8 @@ public class Cell : MonoBehaviour
 
     public GameObject cellDoStuffObject;
 
+    private int _cellPrefabIndex = -1;
+
     //[SerializeField]
     //private List<EnemyBaseClass> _enemyList;
 
@@ -589,6 +591,16 @@ public class Cell : MonoBehaviour
         SetIntDeadCells();
     }
 
+    public void SetCellPrefabIndex(int index)
+    {
+        _cellPrefabIndex = index;
+    }
+
+    public int GetCellPrefabIndex()
+    {
+        return _cellPrefabIndex;
+    }
+
     // adds all "1x1" cells included in this cell to list
     // e.g. if this cell is 2x1 at base (0,0) it adds [0,0] and [1,0] to list
     public void SetIndexInArrayList(int x, int z)
@@ -860,15 +872,16 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void DestroySpecificPosZWall(int index, bool addDoor = false)
+    public void DestroySpecificPosZWall(int index, bool addDorway = false, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null && !_zPosHorizontalWalls[index].WallIsDestroyed())
+        if (addDorway && doorwayPrefab != null && !_zPosHorizontalWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _zPosHorizontalWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
-            GameObject newDoor;
-            if (doorPrefab != null)
+            
+            if (doorPrefab != null && addDoor)
             {
+                GameObject newDoor;
                 newDoor = Instantiate(doorPrefab, newDoorWay.transform);
                 _doors.Add(newDoor);
             }
@@ -883,15 +896,16 @@ public class Cell : MonoBehaviour
         _zPosHorizontalWalls[index] = wallData;
     }
 
-    public void DestroySpecificNegZWall(int index, bool addDoor = false)
+    public void DestroySpecificNegZWall(int index, bool addDorway = false, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null && !_zNegHorizontalWalls[index].WallIsDestroyed())
+        if (addDorway && doorwayPrefab != null && !_zNegHorizontalWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _zNegHorizontalWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
-            GameObject newDoor;
-            if (doorPrefab != null)
+
+            if (doorPrefab != null && addDoor)
             {
+                GameObject newDoor;
                 newDoor = Instantiate(doorPrefab, newDoorWay.transform);
                 _doors.Add(newDoor);
             }
@@ -906,15 +920,16 @@ public class Cell : MonoBehaviour
         _zNegHorizontalWalls[index] = wallData;
     }
 
-    public void DestroySpecificPosXWall(int index, bool addDoor = false)
+    public void DestroySpecificPosXWall(int index, bool addDorway = false, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null && !_xPosVerticleWalls[index].WallIsDestroyed())
+        if (addDorway && doorwayPrefab != null && !_xPosVerticleWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _xPosVerticleWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
-            GameObject newDoor;
-            if (doorPrefab != null)
+            
+            if (doorPrefab != null && addDoor)
             {
+                GameObject newDoor;
                 newDoor = Instantiate(doorPrefab, newDoorWay.transform);
                 _doors.Add(newDoor);
             }
@@ -929,16 +944,16 @@ public class Cell : MonoBehaviour
         _xPosVerticleWalls[index] = wallData;
     }
 
-    public void DestroySpecificNegXWall(int index, bool addDoor = false)
+    public void DestroySpecificNegXWall(int index, bool addDorway = false, bool addDoor = false)
     {
-        if (addDoor && doorwayPrefab != null && !_xNegVerticleWalls[index].WallIsDestroyed())
+        if (addDorway && doorwayPrefab != null && !_xNegVerticleWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _xNegVerticleWalls[index].GetWallPos();
             GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
-            GameObject newDoor;
 
-            if (doorPrefab != null)
+            if (doorPrefab != null && addDoor)
             {
+                GameObject newDoor;
                 newDoor = Instantiate(doorPrefab, newDoorWay.transform);
                 _doors.Add(newDoor);
             }

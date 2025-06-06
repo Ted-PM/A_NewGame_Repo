@@ -220,7 +220,13 @@ public class EnemyBaseClass : MonoBehaviour
             //_canGoToPlayer = CheckIfPlayerInRange();
         }
     }
-
+    /// ------------
+    protected virtual IEnumerator CheckIfEnemyAgroed()
+    {
+        StartCoroutine(EnemySeenForFirstTime());
+        yield return null;
+    }
+    /// ------------
     protected virtual IEnumerator EnemySeenForFirstTime()
     {
         //while (!_enemySeenForFirstTime && !_enemyDisabled)
@@ -232,7 +238,6 @@ public class EnemyBaseClass : MonoBehaviour
                 _enemyState = EnemyStates.Agro;
                 StartCoroutine(CanNoLongerSeePlayer());
             }
-            //_enemySeenForFirstTime = EnemyVisibleToPlayer();
         }
     }
 
@@ -303,7 +308,7 @@ public class EnemyBaseClass : MonoBehaviour
     protected bool PlayerVisibleToEnemy()
     {
         Vector3 directionToPlayer = _playerCam.transform.position - (transform.position + new Vector3(0,2,0));
-        Debug.DrawRay((transform.position + new Vector3(0, 2, 0)), directionToPlayer, Color.red, 5f);
+        //Debug.DrawRay((transform.position + new Vector3(0, 2, 0)), directionToPlayer, Color.red, 5f);
         return Physics.Raycast(_playerCam.transform.position, directionToPlayer, _distanceBeforeGoToPlayer, _playerLayer, QueryTriggerInteraction.Ignore);
     }
 
@@ -326,7 +331,10 @@ public class EnemyBaseClass : MonoBehaviour
         RaycastHit[] hits = new RaycastHit[3];
 
         for (int i = 0; i < 3; i++)
+        {
+            Debug.DrawRay(camPos[i], directionToEnemy[i], Color.red,5f);
             Physics.Raycast(camPos[i], directionToEnemy[i], out hits[i], (_distanceBeforeGoToPlayer * 2), ~0);
+        }
 
         bool result = false;
 
@@ -356,6 +364,13 @@ public class EnemyBaseClass : MonoBehaviour
         return Physics.Raycast(_playerCam.transform.position, directionToEnemy, distance, _enemyLayer);
     }
 
+    /// ------------
+    protected virtual IEnumerator CheckIfEnemyDeAgroed()
+    {
+        StartCoroutine(CanNoLongerSeePlayer());
+        yield return null;
+    }
+    /// ------------
     protected IEnumerator CanNoLongerSeePlayer()
     {
         yield return new WaitForFixedUpdate();
@@ -368,9 +383,10 @@ public class EnemyBaseClass : MonoBehaviour
             while (time < _timeWithoutSeeingPlayerBeforeLeave)
             {
                 time += Time.fixedDeltaTime;
-                if (PlayerVisibleToEnemy())
+                if (PlayerVisibleToEnemy() || CheckIfPlayerInRange(_distanceBeforeGoToPlayer/3))
                 {
                     playerSeen = true;
+                    break;
                 }
                 yield return new WaitForFixedUpdate();
             }
