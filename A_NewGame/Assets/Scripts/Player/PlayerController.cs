@@ -571,7 +571,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(_inputKeys["Jump"]))
             playerInput += new Vector3(0, 1f, 0);
 
-        if (Input.GetKeyDown(_inputKeys["Interact"]) && InteractablePresent())
+        if (Input.GetKey(_inputKeys["Interact"]) && InteractablePresent())
             Interact();
 
         return playerInput.normalized;
@@ -581,17 +581,19 @@ public class PlayerController : MonoBehaviour
     private void Interact()
     {
         //Debug.Log("Interacting");
+
         RaycastHit hit;
-        Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit);
+        Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 7f, _interactableMask, QueryTriggerInteraction.Ignore);
 
         if (hit.collider == null)
         {
             Debug.LogError("Interactable is null");
             return;
         }
-        
+
         if (hit.collider.tag == "Door")
         {
+            //Debug.Log("Interacting with Door");
             CellDoor door = hit.collider.GetComponentInParent<CellDoor>();
             if (door == null)
             {
@@ -601,6 +603,8 @@ public class PlayerController : MonoBehaviour
 
             door.InteractWithDoor(transform.position);
         }
+        else
+            Debug.Log("Interaction failed on: " + hit.collider.name +", tag: " + hit.collider.tag);
     }
 
     public AudioSource GetPlayerAudioSource()
@@ -611,6 +615,11 @@ public class PlayerController : MonoBehaviour
             return null;
         }
         return _playerAudioSource;
+    }
+
+    public Camera GetPlayerCam()
+    {
+        return _camera;
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8749214348427500992}
   - component: {fileID: 6316189238504003692}
   - component: {fileID: 8450016400540878288}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,6 +36,7 @@ Transform:
   - {fileID: 869506749097910351}
   - {fileID: 4278139811699655937}
   - {fileID: 5272682749016603485}
+  - {fileID: 6375053209948503008}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8749214348427500992
@@ -346,6 +347,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3475186108045417513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3046746465476177522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6375053209948503008}
+  - component: {fileID: 7883376123561206121}
+  m_Layer: 0
+  m_Name: Player - LoadAreaTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6375053209948503008
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046746465476177522}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3475186108045417513}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7883376123561206121
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046746465476177522}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 30, y: 2, z: 30}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &3289864487876989452
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +410,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4278139811699655937}
   - component: {fileID: 7924028343138690699}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player - OuterCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

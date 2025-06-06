@@ -3,11 +3,12 @@ using UnityEngine.AI;
 using System.Collections;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public enum EnemyType
 {
     Crawler,
-    Manequin,
+    Mannequin,
     Lurker
 };
 
@@ -36,13 +37,16 @@ public class EnemyBaseClass : MonoBehaviour
 
     [SerializeField]
     private float _distanceBeforeGoToPlayer;
+    [SerializeField]
+    private float _timeWithoutSeeingPlayerBeforeLeave;
 
     [SerializeField]
     protected Animator _enemyAnimator;
 
     [SerializeField]
     private LayerMask _enemyLayer;
-
+    [SerializeField]
+    private LayerMask _playerLayer;
     //[SerializeField]
     protected AudioSource _enemyAudioSource;
 
@@ -56,6 +60,7 @@ public class EnemyBaseClass : MonoBehaviour
 
     protected NavMeshPath _enemyPath;
     protected bool _enemyMoved = false;
+    protected bool _enemyVisible = false;
 
     private Camera _playerCam;
 
@@ -90,15 +95,16 @@ public class EnemyBaseClass : MonoBehaviour
         _enemyAudioSource.spatialBlend = 1;
         _enemyAudioSource.dopplerLevel = 3;
 
-
+        _enemyState = EnemyStates.Static;
+        StartCoroutine(TryFindPlayer());
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected void Start()
     {
-        _enemySpawn = transform.position;
-        _enemyState = EnemyStates.Static;
-        StartCoroutine(TryFindPlayer());
+        //_enemySpawn = transform.position;
+        //_enemyState = EnemyStates.Static;
+        //StartCoroutine(TryFindPlayer());
     }
 
     protected void Update()
@@ -124,8 +130,8 @@ public class EnemyBaseClass : MonoBehaviour
 
             if (_enemyState == EnemyStates.Agro)
                 agent.CalculatePath(_playerPos, _enemyPath);
-            if (_enemyMoved && !EnemyVisibleToPlayer() && !CheckIfPlayerInRange())
-                StartCoroutine(GoBackToSpawn());
+            //else if (_enemyMoved && !EnemyVisibleToPlayer())
+            //    StartCoroutine(GoBackToSpawn());
         }
     }
 
@@ -140,7 +146,8 @@ public class EnemyBaseClass : MonoBehaviour
 
         while (Camera.allCamerasCount <= 0)
         {
-            yield return new WaitForSeconds(1f);
+            //yield return new WaitForSeconds(1f);
+            yield return new WaitForFixedUpdate();
         }
 
         if (Camera.allCamerasCount == 1)
@@ -151,19 +158,30 @@ public class EnemyBaseClass : MonoBehaviour
 
             _playerTransform = FindAnyObjectByType<PlayerController>().gameObject;
             _playerFound = true;
+            _playerPos = _playerTransform.transform.position;
 
             //if (!_enemyDisabled)
             if (_enemyState != EnemyStates.Disabled)
             {
-                StartCoroutine(WaitThenEnableAgent());
-                StartCoroutine(CanPathToPlayer());
                 StartCoroutine(EnemySeenForFirstTime());
+                StartCoroutine(CanPathToPlayer());
+                //agent.enabled = true;
+                //_enemyRenderer.enabled = true;
+                //EnableEnemy();
+                //StartCoroutine(WaitThenEnableAgent());
+                //StartCoroutine(CanPathToPlayer());
+                //StartCoroutine(EnemySeenForFirstTime());
                 //PlayPassiveAudio();
             }
 
         }
     }
 
+    protected virtual void EnableAgent()
+    {
+        agent.enabled = true;
+        _enemyRenderer.enabled = true;
+    }
     protected virtual IEnumerator WaitThenEnableAgent()
     {
         yield return new WaitForSeconds(1f);
@@ -178,13 +196,27 @@ public class EnemyBaseClass : MonoBehaviour
     private IEnumerator CanPathToPlayer()
     {
         //while (!_enemyDisabled)
+        float distanceToPlayer = 0;
         while (_enemyState != EnemyStates.Disabled)
         {
-            if (CheckIfPlayerInRange() && _enemyState != EnemyStates.Agro)
-                _enemyState = EnemyStates.InRange;
-            else if (_enemyState != EnemyStates.Agro && _enemyState != EnemyStates.Returning)
-                _enemyState = EnemyStates.Static;
-            yield return new WaitForSeconds(1f);
+            distanceToPlayer = GetDistanceToPlayer();
+            if (_enemyState != EnemyStates.Agro && _enemyState != EnemyStates.Returning)
+            {
+                if (distanceToPlayer < _distanceBeforeGoToPlayer)
+                    _enemyState = EnemyStates.InRange;
+                else if (distanceToPlayer < 2 * _distanceBeforeGoToPlayer)
+                    _enemyState = EnemyStates.Static;
+                else
+                {
+                    //Debug.Log("Max Distance before disabled: " + (2 * _distanceBeforeGoToPlayer));
+                    //Debug.Log("Distance to Player: " + Vector3.Distance(_playerPos, _enemyBody.transform.position));
+                    DisableEnemy();
+                }
+            }
+            
+                //_enemyState = EnemyStates.Static;
+            //yield return new WaitForSeconds(1f);
+            yield return new WaitForFixedUpdate();
             //_canGoToPlayer = CheckIfPlayerInRange();
         }
     }
@@ -196,7 +228,10 @@ public class EnemyBaseClass : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
             if (EnemyVisibleToPlayer())
+            {
                 _enemyState = EnemyStates.Agro;
+                StartCoroutine(CanNoLongerSeePlayer());
+            }
             //_enemySeenForFirstTime = EnemyVisibleToPlayer();
         }
     }
@@ -205,7 +240,8 @@ public class EnemyBaseClass : MonoBehaviour
     {
         if (_enemyState == EnemyStates.Agro)
             return;
-
+        //Debug.Log(enemyType + " disabled at " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z);
+        StopAllCoroutines();
         _enemyState = EnemyStates.Disabled;
 
         if (_enemyRenderer != null)
@@ -216,7 +252,12 @@ public class EnemyBaseClass : MonoBehaviour
         }
         if (_enemyAudioSource != null) 
             _enemyAudioSource.enabled = false;
-
+        if (_enemyAnimator != null)
+        {
+            _enemyAnimator.SetBool("Static", true);
+            _enemyAnimator.enabled = false;
+        }
+        EnemySpawner.Instance.DisableEnemy(this.gameObject);
         //_canGoToPlayer = false;
         //_enemyDisabled = true;
     }
@@ -224,16 +265,27 @@ public class EnemyBaseClass : MonoBehaviour
     public void EnableEnemy()
     {
         _enemyState = EnemyStates.Static;
-        if (_enemyRenderer != null)
-            _enemyRenderer.enabled = true;
-        if (agent != null)
-        {
-            agent.enabled = true;
-        }
-        //_enemyDisabled = false;
+        StopAllCoroutines();
+        //if (_enemyRenderer != null)
+        //    _enemyRenderer.enabled = true;
+        //if (agent != null)       
+        //    agent.enabled = true;
+        
         if (_enemyAudioSource != null)
             _enemyAudioSource.enabled = true;
-        StartCoroutine(CanPathToPlayer());
+        //if (_enemyAnimator!= null)
+        //    _enemyAnimator.enabled = true;
+        EnableAgent();
+        _enemySpawn = transform.position;
+        //Debug.Log(enemyType + " enabled at " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z);
+        if (!_playerFound)
+            StartCoroutine(TryFindPlayer());
+        else
+        {
+            _playerPos = _playerTransform.transform.position;
+            StartCoroutine(EnemySeenForFirstTime());
+            StartCoroutine(CanPathToPlayer());
+        }
     }
 
     private bool CheckIfPlayerInRange(float range = 0)
@@ -241,6 +293,18 @@ public class EnemyBaseClass : MonoBehaviour
         if (range == 0)
             range = _distanceBeforeGoToPlayer;
         return Vector3.Distance(_playerPos, _enemyBody.transform.position) <= range;
+    }
+
+    protected float GetDistanceToPlayer()
+    {
+        return Vector3.Distance(_playerPos, _enemyBody.transform.position);
+    }
+
+    protected bool PlayerVisibleToEnemy()
+    {
+        Vector3 directionToPlayer = _playerCam.transform.position - (transform.position + new Vector3(0,2,0));
+        Debug.DrawRay((transform.position + new Vector3(0, 2, 0)), directionToPlayer, Color.red, 5f);
+        return Physics.Raycast(_playerCam.transform.position, directionToPlayer, _distanceBeforeGoToPlayer, _playerLayer, QueryTriggerInteraction.Ignore);
     }
 
     protected bool EnemyVisibleToPlayer()
@@ -287,15 +351,46 @@ public class EnemyBaseClass : MonoBehaviour
         if (distance <= 0f)
             distance = (_distanceBeforeGoToPlayer * 2);
 
-        Vector3 directionToEnemy = transform.position - _playerCam.transform.position; ;
+        Vector3 directionToEnemy = (transform.position + new Vector3(0,2,0)) - _playerCam.transform.position; ;
 
         return Physics.Raycast(_playerCam.transform.position, directionToEnemy, distance, _enemyLayer);
+    }
+
+    protected IEnumerator CanNoLongerSeePlayer()
+    {
+        yield return new WaitForFixedUpdate();
+        bool playerSeen = false;
+        float time = 0f;
+        while (_enemyState == EnemyStates.Agro)
+        {
+            playerSeen = false;
+            time = 0f;
+            while (time < _timeWithoutSeeingPlayerBeforeLeave)
+            {
+                time += Time.fixedDeltaTime;
+                if (PlayerVisibleToEnemy())
+                {
+                    playerSeen = true;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+
+            if (!playerSeen)
+                break;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        if (!playerSeen)
+            StartCoroutine(GoBackToSpawn());
+        
     }
 
     private IEnumerator GoBackToSpawn()
     {
         _enemyMoved = false;
         _enemyState = EnemyStates.Returning;
+        StartCoroutine(EnemySeenForFirstTime());
+
         while (!EnemyNearPosition(_enemySpawn) && _enemyState == EnemyStates.Returning)
         {
             agent.CalculatePath(_enemySpawn, _enemyPath);
@@ -307,9 +402,7 @@ public class EnemyBaseClass : MonoBehaviour
         if (EnemyNearPosition(_enemySpawn) &&_enemyState != EnemyStates.Disabled)
         {
             _enemyAnimator.SetBool("Static", true);
-            //_enemySeenForFirstTime = false;
-            _enemyState = EnemyStates.Static;
-            StartCoroutine(EnemySeenForFirstTime());
+            _enemyState = EnemyStates.Static;            
         }
     }
 
@@ -346,6 +439,11 @@ public class EnemyBaseClass : MonoBehaviour
     protected void StopAudio()
     {
         _enemyAudioSource.Stop();
+    }
+
+    public EnemyStates GetEnemyState()
+    {
+        return _enemyState;
     }
 
     protected virtual void OnTriggerEnter(Collider other)

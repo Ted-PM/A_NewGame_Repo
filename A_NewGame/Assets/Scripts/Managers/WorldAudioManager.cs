@@ -28,7 +28,7 @@ public class WorldAudioManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("New Floor Audio");
+        //Debug.Log("New Floor Audio");
         _worldAudioSource.Stop();
         _worldAudioSource.clip = floorAmbiantAudioClip;
         _worldAudioSource.loop = true;

@@ -17,7 +17,7 @@ public class CrawlerEnemy : EnemyBaseClass
             PlayOneShotAudio(_enemyAgroAudio);
             _enemyMoved = true;
         }
-        if (_enemyState != EnemyStates.Disabled)
+        if (_enemyState == EnemyStates.Agro)
             base.SetEnemyPath();
     }
 
@@ -28,12 +28,18 @@ public class CrawlerEnemy : EnemyBaseClass
         yield break;
     }
 
+    protected override void EnableAgent()
+    {
+        base.EnableAgent();
+        _enemyAnimator.enabled = true;
+    }
+
     protected override IEnumerator WaitThenEnableAgent()
     {
         if (_enemyState != EnemyStates.Disabled)
         {
-            StartCoroutine(base.WaitThenEnableAgent());
             _enemyAnimator.enabled = true;
+            StartCoroutine(base.WaitThenEnableAgent());
         }
         yield break ;
     }

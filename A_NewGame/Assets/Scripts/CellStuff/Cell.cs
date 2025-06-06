@@ -138,8 +138,12 @@ public class Cell : MonoBehaviour
 
     public GameObject cellDoStuffObject;
 
-    [SerializeField]
-    private List<EnemyBaseClass> _enemyList;
+    //[SerializeField]
+    //private List<EnemyBaseClass> _enemyList;
+
+    //[SerializeField]
+    //private List<EnemySpawnPoint> _enemySpawnList;
+
     //private List<EnemyController> _enemyList;
 
     //[SerializeField]
@@ -631,7 +635,7 @@ public class Cell : MonoBehaviour
 
     public void DisableCellRenderers()
     {
-        DisableEnemies();
+        //DisableEnemies();
         DisableWallRenderers();
         DisableFloorRenderers();
         DisableCeelingRenderers();
@@ -666,11 +670,11 @@ public class Cell : MonoBehaviour
         cellDoStuffObject.SetActive(false);
     }
 
-    private void DisableEnemies()
-    {
-        foreach (EnemyBaseClass enemy in _enemyList)
-            enemy.DisableEnemy();
-    }
+    //private void DisableEnemies()
+    //{
+    //    foreach (EnemyBaseClass enemy in _enemyList)
+    //        enemy.DisableEnemy();
+    //}
 
     //private bool EnemyHasntLeftCell(int enemyIndex)
     //{
@@ -684,7 +688,7 @@ public class Cell : MonoBehaviour
         EnableCeelingRenderers();
         EnableCellDoors();
         EnableCellDoStuffObject();
-        EnableEnemies();
+        //EnableEnemies();
         _renderersEnabled = true;
     }
 
@@ -714,11 +718,11 @@ public class Cell : MonoBehaviour
             cellDoStuffObject.SetActive(true);
     }
 
-    private void EnableEnemies()
-    {
-        foreach (EnemyBaseClass enemy in _enemyList)
-            enemy.EnableEnemy();
-    }
+    //private void EnableEnemies()
+    //{
+    //    foreach (EnemyBaseClass enemy in _enemyList)
+    //        enemy.EnableEnemy();
+    //}
 
     public bool CellRenderersEnabled()
     {

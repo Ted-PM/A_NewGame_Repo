@@ -22,7 +22,7 @@ public class LurkerEnemy : EnemyBaseClass
         }
         else if (!_checkingIfStaring && !_playerStaring)
             StartCoroutine(PlayerIsStaring());
-        if (_enemyState != EnemyStates.Disabled && _goToPlayer)
+        if (_enemyState == EnemyStates.Agro && _goToPlayer)
             base.SetEnemyPath();
     }
 
@@ -41,6 +41,12 @@ public class LurkerEnemy : EnemyBaseClass
                 _enemyState = EnemyStates.Agro;
             //_enemySeenForFirstTime = EnemyVisibleToPlayer();
         }
+        StartCoroutine(CanNoLongerSeePlayer());
+    }
+
+    protected override void EnableAgent()
+    {
+        base.EnableAgent();
     }
 
     protected override IEnumerator WaitThenEnableAgent()

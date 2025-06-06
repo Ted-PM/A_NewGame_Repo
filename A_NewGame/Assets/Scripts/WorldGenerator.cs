@@ -9,6 +9,9 @@ public class WorldGenerator : MonoBehaviour
     [SerializeField]
     private GameObject myPlayerSpawner;
     [SerializeField]
+    private GameObject myEnemySpawner;
+
+    [SerializeField]
     private WorldRenderManager _worldRenderManager;
     [SerializeField]
     private WorldAudioManager _worldAudioManager;
@@ -18,6 +21,7 @@ public class WorldGenerator : MonoBehaviour
     public bool spawnPlayer;
     public bool useRenderCulling;
     public bool useAbmientAudio;
+    public bool spawnEnemies;
 
     private FloorSpawner _floorSpawner;
     private PlayerSpawner _playerSpawner;
@@ -50,6 +54,8 @@ public class WorldGenerator : MonoBehaviour
         }
         if (spawnPlayer)
             StartCoroutine(WaitThenSpawnPlayer());
+        if (spawnEnemies)
+            StartCoroutine(WaitTheSpawnEnemySpawner());
 
         StartCoroutine(WaitTillWorldReady());
     }
@@ -103,6 +109,12 @@ public class WorldGenerator : MonoBehaviour
             _worldRenderManager.SetMazeFloors(_mazeFloors);
         _renderManagerReady = true;
             //StartCoroutine(_floorSpawner.DisableInitialFloorRenderers());
+    }
+
+    private IEnumerator WaitTheSpawnEnemySpawner()
+    {
+        yield return new WaitForSeconds(1f);
+        Instantiate(myEnemySpawner, this.transform);
     }
 
     private IEnumerator WaitThenSpawnPlayer()

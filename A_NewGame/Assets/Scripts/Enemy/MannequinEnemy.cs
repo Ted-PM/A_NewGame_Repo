@@ -24,13 +24,13 @@ public class MannequinEnemy : EnemyBaseClass
 
         ToggleAnimator();
 
-        if (!_playerCanSeeEnemy && _enemyState != EnemyStates.Disabled)
+        if (!_playerCanSeeEnemy && _enemyState == EnemyStates.Agro)
             base.SetEnemyPath();
     }
 
     private void ToggleAnimator()
     {
-        Debug.Log("Mannequin Toggle Animator");
+        //Debug.Log("Mannequin Toggle Animator");
         _enemyAnimator.enabled = !_playerCanSeeEnemy;
         agent.isStopped = _playerCanSeeEnemy;
 
@@ -38,12 +38,18 @@ public class MannequinEnemy : EnemyBaseClass
             agent.velocity = Vector3.zero;
     }
 
+    protected override void EnableAgent()
+    {
+        base.EnableAgent();
+        _enemyAnimator.enabled = true;
+    }
+
     protected override IEnumerator WaitThenEnableAgent()
     {
         if (_enemyState != EnemyStates.Disabled)
         {
-            StartCoroutine(base.WaitThenEnableAgent());
             _enemyAnimator.enabled = true;
+            StartCoroutine(base.WaitThenEnableAgent());
         }
         yield break;
     }

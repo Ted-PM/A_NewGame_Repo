@@ -158,7 +158,7 @@ public class EnemyController : MonoBehaviour
                 agent.CalculatePath(playerPos, _enemyPath);
             else if (_enemyMoved && !EnemyVisibleToPlayer())
                 StartCoroutine(GoBackToSpawn());
-            if (enemyType == EnemyType.Manequin)
+            if (enemyType == EnemyType.Mannequin)
                 _playerCanSeeEnemy = EnemyVisibleToPlayer();
         }
 
@@ -215,7 +215,7 @@ public class EnemyController : MonoBehaviour
                 if (!enemyDisabled)
                     agent.SetPath(_enemyPath);
                 break;
-            case EnemyType.Manequin:
+            case EnemyType.Mannequin:
                 if (!_enemyMoved)
                 {
                     _enemyAnimator.SetBool("Static", false);
@@ -296,7 +296,7 @@ public class EnemyController : MonoBehaviour
             }
             if (!door.DoorIsOpen())
             {
-                if (enemyType != EnemyType.Manequin)
+                if (enemyType != EnemyType.Mannequin)
                     door.InteractWithDoor(transform.position);
                 else
                     StartCoroutine(WaitTillEnemyNotSeen(door));

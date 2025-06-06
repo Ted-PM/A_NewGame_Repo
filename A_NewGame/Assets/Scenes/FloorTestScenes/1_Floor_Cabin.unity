@@ -272,11 +272,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myFloorSpawner: {fileID: 2141007937606861475, guid: bd3a1dbcf2e2f2d4499596a414e14821, type: 3}
   myPlayerSpawner: {fileID: 3300301572475539446, guid: 511bcdeebc1bbf94eb91c16de5d92abe, type: 3}
+  myEnemySpawner: {fileID: 1099948247910946185, guid: 4b88b8515b94cf44196c0e7850e393b5, type: 3}
   _worldRenderManager: {fileID: 1711312274}
   _worldAudioManager: {fileID: 1711312275}
   spawnPlayer: 1
   useRenderCulling: 1
   useAbmientAudio: 1
+  spawnEnemies: 1
 --- !u!4 &1711312273
 Transform:
   m_ObjectHideFlags: 0

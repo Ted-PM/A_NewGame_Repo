@@ -406,6 +406,7 @@ MonoBehaviour:
   agent: {fileID: 2245250564947002579}
   _enemyBody: {fileID: 4383792080476054291}
   _distanceBeforeGoToPlayer: 20
+  _timeWithoutSeeingPlayerBeforeLeave: 2
   _enemyAnimator: {fileID: 65616577013278166}
   _enemyLayer:
     serializedVersion: 2
@@ -422,8 +423,8 @@ NavMeshAgent:
   m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 1
-  m_Speed: 20
-  m_Acceleration: 40
+  m_Speed: 1
+  m_Acceleration: 2
   avoidancePriority: 50
   m_AngularSpeed: 360
   m_StoppingDistance: 0.5
