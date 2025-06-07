@@ -97,8 +97,8 @@ public class Cell : MonoBehaviour
     //public GameObject doorwayPrefab;
     //public GameObject doorPrefab;
     [SerializeField]
-    private GameObject _doorSpawnPointPrefab;
-    private List<GameObject> _doorSpawnPoints;
+    private GameObject _doorWayPrefab;
+    private List<GameObject> _doorWays;
     //private List<GameObject> _doorways;
     //private List<GameObject> _doors;
 
@@ -169,7 +169,7 @@ public class Cell : MonoBehaviour
         _floors = new List<CellFloor>();
         _ceelings = new List<CellCeeling>();
         _deadCellListInt = new List<(int x, int z)>();
-        _doorSpawnPoints = new List<GameObject>();    //
+        _doorWays = new List<GameObject>();    //
         //_doorways = new List<GameObject> ();
         //_doors = new List<GameObject>();
         keepCellWalls = true;          //---------------
@@ -643,7 +643,7 @@ public class Cell : MonoBehaviour
         DisableWallRenderers();
         DisableFloorRenderers();
         DisableCeelingRenderers();
-        //DisableCellDoors();
+        DisableCellDoorWays();
         DisableCellDoStuffObject();
         _renderersEnabled = false;
     }
@@ -660,13 +660,16 @@ public class Cell : MonoBehaviour
             ceeling.DisableCeelingRenderer();
     }
 
-    //private void DisableCellDoors()
-    //{
-    //    foreach (GameObject doorWay in _doorways)
-    //        doorWay.SetActive(false);
-    //    foreach (GameObject door in _doors)
-    //        door.SetActive(false);
-    //}
+    private void DisableCellDoorWays()
+    {
+        foreach (GameObject doorWay in _doorWays)
+        {
+            doorWay.GetComponent<DoorSpawnPoint>().DisableDoor();
+            doorWay.SetActive(false);
+        }
+        //foreach (GameObject door in _doors)
+        //    door.SetActive(false);
+    }
 
     private void DisableCellDoStuffObject()
     {
@@ -690,7 +693,7 @@ public class Cell : MonoBehaviour
         EnableWallRenderers();
         EnableFloorRenderers();
         EnableCeelingRenderers();
-        //EnableCellDoors();
+        EnableCellDoorWays();
         EnableCellDoStuffObject();
         //EnableEnemies();
         _renderersEnabled = true;
@@ -708,13 +711,15 @@ public class Cell : MonoBehaviour
             ceeling.EnableCeelingRenderer();
     }
 
-    //private void EnableCellDoors()
-    //{
-    //    foreach (GameObject doorWay in _doorways)
-    //        doorWay.SetActive(true);
-    //    foreach (GameObject door in _doors)
-    //        door.SetActive(true);
-    //}
+    private void EnableCellDoorWays()
+    {
+        foreach (GameObject doorWay in _doorWays)
+        {
+            doorWay.SetActive(true);
+        }
+        //foreach (GameObject door in _doors)
+        //    door.SetActive(true);
+    }
 
     private void EnableCellDoStuffObject()
     {
@@ -867,10 +872,10 @@ public class Cell : MonoBehaviour
     public void DestroySpecificPosZWall(int index, bool addDorway = false, bool addDoor = false)
     {
         //if (addDorway && doorwayPrefab != null && !_zPosHorizontalWalls[index].WallIsDestroyed())
-        if (addDorway && _doorSpawnPointPrefab != null && !_zPosHorizontalWalls[index].WallIsDestroyed())
+        if (addDorway && _doorWayPrefab != null && !_zPosHorizontalWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _zPosHorizontalWalls[index].GetWallPos();
-            GameObject newDoorWay = Instantiate(_doorSpawnPointPrefab, this.transform);
+            GameObject newDoorWay = Instantiate(_doorWayPrefab, this.transform);
             //GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
 
             newDoorWay.GetComponent<DoorSpawnPoint>().DoorWayHasDoor(addDoor);
@@ -882,7 +887,7 @@ public class Cell : MonoBehaviour
             //}
             newDoorWay.transform.position = newDoorPos;
             newDoorWay.transform.rotation = Quaternion.Euler(0, 90, 0);
-            _doorSpawnPoints.Add(newDoorWay);
+            _doorWays.Add(newDoorWay);
             //_doorways.Add(newDoorWay);
         }
 
@@ -894,10 +899,10 @@ public class Cell : MonoBehaviour
 
     public void DestroySpecificNegZWall(int index, bool addDorway = false, bool addDoor = false)
     {
-        if (addDorway && _doorSpawnPointPrefab != null && !_zNegHorizontalWalls[index].WallIsDestroyed())
+        if (addDorway && _doorWayPrefab != null && !_zNegHorizontalWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _zNegHorizontalWalls[index].GetWallPos();
-            GameObject newDoorWay = Instantiate(_doorSpawnPointPrefab, this.transform);
+            GameObject newDoorWay = Instantiate(_doorWayPrefab, this.transform);
             //GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
             newDoorWay.GetComponent<DoorSpawnPoint>().DoorWayHasDoor(addDoor);
 
@@ -910,7 +915,7 @@ public class Cell : MonoBehaviour
             newDoorWay.transform.position = newDoorPos;
             newDoorWay.transform.rotation = Quaternion.Euler(0, 90, 0);
             //_doorways.Add(newDoorWay);
-            _doorSpawnPoints.Add(newDoorWay);
+            _doorWays.Add(newDoorWay);
         }
 
         CellWallData wallData = _zNegHorizontalWalls[index];
@@ -921,11 +926,11 @@ public class Cell : MonoBehaviour
 
     public void DestroySpecificPosXWall(int index, bool addDorway = false, bool addDoor = false)
     {
-        if (addDorway && _doorSpawnPointPrefab != null && !_xPosVerticleWalls[index].WallIsDestroyed())
+        if (addDorway && _doorWayPrefab != null && !_xPosVerticleWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _xPosVerticleWalls[index].GetWallPos();
             //GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
-            GameObject newDoorWay = Instantiate(_doorSpawnPointPrefab, this.transform);
+            GameObject newDoorWay = Instantiate(_doorWayPrefab, this.transform);
 
             newDoorWay.GetComponent<DoorSpawnPoint>().DoorWayHasDoor(addDoor);
 
@@ -938,7 +943,7 @@ public class Cell : MonoBehaviour
             newDoorWay.transform.position = newDoorPos;
             newDoorWay.transform.rotation = Quaternion.Euler(0, 0, 0);
             //_doorways.Add(newDoorWay);
-            _doorSpawnPoints.Add(newDoorWay);
+            _doorWays.Add(newDoorWay);
         }
 
         CellWallData wallData = _xPosVerticleWalls[index];
@@ -949,11 +954,11 @@ public class Cell : MonoBehaviour
 
     public void DestroySpecificNegXWall(int index, bool addDorway = false, bool addDoor = false)
     {
-        if (addDorway && _doorSpawnPointPrefab != null && !_xNegVerticleWalls[index].WallIsDestroyed())
+        if (addDorway && _doorWayPrefab != null && !_xNegVerticleWalls[index].WallIsDestroyed())
         {
             Vector3 newDoorPos = _xNegVerticleWalls[index].GetWallPos();
             //GameObject newDoorWay = Instantiate(doorwayPrefab, this.transform);
-            GameObject newDoorWay = Instantiate(_doorSpawnPointPrefab, this.transform);
+            GameObject newDoorWay = Instantiate(_doorWayPrefab, this.transform);
             newDoorWay.GetComponent<DoorSpawnPoint>().DoorWayHasDoor(addDoor);
 
 
@@ -967,7 +972,7 @@ public class Cell : MonoBehaviour
             newDoorWay.transform.position = newDoorPos;
             newDoorWay.transform.rotation = Quaternion.Euler(0, 0, 0);
             //_doorways.Add(newDoorWay);
-            _doorSpawnPoints.Add(newDoorWay);
+            _doorWays.Add(newDoorWay);
         }
 
         CellWallData wallData = _xNegVerticleWalls[index];

@@ -7,9 +7,15 @@ public class LookAtPlayer : MonoBehaviour
     private GameObject _gameObject;
     private bool foundPlayer = false;
     private bool isLooking = false;
-    private void Awake()
+    //private void Awake()
+    //{
+    //    StartCoroutine(TryFindPlayer());
+    //}
+
+    private void OnEnable()
     {
-        StartCoroutine(TryFindPlayer());
+        if (!foundPlayer)
+            StartCoroutine(TryFindPlayer());
     }
 
     private IEnumerator TryFindPlayer()

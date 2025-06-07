@@ -3689,7 +3689,7 @@ MonoBehaviour:
   _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
   _floorMaterial: {fileID: 2100000, guid: f266ba03e1218bf45b32f96554872ef8, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
-  _doorSpawnPointPrefab: {fileID: 457619657130981661, guid: 37afc4d85a496b744ad868ed5158505a, type: 3}
+  _doorWayPrefab: {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
   _deadCellListStr: []
   isTransitionCell: 1
   transCellExitX: 0

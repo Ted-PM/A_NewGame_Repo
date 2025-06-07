@@ -428,7 +428,7 @@ public class MazeFloor : MonoBehaviour
         if (possibleCells.Count <= 0)
         {
             SpawnCell(_prefabs[0], x, z, _XContainers[x], (x.ToString() + ", " + z.ToString()));
-            Debug.Log("Couldn't Find acceptable cell at " + x + ", " + z);
+            //Debug.Log("Couldn't Find acceptable cell at " + x + ", " + z);
         }
         //Cell potentialPrefab = _prefabs[possibleCells[possibleCells.Count - 1]].GetComponent<Cell>();
 

@@ -10,12 +10,12 @@ public class CellDoorWall : MonoBehaviour
     //private GameObject _doorPrefab;
     //private GameObject _door;
 
-    private GameObject _playerTransform;
-    private bool _playerFound = false;
+    //private GameObject _playerTransform;
+    //private bool _playerFound = false;
 
-    public float maxDistanceBeforeDeSpawn = 50f;
+    //public float maxDistanceBeforeDeSpawn = 50f;
 
-    private bool _doorWayDisabled = false;
+    //private bool _doorDisabled = false;
 
     //private void Start()
     //{
@@ -24,38 +24,43 @@ public class CellDoorWall : MonoBehaviour
     //    //    AddDoor();
     //}
 
-    private void OnEnable()
-    {
-        if (!_playerFound)
-            StartCoroutine(TryFindPlayer());
-        _doorWayDisabled = false;
-    }
+    //private void OnEnable()
+    //{
+    //    if (!_playerFound)
+    //        StartCoroutine(TryFindPlayer());
+    //    //_doorDisabled = false;
+    //}
 
-    private void FixedUpdate()
-    {
-        if (_playerFound && PlayerOutOfRange())
-        {
-            _doorWayDisabled = true;
-        }
-    }
+    //public void DisableDoor()
+    //{
+    //    _doorDisabled = false;
+    //}
 
-    public bool DoorWayIsDisabled()
-    {
-        return _doorWayDisabled;
-    }
+    //private void FixedUpdate()
+    //{
+    //    if (_playerFound && PlayerOutOfRange())
+    //    {
+    //        _doorDisabled = true;
+    //    }
+    //}
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other == null ||  other.gameObject == null)
-        {
-            Debug.LogError("Door Wall other is null!!");
-        }
+    //public bool DoorIsDisabled()
+    //{
+    //    return _doorDisabled;
+    //}
 
-        //if (other.gameObject.transform.position == _playerTransform.transform.position)
-        _doorWayDisabled = true;
-        //else
-            //Debug.Log("Door Wall other is not player");
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other == null ||  other.gameObject == null)
+    //    {
+    //        Debug.LogError("Door Wall other is null!!");
+    //    }
+
+    //    //if (other.gameObject.transform.position == _playerTransform.transform.position)
+    //    _doorDisabled = true;
+    //    //else
+    //        //Debug.Log("Door Wall other is not player");
+    //}
 
     //public void DisableDoorWay()
     //{
@@ -64,36 +69,36 @@ public class CellDoorWall : MonoBehaviour
     //    //    _door.GetComponent<CellDoor>().DisableDoor();
     //}
 
-    private bool PlayerOutOfRange()
-    {
-        //bool result = (Vector3.Distance(transform.position, _playerTransform.gameObject.transform.position) >= maxDistanceBeforeDeSpawn) ||
-            //(transform.position.y -_playerTransform.gameObject.transform.position.y >= 7);
-        return (Vector3.Distance(transform.position, _playerTransform.gameObject.transform.position) >= maxDistanceBeforeDeSpawn);
-        //return result;
-    }
+    //private bool PlayerOutOfRange()
+    //{
+    //    //bool result = (Vector3.Distance(transform.position, _playerTransform.gameObject.transform.position) >= maxDistanceBeforeDeSpawn) ||
+    //        //(transform.position.y -_playerTransform.gameObject.transform.position.y >= 7);
+    //    return (Vector3.Distance(transform.position, _playerTransform.gameObject.transform.position) >= maxDistanceBeforeDeSpawn);
+    //    //return result;
+    //}
 
     //public void AddDoorObject(GameObject door)
     //{
     //    _door = door;
     //}
 
-    private IEnumerator TryFindPlayer()
-    {
-        yield return null;
+    //private IEnumerator TryFindPlayer()
+    //{
+    //    yield return null;
 
-        while (Camera.allCamerasCount <= 0)
-        {
-            //yield return new WaitForSeconds(1f);
-            yield return new WaitForFixedUpdate();
-        }
+    //    while (Camera.allCamerasCount <= 0)
+    //    {
+    //        //yield return new WaitForSeconds(1f);
+    //        yield return new WaitForFixedUpdate();
+    //    }
 
-        if (Camera.allCamerasCount == 1)
-        {
-            _playerTransform = FindAnyObjectByType<PlayerController>().gameObject;
-            _playerFound = true;
-            //_playerPos = _playerTransform.transform.position;
-        }
-    }
+    //    if (Camera.allCamerasCount == 1)
+    //    {
+    //        _playerTransform = FindAnyObjectByType<PlayerController>().gameObject;
+    //        _playerFound = true;
+    //        //_playerPos = _playerTransform.transform.position;
+    //    }
+    //}
     //private void AddDoor()
     //{
     //    Instantiate(cellDoorWallPrefab, transform.parent);

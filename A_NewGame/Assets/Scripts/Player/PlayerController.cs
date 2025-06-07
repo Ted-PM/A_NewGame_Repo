@@ -120,8 +120,8 @@ public class PlayerController : MonoBehaviour
         if (!TryGetComponent<Transform>(out Transform _transform))
             Debug.LogWarning("No Transform Component!");
         _XZFreeze = _rb.constraints;
-        _playerSpawnPoint = _rb.transform.position;
-        Debug.Log("Player Spawn: " + _playerSpawnPoint.x + ", " + _playerSpawnPoint.z);
+        //_playerSpawnPoint = _rb.transform.position;
+        //Debug.Log("Player Spawn: " + _playerSpawnPoint.x + ", " + _playerSpawnPoint.z);
     }
     private void Start()
     {
@@ -187,6 +187,13 @@ public class PlayerController : MonoBehaviour
         ApplyGravity();
 
         //HandleMouseInput();
+    }
+
+    public void MovePlayerToSpawn(Vector3 spawnPoint)
+    {
+        Debug.Log("Player Spawned at: " + spawnPoint.x + ", " + spawnPoint.z);
+        _playerSpawnPoint = spawnPoint;
+        transform.position = spawnPoint;
     }
 
     //private void GetMouseInput()

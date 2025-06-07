@@ -5,52 +5,55 @@ using System.Collections;
 public class DoorSpawnPoint : MonoBehaviour
 {
     [SerializeField]
-    private DoorWayTypes _doorWayType;
+    private DoorTypes _doorType;
+    //[SerializeField]
+    //private CellDoorWall _doorWay;
 
     private bool _hasDoor = false;
     private float _doorStatus = 0f;
 
     private GameObject _newDoor = null;
-    private GameObject _newDoorWay = null;
+    //private GameObject _newDoorWay = null;
 
-    [SerializeField]
-    private Collider _doorSpawnCollider;
-
+    //[SerializeField]
+    //private Collider _doorSpawnCollider;
+    //[SerializeField]
+    //private Collider _doorSpawnBottomCollider;
 
     private void FixedUpdate()
     {
-        if (_newDoorWay != null && DoorWayDisabled())
-        {
-            //_newDoorWay.GetComponent<CellDoorWall>().doorWayDisabled = false;
-            DisableDoorWay();
-            //StartCoroutine(WaitThenEnableCollider());
-        }
+        //if (_newDoor != null && DoorDisabled())
+        //{
+        //    //_newDoorWay.GetComponent<CellDoorWall>().doorWayDisabled = false;
+        //    DisableDoor();
+        //    //StartCoroutine(WaitThenEnableCollider());
+        //}
     }
 
-    private bool DoorWayDisabled()
-    {
-        if (_newDoorWay == null)
-            return false;
-        return _newDoorWay.GetComponent<CellDoorWall>().DoorWayIsDisabled();
-    }
+    //private bool DoorDisabled()
+    //{
+    //    if (_newDoor == null)
+    //    {
+    //        return false;
+    //    }
+    //    //if (_newDoorWay == null)
+    //    //    return false;
+    //    return _doorWay.DoorIsDisabled();
+    //}
 
-    private void DisableDoorWay()
+    public void DisableDoor()
     {
-        if (_newDoorWay != null && _newDoorWay.activeInHierarchy)
+        if (_hasDoor &&_newDoor != null && _newDoor.activeInHierarchy)
         {
             //Debug.Log("Disabling Doorway");
-            _newDoorWay.SetActive(false);
-            _newDoorWay = null;
-            if (_hasDoor && _newDoor != null)
-            {
                 //Debug.Log("Disabling Door");
-                _doorStatus = _newDoor.GetComponent<CellDoor>().GetDoorCurrentPosition();
-                _newDoor.GetComponent<CellDoor>().DisableDoor();
-                _newDoor.SetActive(false);
-                _newDoor = null;
-            }
-
-            StartCoroutine(WaitThenEnableCollider());
+            //_doorWay.DisableDoor();
+            _doorStatus = _newDoor.GetComponent<CellDoor>().GetDoorCurrentPosition();
+            _newDoor.GetComponent<CellDoor>().DisableDoor();
+            _newDoor.SetActive(false);
+            _newDoor = null;
+            
+            //StartCoroutine(WaitThenEnableCollider());
         }
     }
 
@@ -61,15 +64,26 @@ public class DoorSpawnPoint : MonoBehaviour
             Debug.LogError("Door spawn point collison is null!!");
             return;
         }
-        else if (_newDoorWay == null || !_newDoorWay.activeInHierarchy)
+        else if (_hasDoor && (_newDoor == null || !_newDoor.activeInHierarchy))
         {
             //Debug.Log("Collision w enemy at: " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z);
             //Debug.Log("Distance between player & enemy: " + Vector3.Distance(transform.position, other.gameObject.transform.position));
-            _doorSpawnCollider.enabled = false;
-            _newDoorWay = null;
+            //_doorSpawnCollider.enabled = false;
             _newDoor = null;
-            SpawnDoorWay();
+            SpawnDoor();
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other == null || other.gameObject == null)
+        {
+            Debug.LogError("Door Wall other is null!!");
+        }
+        DisableDoor();
+        //if (other.gameObject.transform.position == _playerTransform.transform.position)
+        //else
+        //Debug.Log("Door Wall other is not player");
     }
 
     //private void OnTriggerExit(Collider other)
@@ -94,28 +108,28 @@ public class DoorSpawnPoint : MonoBehaviour
     //        }
     //    }
     //}
-    private void SpawnDoorWay()
-    {
-        _newDoorWay = DoorSpawner.Instance.GetDoorWayFromPool((int)_doorWayType);
+    //private void SpawnDoorWay()
+    //{
+    //    _newDoorWay = DoorSpawner.Instance.GetDoorWayFromPool((int)_doorWayType);
 
-        if (_newDoorWay == null)
-        {
-            Debug.Log("DoorWay pool empty!!");
-            return;
-        }
-        else
-        {
-            _newDoorWay.transform.position = transform.position;
-            _newDoorWay.transform.rotation = transform.rotation;
-            _newDoorWay.SetActive(true);
-            if (_hasDoor)
-                SpawnDoor();
-        }
-    }
+    //    if (_newDoorWay == null)
+    //    {
+    //        Debug.Log("DoorWay pool empty!!");
+    //        return;
+    //    }
+    //    else
+    //    {
+    //        _newDoorWay.transform.position = transform.position;
+    //        _newDoorWay.transform.rotation = transform.rotation;
+    //        _newDoorWay.SetActive(true);
+    //        if (_hasDoor)
+    //            SpawnDoor();
+    //    }
+    //}
 
     private void SpawnDoor()
     {
-        _newDoor = DoorSpawner.Instance.GetDoorFromPool((int)_doorWayType);
+        _newDoor = DoorSpawner.Instance.GetDoorFromPool((int)_doorType);
 
         if ( _newDoor == null)
         {
@@ -128,7 +142,6 @@ public class DoorSpawnPoint : MonoBehaviour
             _newDoor.transform.rotation = transform.rotation;
             _newDoor.SetActive(true);
             _newDoor.GetComponent<CellDoor>().EnableDoor(_doorStatus);
-
             //_newDoorWay.GetComponent<CellDoorWall>().AddDoorObject(_newDoor);
         }
     }
@@ -139,9 +152,9 @@ public class DoorSpawnPoint : MonoBehaviour
         _hasDoor = hasDoor;
     }
 
-    private IEnumerator WaitThenEnableCollider()
-    {
-        yield return new WaitForSeconds(1f);
-        _doorSpawnCollider.enabled = true;
-    }
+    //private IEnumerator WaitThenEnableCollider()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    _doorSpawnCollider.enabled = true;
+    //}
 }

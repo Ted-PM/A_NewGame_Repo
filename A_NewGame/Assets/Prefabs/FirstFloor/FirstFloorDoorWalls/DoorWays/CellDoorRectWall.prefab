@@ -1640,8 +1640,9 @@ GameObject:
   - component: {fileID: 375581658862966095}
   - component: {fileID: 5603165063703558282}
   - component: {fileID: 8174654707562997586}
+  - component: {fileID: 9081940174746532982}
   m_Layer: 0
-  m_Name: CellDoorWall (1) 1
+  m_Name: CellDoorRectWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1680,7 +1681,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d011c18436b21e843b0fbc9f3e97146e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistanceBeforeDeSpawn: 55
 --- !u!65 &8174654707562997586
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1700,8 +1700,21 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.1, y: 9.5, z: 1}
+  m_Size: {x: 0.1, y: 9, z: 1}
   m_Center: {x: 0, y: 5, z: 3}
+--- !u!114 &9081940174746532982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6013358023859362223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a11d7e9574e469640845399f299fa29b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _doorType: 0
 --- !u!1 &7941655930335190800
 GameObject:
   m_ObjectHideFlags: 0

@@ -45,24 +45,7 @@ public class WorldGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (useRenderCulling)
-        {
-            StartCoroutine(WaitThenEnableWorldRenderer());
-        }
-        else
-        {
-            if (_worldRenderManager != null)
-                Destroy(_worldRenderManager);
-        }
-        
-        if (spawnEnemies)
-            StartCoroutine(WaitThenSpawnEnemySpawner());
-        if (spawnDoors)
-            StartCoroutine(WaitThenSpawnDoorSpawner());
-        if (spawnPlayer)
-            StartCoroutine(WaitThenSpawnPlayer());
-
-        StartCoroutine(WaitTillWorldReady());
+        StartCoroutine(WaitThenSpawnOtherShit());
     }
 
     private void FixedUpdate()
@@ -75,6 +58,30 @@ public class WorldGenerator : MonoBehaviour
             if (useAbmientAudio)
                 _worldAudioManager.PlayFloorAmbiance(_mazeFloors[_playerFloorLevel].GetFloorAmbientAudioClip());
         }
+    }
+
+    private IEnumerator WaitThenSpawnOtherShit()
+    {
+        yield return new WaitForSeconds(1f);
+
+        if (useRenderCulling)
+        {
+            StartCoroutine(WaitThenEnableWorldRenderer());
+        }
+        else
+        {
+            if (_worldRenderManager != null)
+                Destroy(_worldRenderManager);
+        }
+
+        if (spawnEnemies)
+            StartCoroutine(WaitThenSpawnEnemySpawner());
+        if (spawnDoors)
+            StartCoroutine(WaitThenSpawnDoorSpawner());
+        if (spawnPlayer)
+            StartCoroutine(WaitThenSpawnPlayer());
+
+        StartCoroutine(WaitTillWorldReady());
     }
 
     private IEnumerator WaitTillWorldReady()

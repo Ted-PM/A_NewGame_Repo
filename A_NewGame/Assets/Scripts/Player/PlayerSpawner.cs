@@ -25,9 +25,10 @@ public class PlayerSpawner : MonoBehaviour
         //{
         this.transform.position = new Vector3 (x, y, z);
         Debug.Log("Spawning Player at: " + x + ", " + z);
-        GameObject newPlayer = Instantiate(_playerPrefab, this.transform);
+        GameObject newPlayer = Instantiate(_playerPrefab);
         _player = newPlayer;
-        _player.transform.position = new Vector3(x, y, z);
+        _player.GetComponent<PlayerController>().MovePlayerToSpawn(new Vector3(x, y, z));
+        //_player.transform.position = new Vector3(x, y, z);
         _player.name = "Player";
 
         return _player;
@@ -39,8 +40,7 @@ public class PlayerSpawner : MonoBehaviour
         //if (usePlayerController)
         //    Destroy( _playerController );
         //else
-            Destroy( _player );
-
+        Destroy(_player);
         Destroy(this.gameObject );
     }
 }

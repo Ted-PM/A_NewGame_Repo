@@ -97,4 +97,17 @@ public class EnemySpawner : MonoBehaviour
     {
         enemy.SetActive(false);
     }
+
+    private void OnDisable()
+    {
+        for (int i = 0; i < _enemyPools.Count; ++i)
+        {
+            for (int j = 0; j < _enemyPools[i].Count; ++j)
+            {
+                Destroy(_enemyPools[i][j]);
+            }
+        }
+
+        Destroy(this.gameObject);
+    }
 }

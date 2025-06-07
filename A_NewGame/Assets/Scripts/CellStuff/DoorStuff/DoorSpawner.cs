@@ -6,21 +6,21 @@ public class DoorSpawner : MonoBehaviour
     public static DoorSpawner Instance { get { return _instance; } }
 
     [SerializeField]
-    private DoorWayTypes _doorWayTypesOrderInList;
+    private DoorTypes _doorWayTypesOrderInList;
 
     [SerializeField]
     private List<GameObject> _doorPrefabList;
-    [SerializeField]
-    private List<GameObject> _doorWayPrefabList;
+    //[SerializeField]
+    //private List<GameObject> _doorWayPrefabList;
 
     private List<List<GameObject>> _doorObjectPool;
-    private List<List<GameObject>> _doorWayObjectPool;
+    //private List<List<GameObject>> _doorWayObjectPool;
 
     private GameObject _doorContainer;
-    private GameObject _doorWayContainer;
+    //private GameObject _doorWayContainer;
 
     private List<GameObject> _doorTypeContainers;
-    private List<GameObject> _doorWayTypeContainers;
+    //private List<GameObject> _doorWayTypeContainers;
 
     [SerializeField]
     private List<int> _numberOfDoorsInPool;
@@ -44,8 +44,8 @@ public class DoorSpawner : MonoBehaviour
         _doorObjectPool = new List<List<GameObject>> ();
         _doorTypeContainers = new List<GameObject> ();
 
-        _doorWayObjectPool = new List<List<GameObject>>();
-        _doorWayTypeContainers = new List<GameObject> ();
+        //_doorWayObjectPool = new List<List<GameObject>>();
+        //_doorWayTypeContainers = new List<GameObject> ();
     }
 
     private void InitializeContainers()
@@ -61,22 +61,22 @@ public class DoorSpawner : MonoBehaviour
             _doorTypeContainers.Add (temp);
         }
 
-        _doorWayContainer = new GameObject("DoorWay Container");
-        _doorWayContainer.transform.parent = this.transform;
+        //_doorWayContainer = new GameObject("DoorWay Container");
+        //_doorWayContainer.transform.parent = this.transform;
 
-        for (int i = 0; i < _doorWayPrefabList.Count; i++)
-        {
-            temp = new GameObject(_doorWayPrefabList[i].name);
-            temp.transform.parent = _doorWayContainer.transform;
-            _doorWayTypeContainers.Add(temp);
-        }
+        //for (int i = 0; i < _doorWayPrefabList.Count; i++)
+        //{
+        //    temp = new GameObject(_doorWayPrefabList[i].name);
+        //    temp.transform.parent = _doorWayContainer.transform;
+        //    _doorWayTypeContainers.Add(temp);
+        //}
     }
 
     private void FillObjectPools()
     {
         GameObject temp;
 
-        if (_numberOfDoorsInPool.Count != _doorWayPrefabList.Count)
+        if (_numberOfDoorsInPool.Count != _doorPrefabList.Count)
         {
             Debug.LogError("Number of prefabs != list of door counts!!");
             return;
@@ -94,17 +94,17 @@ public class DoorSpawner : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < _doorWayPrefabList.Count; i++)
-        {
-            _doorWayObjectPool.Add(new List<GameObject>());
+        //for (int i = 0; i < _doorWayPrefabList.Count; i++)
+        //{
+        //    _doorWayObjectPool.Add(new List<GameObject>());
 
-            for (int j = 0; j < _numberOfDoorsInPool[i]; j++)
-            {
-                temp = Instantiate(_doorWayPrefabList[i], _doorWayTypeContainers[i].transform);
-                temp.SetActive(false);
-                _doorWayObjectPool[i].Add(temp);
-            }
-        }
+        //    for (int j = 0; j < _numberOfDoorsInPool[i]; j++)
+        //    {
+        //        temp = Instantiate(_doorWayPrefabList[i], _doorWayTypeContainers[i].transform);
+        //        temp.SetActive(false);
+        //        _doorWayObjectPool[i].Add(temp);
+        //    }
+        //}
     }
 
     public GameObject GetDoorFromPool(int prefabIndex)
@@ -125,34 +125,47 @@ public class DoorSpawner : MonoBehaviour
         return null;
     }
 
-    public GameObject GetDoorWayFromPool(int prefabIndex)
-    {
-        if (prefabIndex < 0 || prefabIndex >= _doorWayPrefabList.Count)
-        {
-            Debug.LogError("Requested DoorWay index is outside the prefab list!!");
-            return null;
-        }
+    //public GameObject GetDoorWayFromPool(int prefabIndex)
+    //{
+    //    if (prefabIndex < 0 || prefabIndex >= _doorWayPrefabList.Count)
+    //    {
+    //        Debug.LogError("Requested DoorWay index is outside the prefab list!!");
+    //        return null;
+    //    }
 
-        for (int i = 0; i < _doorWayObjectPool[prefabIndex].Count; i++)
-        {
-            if (!_doorWayObjectPool[prefabIndex][i].activeInHierarchy)
-            {
-                //Debug.Log("Doorway removed from pool at index: " + i);
-                return _doorWayObjectPool[prefabIndex][i];
-            }
-        }
+    //    for (int i = 0; i < _doorWayObjectPool[prefabIndex].Count; i++)
+    //    {
+    //        if (!_doorWayObjectPool[prefabIndex][i].activeInHierarchy)
+    //        {
+    //            //Debug.Log("Doorway removed from pool at index: " + i);
+    //            return _doorWayObjectPool[prefabIndex][i];
+    //        }
+    //    }
 
-        Debug.Log("Not enough doors in pool!!");
-        return null;
-    }
+    //    Debug.Log("Not enough doors in pool!!");
+    //    return null;
+    //}
 
     public void DisableDoor(GameObject door)
     {
         door.SetActive(false);
     }
+
+    private void OnDisable()
+    {
+        for (int i = 0; i < _doorObjectPool.Count; i ++)
+        {
+            for (int j = 0; j < _doorObjectPool[i].Count; j ++)
+            {
+                Destroy(_doorObjectPool[i][j]);
+            }
+        }
+
+        Destroy(this.gameObject);
+    }
 }
 
-public enum DoorWayTypes
+public enum DoorTypes
 {
     Rect,
     Arch
