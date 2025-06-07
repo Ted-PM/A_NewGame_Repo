@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 
 public class CellDoor : MonoBehaviour
 {
@@ -116,7 +117,11 @@ public class CellDoor : MonoBehaviour
             _doorPivot.transform.localRotation = Quaternion.Lerp(currentPos.localRotation, _start.localRotation, t);
             yield return null;
         }
+    }
 
+    public float GetDoorCurrentPosition()
+    {
+        return _doorPivot.transform.localRotation.y;
     }
 
     private void PlayAudioClip(AudioClip clip)
@@ -142,5 +147,45 @@ public class CellDoor : MonoBehaviour
     public bool DoorIsOpen()
     {
         return _doorOpen;
+    }
+
+    public void DisableDoor()
+    {
+        StopAllCoroutines();
+        _doorPivot.transform.localRotation = _start.localRotation;
+
+        if (_doorCollider != null)
+            _doorCollider.enabled = false;
+        if (_doorRenderer != null)
+            _doorRenderer.enabled = false;
+        if (_doorAudioSource != null)
+            _doorAudioSource.enabled = false;
+
+        //DoorSpawner.Instance.DisableDoor(this.gameObject);
+    }
+
+    public void EnableDoor(float doorStatus)
+    {
+        if (doorStatus == 0)
+        {
+            _doorPivot.transform.localRotation = _start.localRotation;
+            _doorOpen = false;
+        }
+        else
+        {
+            _doorOpen = true;
+        }
+
+        if (_doorCollider != null)
+            _doorCollider.enabled = true;
+        if (_doorRenderer != null)
+            _doorRenderer.enabled = true;
+        if (_doorAudioSource != null)
+            _doorAudioSource.enabled = true;
+
+        if (doorStatus > 0)
+            _doorPivot.transform.localRotation = _endPositive.localRotation;
+        if (doorStatus < 0)
+            _doorPivot.transform.localRotation = _endNegative.localRotation;
     }
 }

@@ -50,8 +50,7 @@ MonoBehaviour:
   _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
   _floorMaterial: {fileID: 2100000, guid: f266ba03e1218bf45b32f96554872ef8, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
-  doorwayPrefab: {fileID: 6013358023859362223, guid: 81e023d16ec81f04b93f2968d8768cea, type: 3}
-  doorPrefab: {fileID: 1590602543854284924, guid: ba7f112d8fc0f344e8417a19cb866088, type: 3}
+  _doorSpawnPointPrefab: {fileID: 457619657130981661, guid: 37afc4d85a496b744ad868ed5158505a, type: 3}
   _deadCellListStr:
   - 0000
   isTransitionCell: 0
@@ -62,6 +61,7 @@ MonoBehaviour:
   xWidth: 1
   zHeight: 1
   yFloors: 1
+  cellDoStuffObject: {fileID: 0}
 --- !u!1 &1211550391880890795
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,6 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 6008736339588199488}
 --- !u!1 &2714476101126898094
 GameObject:
@@ -428,6 +429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 2714476101126898094}
 --- !u!1 &3454937798585126466
 GameObject:
@@ -496,6 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 4149073589550846728}
 --- !u!1 &4149073589550846728
 GameObject:
@@ -939,6 +942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 7665025999623678732}
 --- !u!1 &7665025999623678732
 GameObject:

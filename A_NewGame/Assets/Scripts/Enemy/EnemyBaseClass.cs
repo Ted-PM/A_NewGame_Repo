@@ -314,6 +314,7 @@ public class EnemyBaseClass : MonoBehaviour
 
     protected bool EnemyVisibleToPlayer()
     {
+        //Debug.Log("is renderer visible: " + _enemyRenderer.isVisible + ", Player in Range: " + CheckIfPlayerInRange());
         if (!_enemyRenderer.isVisible || !CheckIfPlayerInRange())
             return false;
 
@@ -332,8 +333,8 @@ public class EnemyBaseClass : MonoBehaviour
 
         for (int i = 0; i < 3; i++)
         {
-            Debug.DrawRay(camPos[i], directionToEnemy[i], Color.red,5f);
-            Physics.Raycast(camPos[i], directionToEnemy[i], out hits[i], (_distanceBeforeGoToPlayer * 2), ~0);
+            //Debug.DrawRay(camPos[i], directionToEnemy[i], Color.red,1f);
+            Physics.Raycast(camPos[i], directionToEnemy[i], out hits[i], (_distanceBeforeGoToPlayer * 2), _enemyLayer, QueryTriggerInteraction.Collide);
         }
 
         bool result = false;

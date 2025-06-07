@@ -189,6 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 5663572231360935999}
 --- !u!1 &1499075152766205267
 GameObject:
@@ -475,6 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 5329813810961621680}
 --- !u!1 &2697069105295464875
 GameObject:
@@ -992,6 +994,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 2697069105295464875}
 --- !u!1 &4554391401521403655
 GameObject:
@@ -7003,6 +7006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 1675919604503216187}
 --- !u!1 &6117333424763705473
 GameObject:
@@ -7180,6 +7184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 3310495289172748526}
 --- !u!1 &6232717033365079097
 GameObject:
@@ -7370,6 +7375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 5241042393761608219}
 --- !u!1 &6654550370120178806
 GameObject:
@@ -7423,8 +7429,7 @@ MonoBehaviour:
   _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
   _floorMaterial: {fileID: 2100000, guid: f266ba03e1218bf45b32f96554872ef8, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
-  doorwayPrefab: {fileID: 6013358023859362223, guid: 81e023d16ec81f04b93f2968d8768cea, type: 3}
-  doorPrefab: {fileID: 0}
+  _doorSpawnPointPrefab: {fileID: 457619657130981661, guid: 37afc4d85a496b744ad868ed5158505a, type: 3}
   _deadCellListStr:
   - 0001
   isTransitionCell: 1
@@ -7435,6 +7440,7 @@ MonoBehaviour:
   xWidth: 1
   zHeight: 2
   yFloors: 2
+  cellDoStuffObject: {fileID: 0}
 --- !u!1 &7003997868960462702
 GameObject:
   m_ObjectHideFlags: 0
@@ -7539,6 +7545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 1499075152766205267}
 --- !u!1 &8114291670783806971
 GameObject:
@@ -7607,6 +7614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 6117333424763705473}
 --- !u!1 &8318376281479281452
 GameObject:
@@ -7675,6 +7683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _wallProps: {fileID: 0}
   _wallPlane: {fileID: 3326771087853587667}
 --- !u!1 &9029887947224282798
 GameObject:

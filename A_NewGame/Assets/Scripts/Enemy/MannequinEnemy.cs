@@ -21,8 +21,8 @@ public class MannequinEnemy : EnemyBaseClass
             PlayOneShotAudio(_enemyAgroAudio);
             _enemyMoved = true;
         }
-
-        ToggleAnimator();
+        if (!_playerCanSeeEnemy != _enemyAnimator.enabled)
+            ToggleAnimator();
 
         if (!_playerCanSeeEnemy && _enemyState == EnemyStates.Agro)
             base.SetEnemyPath();

@@ -65,7 +65,7 @@ MonoBehaviour:
   _outerCollider: {fileID: 7924028343138690699}
   _playerTrigger: {fileID: 2356987886159750304}
   _lookLimit: 60
-  _lookSpeed: 7
+  _lookSpeed: 10
   _playerAudioSource: {fileID: 5535344278536515339}
   _playerCenter: {fileID: 869506749097910351}
   _groundMask:
@@ -121,7 +121,7 @@ Rigidbody:
   m_ImplicitTensor: 0
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 2
 --- !u!1 &567240588044187808
@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 5378470092585746497}
   - component: {fileID: 4840758525659975747}
   - component: {fileID: 2771877202621813734}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player - Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 50
+  far clip plane: 40
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -273,7 +273,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5272682749016603485}
   - component: {fileID: 2356987886159750304}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player - OuterTrigger
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 869506749097910351}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -398,8 +398,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 30, y: 2, z: 30}
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Size: {x: 40, y: 6, z: 40}
+  m_Center: {x: 0, y: 2.5, z: 0}
 --- !u!1 &3289864487876989452
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,7 +466,7 @@ GameObject:
   - component: {fileID: 4374418048474383352}
   - component: {fileID: 7611528109469581069}
   - component: {fileID: 4906976901070693676}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player - FlashLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -586,7 +586,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3747593943414077727}
   - component: {fileID: 5535344278536515339}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player - AudioSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}

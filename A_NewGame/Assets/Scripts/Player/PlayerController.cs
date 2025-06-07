@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -66,6 +67,7 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("How much the camera reacts to changes in mouse position.(2f)")]
     [SerializeField] private float _lookSpeed = 2f;
+    private Vector3 _velocity = Vector3.zero;
 
     [Tooltip("Audio Source used for world ambient audio")]
     [SerializeField] private AudioSource _playerAudioSource;
@@ -119,6 +121,7 @@ public class PlayerController : MonoBehaviour
             Debug.LogWarning("No Transform Component!");
         _XZFreeze = _rb.constraints;
         _playerSpawnPoint = _rb.transform.position;
+        Debug.Log("Player Spawn: " + _playerSpawnPoint.x + ", " + _playerSpawnPoint.z);
     }
     private void Start()
     {
@@ -139,6 +142,10 @@ public class PlayerController : MonoBehaviour
         {
             Respawn();
         }
+
+        HandleMouseInput();
+        //GetMouseInput();
+
         if (Input.GetKeyDown(KeyCode.Z))
             ChangePlayerSens(false);
         if (Input.GetKeyDown(KeyCode.X))
@@ -179,8 +186,29 @@ public class PlayerController : MonoBehaviour
 
         ApplyGravity();
 
-        HandleMouseInput();
+        //HandleMouseInput();
     }
+
+    //private void GetMouseInput()
+    //{
+    //    if (Input.GetAxis("Mouse Y") == 0 && Input.GetAxis("Mouse X") == 0)
+    //    {
+    //        _rb.constraints = RigidbodyConstraints.FreezeRotation;
+    //        return;
+    //    }
+    //    else
+    //        _rb.constraints = _XZFreeze;
+
+    //    if (Input.GetAxis("Mouse Y") != 0)
+    //    {
+    //        rotationX += -Input.GetAxis("Mouse Y") * _lookSpeed;
+    //        rotationX = Mathf.Clamp(rotationX, -_lookLimit, _lookLimit);
+    //    }
+    //    if (Input.GetAxis("Mouse X") != 0)
+    //    {
+    //        rotationY += Input.GetAxis("Mouse X") * _lookSpeed;
+    //    }
+    //}
 
     // handles the players rotation by finding the mouse's positoon
     private void HandleMouseInput()
@@ -206,16 +234,21 @@ public class PlayerController : MonoBehaviour
     // rotate the camera vertically
     private void HandleMouseVerticleInput()
     {
-        rotationX += -Input.GetAxis("Mouse Y") * _lookSpeed*0.75f;
+        //float currentRot = _camera.transform.localRotation.x;
+        rotationX += -Input.GetAxis("Mouse Y") * _lookSpeed;
         rotationX = Mathf.Clamp(rotationX, -_lookLimit, _lookLimit);
         _camera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+        //_camera.transform.localRotation = Quaternion.Euler(Vector3.SmoothDamp(new Vector3(currentRot, 0f, 0f), new Vector3(rotationX, 0, 0), ref _velocity, Time.fixedDeltaTime));
     }
 
     // rotate the camera horizontally
     private void HandleMouseHorizontalInput()
     {
+        //float currentRot = transform.rotation.y;
         rotationY += Input.GetAxis("Mouse X") * _lookSpeed;
-        transform.rotation = Quaternion.Euler(0, rotationY, 0);
+        _rb.MoveRotation(Quaternion.Euler(0, rotationY, 0));
+        //_rb.transform.rotation = Quaternion.Euler(0, rotationY, 0);
+        //transform.rotation = Quaternion.Euler(Vector3.SmoothDamp(new Vector3(0f, currentRot, 0f), new Vector3(0, rotationY, 0), ref _velocity, Time.fixedDeltaTime));
     }
 
     // locks cursor in center of screen and hides it
@@ -651,10 +684,10 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.tag == "Climb")
         {
-            if (_outerCollider !=  null)
-                _outerCollider.enabled = false;
-            if (_playerTrigger != null) 
-                _playerTrigger.enabled = false;
+            //if (_outerCollider !=  null)
+            //    _outerCollider.enabled = false;
+            //if (_playerTrigger != null) 
+            //    _playerTrigger.enabled = false;
             _isClimbing = true;
             _isGrounded = true;
             //Debug.Log("StartClimbing collision");
@@ -682,11 +715,11 @@ public class PlayerController : MonoBehaviour
                 //_rb.AddRelativeForce(new Vector3(0f, 0f, 2f), ForceMode.Impulse);
             }
 
-            if (_outerCollider != null)
-                _outerCollider.enabled = true;
+            //if (_outerCollider != null)
+            //    _outerCollider.enabled = true;
 
-            if (_playerTrigger != null)
-                _playerTrigger.enabled = true;
+            //if (_playerTrigger != null)
+            //    _playerTrigger.enabled = true;
             //_isGrounded = true;
             //_rb.useGravity = true;
             StartCoroutine(WaitTheDisableClimbing());

@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -10,6 +9,8 @@ public class WorldGenerator : MonoBehaviour
     private GameObject myPlayerSpawner;
     [SerializeField]
     private GameObject myEnemySpawner;
+    [SerializeField]
+    private GameObject myDoorSpawner;
 
     [SerializeField]
     private WorldRenderManager _worldRenderManager;
@@ -22,6 +23,7 @@ public class WorldGenerator : MonoBehaviour
     public bool useRenderCulling;
     public bool useAbmientAudio;
     public bool spawnEnemies;
+    public bool spawnDoors;
 
     private FloorSpawner _floorSpawner;
     private PlayerSpawner _playerSpawner;
@@ -52,10 +54,13 @@ public class WorldGenerator : MonoBehaviour
             if (_worldRenderManager != null)
                 Destroy(_worldRenderManager);
         }
+        
+        if (spawnEnemies)
+            StartCoroutine(WaitThenSpawnEnemySpawner());
+        if (spawnDoors)
+            StartCoroutine(WaitThenSpawnDoorSpawner());
         if (spawnPlayer)
             StartCoroutine(WaitThenSpawnPlayer());
-        if (spawnEnemies)
-            StartCoroutine(WaitTheSpawnEnemySpawner());
 
         StartCoroutine(WaitTillWorldReady());
     }
@@ -111,10 +116,16 @@ public class WorldGenerator : MonoBehaviour
             //StartCoroutine(_floorSpawner.DisableInitialFloorRenderers());
     }
 
-    private IEnumerator WaitTheSpawnEnemySpawner()
+    private IEnumerator WaitThenSpawnEnemySpawner()
     {
         yield return new WaitForSeconds(1f);
         Instantiate(myEnemySpawner, this.transform);
+    }
+
+    private IEnumerator WaitThenSpawnDoorSpawner()
+    {
+        yield return new WaitForSeconds(1f);
+        Instantiate(myDoorSpawner, this.transform);
     }
 
     private IEnumerator WaitThenSpawnPlayer()
@@ -122,7 +133,7 @@ public class WorldGenerator : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         Vector2 playerSpawn = _floorSpawner.GetPlayerSpawnPoint();
-        SpawnPlayer((int)playerSpawn.x, (int)playerSpawn.y);
+        SpawnPlayerSpawner((int)playerSpawn.x, (int)playerSpawn.y);
     }
 
     private void SpawnFloors()
@@ -131,7 +142,7 @@ public class WorldGenerator : MonoBehaviour
         _floorSpawner = floorSpawnerObject.GetComponent<FloorSpawner>();
     }
 
-    private void SpawnPlayer(int x, int z)
+    private void SpawnPlayerSpawner(int x, int z)
     {
         GameObject playerSpawnerObject = Instantiate(myPlayerSpawner, this.transform.parent);
         _playerSpawner = playerSpawnerObject.GetComponent<PlayerSpawner>();

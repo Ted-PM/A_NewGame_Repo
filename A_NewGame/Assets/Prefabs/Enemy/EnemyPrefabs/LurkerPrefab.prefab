@@ -410,10 +410,10 @@ MonoBehaviour:
   _enemyAnimator: {fileID: 65616577013278166}
   _enemyLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 503
   _playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _enemyPassiveAudio: {fileID: 0}
   _enemyAgroAudio: {fileID: 8300000, guid: b66054ee6e026cf4faaee7645ee74526, type: 3}
 --- !u!195 &2245250564947002579
