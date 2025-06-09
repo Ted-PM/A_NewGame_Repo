@@ -536,6 +536,18 @@ public class MazeGenerator : MonoBehaviour
         return result;
     }
 
+    public void PrintUnvisitedCells(bool[,] boolMatrix, int width, int height)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                if (!boolMatrix[x, z])
+                    Debug.Log("Cell: " + x + ", " + z + " Unvisited!");
+            }
+        }
+    }
+
     private bool OneInTwoChance()
     {
         return UnityEngine.Random.Range(0, 2) == 0;

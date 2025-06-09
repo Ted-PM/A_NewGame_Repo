@@ -163,6 +163,8 @@ public class FloorSpawner : MonoBehaviour
         GenerateMazeFloor(floorIndex);
         yield return new WaitForFixedUpdate();
         _mazeFloors[floorIndex].AddNavmeshSurfaceData();
+        Debug.Log("Floor: " + floorIndex);
+        _generator.PrintUnvisitedCells(_mazeFloors[floorIndex].GetCellMatrixBool(), _mazeFloors[floorIndex].GetFloorXWidth(), _mazeFloors[floorIndex].GetFloorZHeight());
     }
 
     private IEnumerator WaitThenGenerateEmptyFloor(int floorIndex)

@@ -213,7 +213,7 @@ MonoBehaviour:
   _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
   _doorWayPrefab: {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
   _deadCellListStr:
-  - 0000
+  - 0100
   isTransitionCell: 0
   transCellExitX: -1
   transCellExitZ: -1

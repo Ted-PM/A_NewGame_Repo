@@ -14,9 +14,10 @@ public struct CellWallData
     public int relativeX;
     public int relativeZ;
     private bool wallDestroyed;
+    private bool isDeadWall;
     //public bool idSet;
 
-    public CellWallData(CellWall _wall, int _relativeX, int _relativeZ, int[] _wallMatrixID = null, bool _wallDestroyed = false)//, bool id = false)
+    public CellWallData(CellWall _wall, int _relativeX, int _relativeZ, int[] _wallMatrixID = null, bool _wallDestroyed = false, bool _isDead = false)//, bool id = false)
     {
         wall = _wall;
         relativeX = _relativeX;
@@ -24,6 +25,7 @@ public struct CellWallData
         wallMatrixID = new int[2];
         //wallDestroyed = new bool();
         wallDestroyed = _wallDestroyed;
+        isDeadWall = _isDead;
         //wallMatrixID = _wallMatrixID;
         //idSet = id;
     }
@@ -61,6 +63,20 @@ public struct CellWallData
     public int GetMatrixX() {  return wallMatrixID[0]; }
     public int GetMatrixZ() {  return wallMatrixID[1]; }
 
+    public int[] GetRelativeIndex()
+    {
+        int[] result = new int[2];
+        result[0] = relativeX;
+        result[1] = relativeZ;
+        return result;
+    }
+
+    public void MarkAsDead()
+    {
+        isDeadWall = true;
+    }
+
+    public bool WallIsDead() { return isDeadWall; }
     public void DisableWall() 
     { 
         wall.gameObject.SetActive(false);
@@ -110,6 +126,7 @@ public class Cell : MonoBehaviour
     public List<string> _deadCellListStr;
 
     private List<(int x, int z)> _deadCellListInt;
+    private List<(int x, int z)> _relativeDeadCellListInt;
     //[HideInInspector]
     public bool isTransitionCell = false;
     public int transCellExitX = -1;
@@ -169,15 +186,18 @@ public class Cell : MonoBehaviour
         _floors = new List<CellFloor>();
         _ceelings = new List<CellCeeling>();
         _deadCellListInt = new List<(int x, int z)>();
+        _relativeDeadCellListInt = new List<(int x, int z)>();
         _doorWays = new List<GameObject>();    //
         //_doorways = new List<GameObject> ();
         //_doors = new List<GameObject>();
-        keepCellWalls = true;          //---------------
+        keepCellWalls = true;          //---------------        
+        FindWallsInChildren();
     }
 
     void Start()
     {
-        FindWallsInChildren();
+        //FindWallsInChildren();
+        
     }
 
     private void SetColor()
@@ -208,8 +228,93 @@ public class Cell : MonoBehaviour
                 else
                     Debug.LogError("Dead Cell Name Wrong!! Name: " + _deadCellListStr[i]);
         }
+    }
 
-        
+    private void SetRelativeIntDeadCells()
+    {
+        for (int i = 0; i < _deadCellListStr.Count; i++)
+        {
+            if (_deadCellListStr[i].Length == 4)
+            {
+                _relativeDeadCellListInt.Add((GetXorZFrom2Char(_deadCellListStr[i][0], _deadCellListStr[i][1]), GetXorZFrom2Char(_deadCellListStr[i][2], _deadCellListStr[i][3])));
+                //Debug.Log("Dead Cell From Base: " + _indexInArray[0] + ", " + _indexInArray[1] + " at: " + _deadCellListInt[i].x + ", " + _deadCellListInt[i].z);
+            }
+            else
+                Debug.LogError("Dead Cell Name Wrong!! Name: " + _deadCellListStr[i]);
+        }
+
+        SetDeadWalls();
+    }
+
+    //_relativeDeadCellListInt
+
+    private void SetDeadWalls()
+    {
+        for (int i = 0; i < _deadCellListInt.Count; i++)
+        {
+            for (int j = 0; j < _xPosVerticleWalls.Count; j++)
+            {
+                if (IndexAdjacentToOther(_relativeDeadCellListInt[i].x, _relativeDeadCellListInt[i].z, _xPosVerticleWalls[j].GetRelativeIndex()))
+                    _xPosVerticleWalls[j].MarkAsDead();
+                if (IndexAdjacentToOther(_relativeDeadCellListInt[i].x, _relativeDeadCellListInt[i].z, _xNegVerticleWalls[j].GetRelativeIndex()))
+                    _xNegVerticleWalls[j].MarkAsDead();
+            }
+            for (int p = 0; p < _zPosHorizontalWalls.Count; p++)
+            {
+                if (IndexAdjacentToOther(_relativeDeadCellListInt[i].x, _relativeDeadCellListInt[i].z, _zPosHorizontalWalls[p].GetRelativeIndex()))
+                    _zPosHorizontalWalls[p].MarkAsDead();
+                if (IndexAdjacentToOther(_relativeDeadCellListInt[i].x, _relativeDeadCellListInt[i].z, _zNegHorizontalWalls[p].GetRelativeIndex()))
+                    _zNegHorizontalWalls[p].MarkAsDead();
+            }
+        }
+        //MarkAsDead
+    }
+
+    public List<int[]> GetCellExits()
+    {
+        List<int[]> exits = new List<int[]>();
+
+        for (int i = 0; i < _zPosHorizontalWalls.Count; i ++)
+        {
+            if (!_zPosHorizontalWalls[i].WallIsDead())
+                exits.Add(_zPosHorizontalWalls[i].GetMatrixID());
+            if (!_zNegHorizontalWalls[i].WallIsDead())
+                exits.Add(_zPosHorizontalWalls[i].GetMatrixID());
+        }
+
+        for (int i = 0; i < _xPosVerticleWalls.Count; i++)
+        {
+            if (!_xPosVerticleWalls[i].WallIsDead())
+                exits.Add(_xPosVerticleWalls[i].GetMatrixID());
+            if (!_xNegVerticleWalls[i].WallIsDead())
+                exits.Add(_xNegVerticleWalls[i].GetMatrixID());
+        }
+
+        return exits;
+    }
+
+    public List<int[]> GetAliveCells()
+    {
+        List<int[]> aliveCells = new List<int[]>();
+        bool isDead = false;
+
+        for (int i = 0; i < _indexInArrayList.Count; i++)
+        {
+            isDead = false;
+
+            for (int j = 0; j < _deadCellListInt.Count; j++)
+            {
+                if (_indexInArrayList[i][0] == _deadCellListInt[j].x &&
+                    _indexInArrayList[i][1] == _deadCellListInt[j].z)
+                    isDead = true;
+            }
+            if (!isDead)
+            {
+                aliveCells.Add(_indexInArrayList[i]);
+            }
+        }
+
+        return aliveCells;
     }
 
     private int GetXorZFrom2Char(char a, char b)
@@ -248,7 +353,34 @@ public class Cell : MonoBehaviour
 
     public List<(int x, int z)> GetDeadCellList()
     {
+        if (_deadCellListInt == null)
+            return new List<(int x, int z)>();
         return _deadCellListInt;
+    }
+
+    public List<(int x, int z)> GetRelativeDeadCellList()
+    {
+        if (_relativeDeadCellListInt == null)
+            return new List<(int x, int z)>();
+        return _relativeDeadCellListInt;
+    }
+    public List<int[]> GetRelativeDeadCells()
+    {
+        if (_relativeDeadCellListInt == null)
+            return new List<int[]>();
+
+        List<int[]> deadCells = new List<int[]>();
+        int[] temp;
+
+        for (int i = 0; i < _relativeDeadCellListInt.Count; i++)
+        {
+            temp = new int[2];
+            temp[0] = _relativeDeadCellListInt[i].x;
+            temp[1] = _relativeDeadCellListInt[i].z;
+            deadCells.Add(temp);
+        }
+
+        return deadCells;
     }
 
     private void FindWallsInChildren()
@@ -309,7 +441,6 @@ public class Cell : MonoBehaviour
 
         FindFloors_FindCeelins();       
 
-
         // then re enable all walls when done
         ReEnableWallLists();
 
@@ -317,6 +448,9 @@ public class Cell : MonoBehaviour
         ReOrganizeZWallLists();
         // organises from bottum up (1st in list is furthest down in world space) 
         ReOrganizeXWallLists();
+
+        //SetIntDeadCells();
+        SetRelativeIntDeadCells();
     }
 
     private void FindFloors_FindCeelins()
@@ -580,7 +714,7 @@ public class Cell : MonoBehaviour
         _indexInArray = new int[2];
         _indexInArray[0] = x;
         _indexInArray[1] = z;
-        SetIntDeadCells();
+        //SetIntDeadCells();
     }
 
     public void SetCellPrefabIndex(int index)
@@ -989,6 +1123,26 @@ public class Cell : MonoBehaviour
     public int GetCellZHeight()
     {
         return zHeight;
+    }
+
+    private bool IndexAdjacentToOther(int[] a, int[] b)
+    {
+        bool result = false;
+        if (a[0] == b[0] && (a[1] == b[1] + 1 || a[1] == b[1] - 1))
+            result = true;
+        if (a[1] == b[1] && (a[0] == b[0] + 1 || a[0] == b[0] - 1))
+            result = true;
+        return result;
+    }
+
+    private bool IndexAdjacentToOther(int a, int c, int[] b)
+    {
+        bool result = false;
+        if (a == b[0] && (c == b[1] + 1 || c == b[1] - 1))
+            result = true;
+        if (c == b[1] && (a == b[0] + 1 || a == b[0] - 1))
+            result = true;
+        return result;
     }
 
     private void OnDisable()

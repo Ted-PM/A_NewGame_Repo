@@ -3,6 +3,178 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using Unity.AI.Navigation;
+using System.Buffers.Text;
+
+//public struct CellData
+//{
+//    public int indexInPrefabList;
+//    public int[] _matrixIndex;
+//    //public int oddsOfChoosing;
+
+//    //public bool hasDeadCells;
+//    //public bool isTransCell;
+
+//    public int cellXWidth;
+//    public int cellZHeight;
+
+//    public List<int[]> potentialExits;
+//}
+
+//public struct CellData
+//{
+//    public int[] cellIndexInMatrix;
+//    public int cell_XWidth;
+//    public int cell_ZHeight;
+
+//    public bool hasDeadCells;
+
+//    public List<UnitCellData> unitCells;
+
+//    public bool hasExit;
+
+//    CellData (int[] _cellIndexInMatrix, int _xWidth, int _zHeight, bool _hasDead, List<UnitCellData> _unitCells = null)
+//    {
+//        cellIndexInMatrix = _cellIndexInMatrix;
+//        cell_XWidth = _xWidth;
+//        cell_ZHeight = _zHeight;
+//        hasDeadCells = _hasDead;
+//        unitCells = _unitCells;
+//        hasExit = false;
+//    }
+
+//    public void SetUnitCellData(List<int[]> deadCells)
+//    {
+//        UnitCellData tempCell;
+//        int[] index;
+//        bool dead = false;
+//        for (int x = 0; x < cell_XWidth; x++)
+//        {
+//            for (int z = 0; z < cell_ZHeight; z++)
+//            {
+//                for (int i = 0; i < deadCells.Count; i++)
+//                {
+//                    dead = false;
+//                    index = new int[2];
+//                    index[0] = cell_XWidth + x;
+//                    index[1] = cell_ZHeight + z;
+
+//                    if (x == deadCells[i][0] && z == deadCells[i][1])
+//                    {
+//                        dead = true;
+//                    }
+
+//                    tempCell = new UnitCellData(index, dead);
+//                }
+//            }
+//        }
+//    }
+//}
+//public struct UnitCellData
+//{
+//    public int[] unitIndexInMatrix;
+//    public bool isDead;
+//    public List<int[]> exits;
+
+//    public UnitCellData (int[] _indexInMatrix, bool _isDead, List<int[]> _exits = null)
+//    {
+//        unitIndexInMatrix = _indexInMatrix;
+//        isDead = _isDead;
+//        exits = _exits;
+//    }
+
+//    public List<int[]> GetExits()
+//    {
+//        return exits;
+//    }
+
+//    public void RemoveExit(int[] exitIndex)
+//    {
+//        for (int i = 0; i < exits.Count; i++)
+//        {
+//            if (exits[i] == exitIndex)
+//                exits.RemoveAt(i);
+//        }
+//    }
+//}
+
+public struct CellData
+{
+    public Cell baseCell;
+    public List<int[]> potentialExits;
+    public List<int[]> aliveCells;
+    public List<int[]> deadCells;
+    public bool hasExit;
+
+    public CellData(Cell _baseCell, List<int[]> _potentialExits = null, List<int[]> _aliveCells = null, List<int[]> _deadCells = null, bool _hasExit = false)
+    {
+        baseCell = _baseCell;
+        potentialExits = _potentialExits;
+        aliveCells = _aliveCells;
+        deadCells = _deadCells;
+        hasExit = _hasExit;
+    }
+
+    public List<int[]> GetDeadCells()
+    {
+        return deadCells;
+    }
+    public bool HasExits()
+    {
+        return potentialExits.Count >= 1;
+    }
+    public bool OnlyHasOneExit()
+    {
+        return potentialExits.Count == 1;
+    }
+
+    public int[] GetOnlyExit()
+    {
+        return potentialExits[0];
+    }
+
+    public List<int[]> GetPotentialExits()
+    {
+        return potentialExits;
+    }
+
+    public List<int[]> GetAliveCells()
+    {
+        return aliveCells;
+    }
+
+    public int GetNumDeadCells()
+    {
+        return deadCells.Count;
+    }
+
+    public int GetNumAliveCells()
+    {
+        return aliveCells.Count;
+    }
+    public bool CellHasExit()
+    {
+        return hasExit;
+    }
+
+    public void RemoveExit(int[] _exit)
+    {
+        for (int i = 0; i < potentialExits.Count; i++)
+        {
+            if (potentialExits[i] == _exit)
+                potentialExits.RemoveAt(i);
+        }
+    }
+
+    public void SetCellExit()
+    {
+        hasExit = true;
+    }
+
+    public int GetNumExits()
+    {
+        return potentialExits.Count;
+    }
+}
 
 public class MazeFloor : MonoBehaviour
 {
@@ -21,6 +193,7 @@ public class MazeFloor : MonoBehaviour
 
     private GameObject[,] _cellMatrix;
     private bool[,] _cellMatrixBool;
+    private CellData[,] _cellDataMatrix;
     private GameObject[] _XContainers;
     public GameObject specialCells;
 
@@ -93,8 +266,9 @@ public class MazeFloor : MonoBehaviour
 
         _cellMatrix = new GameObject[xWidth, zHeight];
         _cellMatrixBool = new bool[xWidth, zHeight];
+        _cellDataMatrix = new CellData[xWidth, zHeight];
 
-        
+
         //_XContainers = new GameObject[xWidth];
     }
 
@@ -449,13 +623,151 @@ public class MazeFloor : MonoBehaviour
             result =  false;
         else if (!CellHasSpaceToSpawn(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
             result = false;
-        else if (!CanSpawnDeadCell(potentialPrefab, x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
+        //else if (!CanSpawnDeadCell(potentialPrefab, x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
+        //    result = false;
+        //else if (!CellNotBorderingSameCell(x, z, possibleCellIndex, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional, potentialPrefab.hasDeadCells))
+        //    result = false;
+        else if (CellBlockingOtherOnlyExit(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional, potentialPrefab))
             result = false;
-        else if (!CellNotBorderingSameCell(x, z, possibleCellIndex, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional, potentialPrefab.hasDeadCells))
-            result = false;
-
         return result;
 
+    }
+
+    private bool CellBlockingOtherOnlyExit(int x, int z, int _xWidth, int _zHeight, bool iTransitional,  Cell PotentialPrefab)
+    {
+        if (iTransitional)
+            return false;
+
+        //List<int[]> potentialDeadCells = PotentialPrefab.GetDeadCells();
+        List<(int x, int z)> potentialDeadCells = PotentialPrefab.GetRelativeDeadCellList(); 
+        int[] temp;
+        List<int[]> relativePotentialDeadCells = new List<int[]>();
+        Debug.Log("Checking if blocking for: " + x + ", " + z);
+        Debug.Log("Num dead cells: " + potentialDeadCells.Count);
+        if (potentialDeadCells.Count == 0)
+            return false;
+        int[] onlyExit;
+        for (int i = 0; i < potentialDeadCells.Count; i++)
+        {
+            temp = new int[2];
+            temp[0] = x + potentialDeadCells[i].x;
+            temp[1] = z + potentialDeadCells[i].z;
+            relativePotentialDeadCells.Add(temp);
+            Debug.Log("Added: " + temp[0] + ", " + temp[1] + " to potential dead cells.");
+        }
+
+
+        if (z - 1 >= 0)
+        {
+            for (int i = 0; i < _xWidth; i++)
+            {
+                if (x + i >= xWidth)
+                    break;
+                if (_cellMatrix[x + i, z - 1] != null)
+                {
+                    Debug.Log((x + i) + ", " + (z - 1) + " not NULL");
+                    if (!_cellDataMatrix[x + i, z - 1].CellHasExit() && _cellDataMatrix[x + i, z - 1].OnlyHasOneExit())
+                    {
+                        onlyExit = _cellDataMatrix[x + i, z - 1].GetOnlyExit();
+                        Debug.Log("Only 1 exit for: " + (x + i) + ", " + (z - 1));
+                        for (int j = 0; j < relativePotentialDeadCells.Count; j ++)
+                        {
+                            if (onlyExit == relativePotentialDeadCells[j])
+                            {
+                                Debug.Log("Blocking only exit: " + onlyExit[0] + ", " + onlyExit[1]);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (x - 1 >= 0)
+        {
+            for (int i = 0; i < _zHeight; i++)
+            {
+                if (z + i >= zHeight)
+                    break;
+                if (_cellMatrix[x - 1, z + i] != null)
+                {
+                    Debug.Log((x - 1) + ", " + (z +i) + " not NULL");
+                    if (!_cellDataMatrix[x - 1, z + i].CellHasExit() && _cellDataMatrix[x - 1, z + i].OnlyHasOneExit())
+                    {
+                        onlyExit = _cellDataMatrix[x - 1, z + i].GetOnlyExit();
+                        Debug.Log("Only 1 exit for: " + (x - 1) + ", " + (z +i));
+                        for (int j = 0; j < relativePotentialDeadCells.Count; j++)
+                        {
+                            if (onlyExit == relativePotentialDeadCells[j])
+                            {
+                                Debug.Log("Blocking only exit: " + onlyExit[0] + ", " + onlyExit[1]);
+                                return true;
+                            }
+                        }
+                    }
+                }
+                //if (_cellMatrix[x - 1, z +i] != null && _cellMatrix[x -1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
+                //    return false;
+            }
+        }
+
+        if (z + 1 < zHeight)
+        {
+            for (int i = 0; i < _xWidth; i++)
+            {
+                if (x + i >= xWidth)
+                    break;
+                if ( _cellMatrix[x + i, z + 1] != null)
+                {
+                    Debug.Log((x + i) + ", " + (z + 1) + " not NULL");
+
+                    if (!_cellDataMatrix[x + i, z + 1].CellHasExit() && _cellDataMatrix[x + i, z + 1].OnlyHasOneExit())
+                    {
+                        Debug.Log("Only 1 exit for: " + (x + i) + ", " + (z + 1));
+                        onlyExit = _cellDataMatrix[x + i, z + 1].GetOnlyExit();
+                        for (int j = 0; j < relativePotentialDeadCells.Count; j++)
+                        {
+                            if (onlyExit == relativePotentialDeadCells[j])
+                            {
+                                Debug.Log("Blocking only exit: " + onlyExit[0] + ", " + onlyExit[1]);
+                                return true;
+                            }
+                        }
+                    }
+                }
+                //if (_cellMatrix[x + i, z + 1] != null && _cellMatrix[x + i, z + 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
+                //    return false;
+            }
+        }
+        if (x + 1 < xWidth)
+        {
+            for (int i = 0; i < _zHeight; i++)
+            {
+                if (z + i >= zHeight)
+                    break;
+                if (_cellMatrix[x + 1, z + i] != null)
+                {
+                    Debug.Log((x + 1) + ", " + (z + i) + " not NULL");
+
+                    if (!_cellDataMatrix[x + 1, z + i].CellHasExit() && _cellDataMatrix[x + 1, z + i].OnlyHasOneExit())
+                    {
+                        Debug.Log("Only 1 exit for: " + (x + 1) + ", " + (z + i));
+                        onlyExit = _cellDataMatrix[x + 1, z + i].GetOnlyExit();
+                        for (int j = 0; j < relativePotentialDeadCells.Count; j++)
+                        {
+                            if (onlyExit == relativePotentialDeadCells[j])
+                            {
+                                Debug.Log("Blocking only exit: " + onlyExit[0] + ", " + onlyExit[1]);
+                                return true;
+                            }
+                        }
+                    }
+                }
+                //if (_cellMatrix[x + 1, z + i] != null && _cellMatrix[x + 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
+                //    return false;
+            }
+        }
+
+        return false;
     }
 
     private bool CellIsTransitional(int x, int z)
@@ -484,8 +796,8 @@ public class MazeFloor : MonoBehaviour
                     break;
                 if (_cellMatrix[x + i, z - 1] != null)
                 {
-                    if (_cellMatrix[x + i, z - 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex || 
-                        (hasDeadCell && _cellMatrix[x + i, z - 1].GetComponent<Cell>().hasDeadCells))
+                    if (_cellMatrix[x + i, z - 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex) 
+                        //|| (hasDeadCell && _cellMatrix[x + i, z - 1].GetComponent<Cell>().hasDeadCells))  --
                     return false;
                 }
             }         
@@ -498,8 +810,8 @@ public class MazeFloor : MonoBehaviour
                     break;
                 if (_cellMatrix[x - 1, z + i] != null)
                 {
-                    if (_cellMatrix[x - 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
-                        (hasDeadCell && _cellMatrix[x - 1, z + i].GetComponent<Cell>().hasDeadCells))
+                    if (_cellMatrix[x - 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
+                        //|| (hasDeadCell && _cellMatrix[x - 1, z + i].GetComponent<Cell>().hasDeadCells))  --
                         return false;
                 }
                 //if (_cellMatrix[x - 1, z +i] != null && _cellMatrix[x -1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
@@ -515,8 +827,8 @@ public class MazeFloor : MonoBehaviour
                     break;
                 if (_cellMatrix[x + i, z + 1] != null)
                 {
-                    if (_cellMatrix[x + i, z + 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
-                        (hasDeadCell && _cellMatrix[x + i, z + 1].GetComponent<Cell>().hasDeadCells))
+                    if (_cellMatrix[x + i, z + 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
+                        //|| (hasDeadCell && _cellMatrix[x + i, z + 1].GetComponent<Cell>().hasDeadCells))  --
                         return false;
                 }
                 //if (_cellMatrix[x + i, z + 1] != null && _cellMatrix[x + i, z + 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
@@ -531,8 +843,8 @@ public class MazeFloor : MonoBehaviour
                     break;
                 if (_cellMatrix[x + 1, z + i] != null)
                 {
-                    if (_cellMatrix[x + 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
-                        (hasDeadCell && _cellMatrix[x + 1, z + i].GetComponent<Cell>().hasDeadCells))
+                    if (_cellMatrix[x + 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
+                        //|| (hasDeadCell && _cellMatrix[x + 1, z + i].GetComponent<Cell>().hasDeadCells))  --
                         return false;
                 }
                 //if (_cellMatrix[x + 1, z + i] != null && _cellMatrix[x + 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
@@ -664,7 +976,247 @@ public class MazeFloor : MonoBehaviour
         SetCellName(x, z, _name);
         SetCellIndexInArray(x, z);
         AddPointersToUsedCells(x, z);
-        MarkDeadCells(_cellMatrix[x, z].GetComponent<Cell>(), x, z); 
+        MarkDeadCells(_cellMatrix[x, z].GetComponent<Cell>(), x, z);
+        SetCellExits(_cellMatrix[x, z].GetComponent<Cell>(), x, z);
+        CheckIfCellAlreadyHasExit(x, z);
+    }
+
+    private void SetCellExits(Cell cell, int x, int z)
+    {
+        int[] index = new int[2];
+        index[0] = x;
+        index[1] = z;
+
+        _cellDataMatrix[x, z] = new CellData(cell, cell.GetCellExits(), cell.GetAliveCells(), cell.GetRelativeDeadCells(), false);
+
+        for (int i = 0; i < cell.GetCellXWidth(); i ++)
+        {
+            for (int j = 0; j < cell.GetCellZHeight(); j ++)
+            {
+                _cellDataMatrix[x + i, z + j] = _cellDataMatrix[x, z];
+            }
+        }
+    }
+
+    private void UpdateCellDataMatrix(CellData newData)
+    {
+        int _xWidth = newData.baseCell.GetCellXWidth();
+        int _zHeight = newData.baseCell.GetCellZHeight();
+
+        int[] baseIndex = newData.baseCell.GetIndexInArray();
+
+        for (int x = 0; x < _xWidth; x++)
+        {
+            for (int z = 0; z < _zHeight; z ++)
+            {
+                _cellDataMatrix[baseIndex[0] + x, baseIndex[1] + z] = newData;
+            }
+        }
+    }
+
+    private void CheckIfCellAlreadyHasExit(int x, int z)
+    {
+        CellData newData = _cellDataMatrix[x,z];
+        List<int[]> newDataExits = _cellDataMatrix[x, z].GetPotentialExits();
+        List<int[]> newDataAliveCells = _cellDataMatrix[x, z].GetAliveCells();
+        List<int[]> newDataDeadCells = _cellDataMatrix[x, z].GetDeadCells();
+        List<int[]> prevAliveCells;
+        List<int[]> prevDeadCells;
+        List<int[]> prevExits;
+        CellData prevCellData;
+
+        for (int i = 0; i < _cellMatrix[x,z].GetComponent<Cell>().GetCellZHeight(); i ++)
+        {
+            if (x - 1 >= 0 && _cellMatrix[x-1, z + i] != null)
+            {
+                //if (x + i >= xWidth)
+                //    break;
+                prevCellData = _cellDataMatrix[x - 1, z + i];
+                prevAliveCells = prevCellData.GetAliveCells();
+                prevDeadCells = prevCellData.GetDeadCells();
+                prevExits = prevCellData.GetPotentialExits();
+                for (int j = newDataExits.Count - 1; j >=0; j--)
+                {
+                    //for (int k = 0; k < prevAliveCells.Count; k++)
+                    //{
+                    //    if (newDataExits[j] == prevAliveCells[k])
+                    //    {
+                    //        newData.SetCellExit();
+                    //    }
+                    //}
+                    //GetNumDeadCells()
+                    for (int k = 0; k < prevDeadCells.Count; k++)
+                    {
+                        if (newDataExits[j][0] == (prevDeadCells[k][0] + x - 1) && newDataExits[j][1] == (prevDeadCells[k][1] + z + i))
+                        {
+                            newData.RemoveExit(prevDeadCells[k]);
+                        }
+                    }
+                }
+
+                for (int j = prevExits.Count - 1; j >= 0; j--)
+                {
+                    for (int k = 0; k < newDataAliveCells.Count; k++)
+                    {
+                        if (prevExits[j] == newDataAliveCells[k])
+                            prevCellData.SetCellExit();
+                    }
+                    for (int k = 0; k < newDataDeadCells.Count; k++)
+                    {
+                        //if (prevExits[j][ == newDataDeadCells[k])
+                        if (prevExits[j][0] == (newDataDeadCells[k][0] + x - 1) && prevExits[j][1] == (newDataDeadCells[k][1] + z + i))
+                            prevCellData.RemoveExit(newDataDeadCells[k]);
+                    }
+                }
+                UpdateCellDataMatrix(prevCellData);
+                //_cellDataMatrix[x - 1, z + i] = prevCellData;
+            }
+
+            if (x + 1 < xWidth && _cellMatrix[x + 1, z + i] != null)
+            {
+                prevCellData = _cellDataMatrix[x + 1, z + i];
+                prevAliveCells = prevCellData.GetAliveCells();
+                prevDeadCells = prevCellData.GetDeadCells();
+                prevExits = prevCellData.GetPotentialExits();
+                for (int j = newDataExits.Count - 1; j >= 0; j--)
+                {
+                    //for (int k = 0; k < prevAliveCells.Count; k++)
+                    //{
+                    //    if (newDataExits[j] == prevAliveCells[k])
+                    //    {
+                    //        newData.SetCellExit();
+                    //    }
+                    //}
+                    //GetNumDeadCells()
+                    for (int k = 0; k < prevDeadCells.Count; k++)
+                    {
+                        //if (newDataExits[j] == prevDeadCells[k])
+                        if (newDataExits[j][0] == (prevDeadCells[k][0] + x + 1) && newDataExits[j][1] == (prevDeadCells[k][1] + z + i))
+                        {
+                            newData.RemoveExit(prevDeadCells[k]);
+                        }
+                    }
+                }
+
+                for (int j = prevExits.Count - 1; j >= 0; j--)
+                {
+                    for (int k = 0; k < newDataAliveCells.Count; k++)
+                    {
+                        if (prevExits[j] == newDataAliveCells[k])
+                            prevCellData.SetCellExit();
+                    }
+                    for (int k = 0; k < newDataDeadCells.Count; k++)
+                    {
+                        //if (prevExits[j] == newDataDeadCells[k])
+                        if (prevExits[j][0] == (newDataDeadCells[k][0] + x + 1) && prevExits[j][1] == (newDataDeadCells[k][1] + z + i))
+                            prevCellData.RemoveExit(newDataDeadCells[k]);
+                    }
+                }
+                UpdateCellDataMatrix(prevCellData);
+                //_cellDataMatrix[x + 1, z + i] = prevCellData;
+            }
+
+
+        }
+
+        for (int i = 0; i < _cellMatrix[x, z].GetComponent<Cell>().GetCellXWidth(); i++)
+        {
+            if (z - 1 >= 0 && _cellMatrix[x + i, z - 1] != null)
+            {
+                prevCellData = _cellDataMatrix[x + i, z - 1];
+                prevAliveCells = prevCellData.GetAliveCells();
+                prevDeadCells = prevCellData.GetDeadCells();
+                prevExits = prevCellData.GetPotentialExits();
+                for (int j = newDataExits.Count - 1; j >= 0; j--)
+                {
+                    //for (int k = 0; k < prevAliveCells.Count; k++)
+                    //{
+                    //    if (newDataExits[j] == prevAliveCells[k])
+                    //    {
+                    //        newData.SetCellExit();
+                    //    }
+                    //}
+                    //GetNumDeadCells()
+                    for (int k = 0; k < prevDeadCells.Count; k++)
+                    {
+                        //if (newDataExits[j] == prevDeadCells[k])
+                        if (newDataExits[j][0] == (prevDeadCells[k][0] + x + i) && newDataExits[j][1] == (prevDeadCells[k][1] + z -1))
+                        {
+                            newData.RemoveExit(prevDeadCells[k]);
+                        }
+                    }
+                }
+
+                for (int j = prevExits.Count - 1; j >= 0; j--)
+                {
+                    for (int k = 0; k < newDataAliveCells.Count; k++)
+                    {
+                        if (prevExits[j] == newDataAliveCells[k])
+                            prevCellData.SetCellExit();
+                    }
+                    for (int k = 0; k < newDataDeadCells.Count; k++)
+                    {
+                        //if (prevExits[j] == newDataDeadCells[k])
+                        if (prevExits[j][0] == (newDataDeadCells[k][0] + x + i) && prevExits[j][1] == (newDataDeadCells[k][1] + z - 1))
+                            prevCellData.RemoveExit(newDataDeadCells[k]);
+                    }
+                }
+                UpdateCellDataMatrix(prevCellData);
+                //_cellDataMatrix[x + i, z - 1] = prevCellData;
+            }
+
+            if (z + 1 < zHeight && _cellMatrix[x + i, z + 1] != null)
+            {
+                prevCellData = _cellDataMatrix[x + i, z + 1];
+                prevAliveCells = prevCellData.GetAliveCells();
+                prevDeadCells = prevCellData.GetDeadCells();
+                prevExits = prevCellData.GetPotentialExits();
+                for (int j = newDataExits.Count - 1; j >= 0; j--)
+                {
+                    //for (int k = 0; k < prevAliveCells.Count; k++)
+                    //{
+                    //    if (newDataExits[j] == prevAliveCells[k])
+                    //    {
+                    //        newData.SetCellExit();
+                    //    }
+                    //}
+                    //GetNumDeadCells()
+                    for (int k = 0; k < prevDeadCells.Count; k++)
+                    {
+                        //if (newDataExits[j] == prevDeadCells[k])
+                        if (newDataExits[j][0] == (prevDeadCells[k][0] + x + i) && newDataExits[j][1] == (prevDeadCells[k][1] + z + 1))
+                        {
+                            newData.RemoveExit(prevDeadCells[k]);
+                        }
+                    }
+                }
+
+                for (int j = prevExits.Count - 1; j >= 0; j--)
+                {
+                    for (int k = 0; k < newDataAliveCells.Count; k++)
+                    {
+                        if (prevExits[j] == newDataAliveCells[k])
+                            prevCellData.SetCellExit();
+                    }
+                    for (int k = 0; k < newDataDeadCells.Count; k++)
+                    {
+                        //if (prevExits[j] == newDataDeadCells[k])
+                        if (prevExits[j][0] == (newDataDeadCells[k][0] + x + i) && prevExits[j][1] == (newDataDeadCells[k][1] + z + 1))
+                            prevCellData.RemoveExit(newDataDeadCells[k]);
+                    }
+                }
+                UpdateCellDataMatrix(prevCellData);
+                //_cellDataMatrix[x + i, z + 1] = prevCellData;
+            }
+        }
+        UpdateCellDataMatrix(newData);
+        //for (int i = 0; i < _cellMatrix[x,z].GetComponent<Cell>().GetCellXWidth(); i++)
+        //{
+        //    for (int j = 0; j < _cellMatrix[x, z].GetComponent<Cell>().GetCellZHeight(); j++)
+        //    {
+        //        _cellDataMatrix[x + i, z + j] = newData;
+        //    }
+        //}
     }
 
     private void SetCellIndexInArray(int x, int z)

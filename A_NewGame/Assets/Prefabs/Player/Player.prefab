@@ -67,7 +67,7 @@ MonoBehaviour:
   _outerCollider: {fileID: 7924028343138690699}
   _playerTrigger: {fileID: 2356987886159750304}
   _lookLimit: 60
-  _lookSpeed: 10
+  _lookSpeed: 3
   _playerAudioSource: {fileID: 5535344278536515339}
   _playerCenter: {fileID: 869506749097910351}
   _groundMask:

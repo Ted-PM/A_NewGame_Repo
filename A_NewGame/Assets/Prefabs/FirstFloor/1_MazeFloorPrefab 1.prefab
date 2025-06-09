@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1456617566257914524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4877910243038589509}
+  m_Layer: 0
+  m_Name: SpecialCells
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4877910243038589509
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456617566257914524}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5530275284263263467}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3168417552326121293
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5509836510957553477}
+  m_Layer: 0
+  m_Name: NavMesh Surface
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5509836510957553477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168417552326121293}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5530275284263263467}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8444920341893074768
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5530275284263263467}
+  - component: {fileID: 7089912810592683632}
+  m_Layer: 0
+  m_Name: 1_MazeFloorPrefab 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5530275284263263467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8444920341893074768}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4877910243038589509}
+  - {fileID: 5509836510957553477}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7089912810592683632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8444920341893074768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50bc0b628c089584ea1b9bda7c6462b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startCell: {fileID: 342488833958512737, guid: 49568ca91a715714a88232c48fcb431b, type: 3}
+  emptyCell: {fileID: 342488833958512737, guid: 44a809896f069024b867ffe5d1545dfa, type: 3}
+  emptyFloorCell: {fileID: 342488833958512737, guid: 24c080c237418a340868aa3282e2dd88, type: 3}
+  _prefabs:
+  - {fileID: 342488833958512737, guid: 8b3eb2b6c44c6bd4c9fa10880e4fc505, type: 3}
+  - {fileID: 342488833958512737, guid: d6f02d6debab68943bfdc8318b46f348, type: 3}
+  - {fileID: 342488833958512737, guid: d17aac77faa2ee9478de831846e41e5f, type: 3}
+  - {fileID: 342488833958512737, guid: 04f09e6d0047f2e408c97629fedddaf4, type: 3}
+  - {fileID: 342488833958512737, guid: 094b104b9ab581d4b81472aac69a6fc6, type: 3}
+  - {fileID: 342488833958512737, guid: 776935218a4a6854ebb4545db48af359, type: 3}
+  - {fileID: 342488833958512737, guid: 99e60861f7c86e64a874a01c630c77f3, type: 3}
+  - {fileID: 342488833958512737, guid: 0eb8fc71432582640a2ae40ba6f2d5c8, type: 3}
+  _oddsOfChoosePrefab: 0100000005000000050000000500000005000000050000000500000005000000
+  _verticleTransitionPrefabs:
+  - {fileID: 9152071213757157107, guid: be68171a82c0bd747b6cc0ba393c3356, type: 3}
+  specialCells: {fileID: 1456617566257914524}
+  xWidth: 20
+  zHeight: 20
+  yDepth: 1
+  startX: 5
+  startZ: 5
+  floorLevel: 0
+  hasNextFloor: 1
+  nextFloorX: -1
+  nextFloorZ: -1
+  isEmptyFloor: 0
+  navMeshSurfaceLayers:
+    serializedVersion: 2
+    m_Bits: 119
+  _floorNavMeshSurface: {fileID: 3168417552326121293}
+  _floorAmbiance: {fileID: 8300000, guid: b9339c5fc7154f741ac41c5ba8d93b06, type: 3}
