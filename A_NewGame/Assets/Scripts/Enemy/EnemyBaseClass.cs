@@ -9,7 +9,8 @@ public enum EnemyType
 {
     Crawler,
     Mannequin,
-    Lurker
+    Lurker,
+    Invis
 };
 
 public enum EnemyStates
@@ -360,9 +361,15 @@ public class EnemyBaseClass : MonoBehaviour
         if (distance <= 0f)
             distance = (_distanceBeforeGoToPlayer * 2);
 
-        Vector3 directionToEnemy = (transform.position + new Vector3(0,2,0)) - _playerCam.transform.position; ;
+        RaycastHit hit;
 
-        return Physics.Raycast(_playerCam.transform.position, directionToEnemy, distance, _enemyLayer);
+        //Vector3 directionToEnemy = (transform.position + new Vector3(0,2,0)) - _playerCam.transform.position; ;
+        //return Physics.Raycast(_playerCam.transform.position, directionToEnemy, distance, _enemyLayer);
+
+        Physics.Raycast(_playerCam.transform.position, _playerCam.transform.forward, out hit, distance, _enemyLayer);
+        if (hit.collider == null || hit.collider.gameObject == null)
+            return false;
+        return hit.collider.gameObject.tag == "Enemy";
     }
 
     /// ------------
