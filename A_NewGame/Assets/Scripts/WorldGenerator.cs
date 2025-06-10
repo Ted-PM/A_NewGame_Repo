@@ -11,6 +11,8 @@ public class WorldGenerator : MonoBehaviour
     private GameObject myEnemySpawner;
     [SerializeField]
     private GameObject myDoorSpawner;
+    [SerializeField]
+    private GameObject myLightSpawner;
 
     [SerializeField]
     private WorldRenderManager _worldRenderManager;
@@ -24,6 +26,7 @@ public class WorldGenerator : MonoBehaviour
     public bool useAbmientAudio;
     public bool spawnEnemies;
     public bool spawnDoors;
+    public bool spawnLights;
 
     private FloorSpawner _floorSpawner;
     private PlayerSpawner _playerSpawner;
@@ -80,6 +83,8 @@ public class WorldGenerator : MonoBehaviour
             StartCoroutine(WaitThenSpawnDoorSpawner());
         if (spawnPlayer)
             StartCoroutine(WaitThenSpawnPlayer());
+        if (spawnLights)
+            StartCoroutine(WaitThenSpawnLightSpawner());
 
         StartCoroutine(WaitTillWorldReady());
     }
@@ -133,6 +138,12 @@ public class WorldGenerator : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         Instantiate(myDoorSpawner, this.transform);
+    }
+
+    private IEnumerator WaitThenSpawnLightSpawner()
+    {
+        yield return new WaitForSeconds(1f);
+        Instantiate(myLightSpawner, this.transform);
     }
 
     private IEnumerator WaitThenSpawnPlayer()

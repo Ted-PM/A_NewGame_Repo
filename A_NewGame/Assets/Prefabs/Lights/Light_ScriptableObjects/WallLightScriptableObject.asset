@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35b0ce7d3270d234aa89970254fe3e44, type: 3}
+  m_Name: WallLightScriptableObject
+  m_EditorClassIdentifier: 
+  lightPrefabType: 3
+  lightType: 2
+  lightColor: {r: 0.916576, g: 0.97735846, b: 0.58825916, a: 1}
+  lightIntensity: 10
+  lightRange: 10
+  shadowStrength: 0.75
+  passiveLightAudio: {fileID: 8300000, guid: 41607708416f6ed43b728bd5a76b5133, type: 3}
+  lightToggledAudio: {fileID: 8300000, guid: e2d1b2f235d44ff4e9e371276a89e751, type: 3}

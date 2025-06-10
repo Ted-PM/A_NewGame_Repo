@@ -209,7 +209,12 @@ MonoBehaviour:
   _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
   _floorMaterial: {fileID: 2100000, guid: f266ba03e1218bf45b32f96554872ef8, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
-  _doorWayPrefab: {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
+  _doorWayPrefabs:
+  - {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
+  - {fileID: 6013358023859362223, guid: 81e023d16ec81f04b93f2968d8768cea, type: 3}
+  _entrancePrefabs:
+  - {fileID: 2589406241814258336, guid: 16e8c86a2e4086d4f9fdc7f7a7c8b8df, type: 3}
+  - {fileID: 3858822231259503484, guid: 89f1df26da8854f46993dbc56357aae9, type: 3}
   _deadCellListStr: []
   isTransitionCell: 0
   transCellExitX: -1

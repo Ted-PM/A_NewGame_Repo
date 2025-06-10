@@ -246,7 +246,13 @@ MonoBehaviour:
   _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
   _floorMaterial: {fileID: 2100000, guid: f266ba03e1218bf45b32f96554872ef8, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
-  _doorWayPrefab: {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
+  _doorWayPrefabs:
+  - {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
+  - {fileID: 6013358023859362223, guid: 81e023d16ec81f04b93f2968d8768cea, type: 3}
+  _entrancePrefabs:
+  - {fileID: 2589406241814258336, guid: 16e8c86a2e4086d4f9fdc7f7a7c8b8df, type: 3}
+  - {fileID: 3858822231259503484, guid: 89f1df26da8854f46993dbc56357aae9, type: 3}
+  _lights: []
   _deadCellListStr: []
   isTransitionCell: 0
   transCellExitX: -1
@@ -257,6 +263,7 @@ MonoBehaviour:
   zHeight: 2
   yFloors: 1
   cellDoStuffObject: {fileID: 0}
+  hasEnemy: 0
 --- !u!1 &718553838759897876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1004,7 +1011,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallProps: {fileID: 3881859746133107194}
+  _wallProps:
+  - {fileID: 3881859746133107194}
   _wallPlane: {fileID: 1315089783926190119}
 --- !u!1 &1958249550937670515
 GameObject:
@@ -1109,7 +1117,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallProps: {fileID: 5363266274961678801}
+  _wallProps:
+  - {fileID: 5363266274961678801}
   _wallPlane: {fileID: 2809879429591879482}
 --- !u!1 &2162596063229569717
 GameObject:
@@ -1423,7 +1432,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallProps: {fileID: 8355069263868433897}
+  _wallProps:
+  - {fileID: 8355069263868433897}
   _wallPlane: {fileID: 6817787492521717746}
 --- !u!1 &2809879429591879482
 GameObject:
@@ -1634,7 +1644,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallProps: {fileID: 5965706406770530685}
+  _wallProps:
+  - {fileID: 5965706406770530685}
   _wallPlane: {fileID: 3882417226467794825}
 --- !u!1 &3297819382062968399
 GameObject:
@@ -1826,7 +1837,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallProps: {fileID: 4217774637761720528}
+  _wallProps:
+  - {fileID: 4217774637761720528}
   _wallPlane: {fileID: 755494013412212933}
 --- !u!1 &3454937798585126466
 GameObject:
@@ -1896,7 +1908,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallProps: {fileID: 1373612934140377033}
+  _wallProps:
+  - {fileID: 1373612934140377033}
   _wallPlane: {fileID: 5712232006839216370}
 --- !u!1 &3881859746133107194
 GameObject:
@@ -2807,7 +2820,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallProps: {fileID: 1295752487701053718}
+  _wallProps:
+  - {fileID: 1295752487701053718}
   _wallPlane: {fileID: 66472045354878146}
 --- !u!1 &6197542018097026761
 GameObject:
@@ -3419,7 +3433,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d580eaff17bedaf4bb9263dc940264ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallProps: {fileID: 7405308699669873228}
+  _wallProps:
+  - {fileID: 7405308699669873228}
   _wallPlane: {fileID: 6845752246873961621}
 --- !u!1 &7405308699669873228
 GameObject:

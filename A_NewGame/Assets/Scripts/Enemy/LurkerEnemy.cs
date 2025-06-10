@@ -56,7 +56,7 @@ public class LurkerEnemy : EnemyBaseClass
                 _enemyState = EnemyStates.Agro;
             //_enemySeenForFirstTime = EnemyVisibleToPlayer();
         }
-        StartCoroutine(CanNoLongerSeePlayer());
+        StartCoroutine(base.CanNoLongerSeePlayer());
     }
 
     protected override void EnableAgent()
@@ -82,7 +82,7 @@ public class LurkerEnemy : EnemyBaseClass
         _enemyAnimator.SetBool("Yelling", true);
         _enemyAnimator.SetBool("Static", false);
         transform.LookAt(_playerPos);
-        yield return new WaitForSeconds(1.25f);
+        yield return new WaitForSeconds(1f);
         _enemyAnimator.SetBool("Yelling", false);
         _goToPlayer = true;
         base.StopAudio();

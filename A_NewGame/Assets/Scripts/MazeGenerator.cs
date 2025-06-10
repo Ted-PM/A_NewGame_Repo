@@ -439,9 +439,14 @@ public class MazeGenerator : MonoBehaviour
                     if (CompareTwoArrays(current._zPosHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
-                        
+
                         //current._zPosHorizontalWalls[i].DisableWall();
-                        current.DestroySpecificPosZWall(i, found, !OneInFourChance());
+                        //bool useEntrance = false;
+                        //if (found && UseDoor(current, next))
+                        //    useEntrance = true;
+                        bool useEntrance = !UseDoor(current, next);
+
+                        current.DestroySpecificPosZWall(i, found, useEntrance);
 
                         // removes opposite cell wall if first iteration
                         if (!found)
@@ -457,9 +462,14 @@ public class MazeGenerator : MonoBehaviour
                     if (CompareTwoArrays(current._zNegHorizontalWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
-                        
+
                         //current._zNegHorizontalWalls[i].DisableWall();
-                        current.DestroySpecificNegZWall(i, found, !OneInFourChance());
+                        //bool useEntrance = false;
+                        //if (found && UseDoor(current, next))
+                        //    useEntrance = true;
+                        bool useEntrance = !UseDoor(current, next);
+
+                        current.DestroySpecificNegZWall(i, found, useEntrance);
 
                         if (!found)
                         {
@@ -487,9 +497,12 @@ public class MazeGenerator : MonoBehaviour
                     if (CompareTwoArrays(current._xPosVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
-                        
+
                         //current._xPosVerticleWalls[i].DisableWall();
-                        current.DestroySpecificPosXWall(i, found, !OneInFourChance());
+                        bool useEntrance = !UseDoor(current, next);
+                        //if (found && UseDoor(current, next))
+                        //    useEntrance = true;
+                        current.DestroySpecificPosXWall(i, found, useEntrance);
 
                         if (!found)
                         {
@@ -504,9 +517,14 @@ public class MazeGenerator : MonoBehaviour
                     if (CompareTwoArrays(current._xNegVerticleWalls[i].GetMatrixID(), next._indexInArrayList[j]))
                     {
                         //Debug.Log("Disabling Walls from " + wallToBeDisabled[0] + ", " + wallToBeDisabled[1]);
-                        
+
                         //current._xNegVerticleWalls[i].DisableWall();
-                        current.DestroySpecificNegXWall(i, found, !OneInFourChance());
+                        //bool useEntrance = false;
+                        //if (found && UseDoor(current, next))
+                        //    useEntrance = true;
+                        bool useEntrance = !UseDoor(current, next);
+
+                        current.DestroySpecificNegXWall(i, found, useEntrance);
 
                         if (!found)
                         {
@@ -522,6 +540,17 @@ public class MazeGenerator : MonoBehaviour
             }
         }
 
+    }
+
+    private bool UseDoor(Cell current, Cell next)
+    {
+        if (current == null || next == null)
+        {
+            Debug.LogError("Current or Next is NULL!!");
+            return false;
+        } 
+        
+        return (current.CellHasEnemy() || next.CellHasEnemy() || current.CellIsTransitional() || next.CellIsTransitional());
     }
 
     // See comment "6. RandomizePotentialCells"

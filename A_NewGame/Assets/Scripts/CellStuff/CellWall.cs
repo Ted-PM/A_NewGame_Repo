@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Transform), typeof(Collider))]
 public class CellWall : MonoBehaviour
@@ -11,7 +12,7 @@ public class CellWall : MonoBehaviour
     //private Renderer _wallRenderer;
 
     [SerializeField]
-    private GameObject _wallProps;
+    private List<GameObject> _wallProps;
     [SerializeField]
     private GameObject _wallPlane;
     private Renderer _planeRenderer;
@@ -41,7 +42,21 @@ public class CellWall : MonoBehaviour
         if (_wallPlane != null)
             _wallPlane.SetActive(false);// = false;
         if (_wallProps != null)
-            _wallProps.SetActive(false);
+            DisableWallProps();
+    }
+
+    public void DestroyWallProps()
+    {
+        if ( _wallProps == null)
+        {
+            return;
+        }
+
+        for (int i = _wallProps.Count - 1; i >= 0; i--)
+        {
+            if (_wallProps[i] != null)
+                Destroy(_wallProps[i]);
+        }
     }
 
     //public void EnableW
@@ -64,23 +79,50 @@ public class CellWall : MonoBehaviour
         if (_planeRenderer != null)
             _planeRenderer.enabled = false;
         if (_wallProps != null)
-            _wallProps.SetActive(false);
+            DisableWallProps();
     }
     public void EnableRenderer()
     {
         if (_planeRenderer != null)
             _planeRenderer.enabled = true;
         if (_wallProps != null)
-            _wallProps.SetActive(true);
+            EnableWallProps();
     }
     public void SwitchRendererStatus()
     {
         if (_planeRenderer != null)
             _planeRenderer.enabled = !_planeRenderer.enabled;
         if (_wallProps != null)
-            _wallProps.SetActive(!_wallProps.activeSelf);
+            SwitchWallPropsStatus();
     }
-    
+
+    private void DisableWallProps()
+    {
+        foreach (GameObject prop in _wallProps)
+        {
+            if (prop != null)
+                prop.SetActive(false);
+        }
+    }
+
+    private void EnableWallProps()
+    {
+        foreach (GameObject prop in _wallProps)
+        {
+            if (prop != null)
+                prop.SetActive(true);
+        }
+    }
+
+    private void SwitchWallPropsStatus()
+    {
+        foreach (GameObject prop in _wallProps)
+        {
+            if (prop != null)
+                prop.SetActive(!prop.activeSelf);
+        }
+    }
+
     public Vector3 GetWallPosition()
     {
         return transform.position;

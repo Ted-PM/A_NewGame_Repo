@@ -51,7 +51,11 @@ MonoBehaviour:
   _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
   _floorMaterial: {fileID: 2100000, guid: f266ba03e1218bf45b32f96554872ef8, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
-  _doorWayPrefab: {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
+  _doorWayPrefabs:
+  - {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
+  - {fileID: 6013358023859362223, guid: 81e023d16ec81f04b93f2968d8768cea, type: 3}
+  _entrancePrefabs: []
+  _lights: []
   _deadCellListStr:
   - 0000
   isTransitionCell: 0
@@ -63,6 +67,7 @@ MonoBehaviour:
   zHeight: 1
   yFloors: 1
   cellDoStuffObject: {fileID: 0}
+  hasEnemy: 1
 --- !u!1 &1028919504637128377
 GameObject:
   m_ObjectHideFlags: 0
