@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using UnityEditor.Rendering;
+//using UnityEditor.Rendering;
 //using UnityEngine.ProBuilder.Shapes;
 
 
@@ -154,6 +154,9 @@ public class Cell : MonoBehaviour
     private int _cellPrefabIndex = -1;
 
     public bool hasEnemy;
+
+    [SerializeField]
+    private List<GameObject> _enemySpawnPoints;
 
     //[SerializeField]
     //private List<EnemyBaseClass> _enemyList;
@@ -651,7 +654,7 @@ public class Cell : MonoBehaviour
 
     public void DisableCellRenderers()
     {
-        //DisableEnemies();
+        DisableEnemies();
         DisableWallRenderers();
         DisableFloorRenderers();
         DisableCeelingRenderers();
@@ -709,11 +712,16 @@ public class Cell : MonoBehaviour
         cellDoStuffObject.SetActive(false);
     }
 
-    //private void DisableEnemies()
-    //{
-    //    foreach (EnemyBaseClass enemy in _enemyList)
-    //        enemy.DisableEnemy();
-    //}
+    private void DisableEnemies()
+    {
+        if (_enemySpawnPoints == null)
+            return;
+        foreach (GameObject enemy in _enemySpawnPoints)
+        {
+            if (enemy != null)
+                enemy.SetActive(false);
+        }
+    }
 
     //private bool EnemyHasntLeftCell(int enemyIndex)
     //{
@@ -729,7 +737,7 @@ public class Cell : MonoBehaviour
         EnableCellEntrances();
         EnableLights();
         EnableCellDoStuffObject();
-        //EnableEnemies();
+        EnableEnemies();
         _renderersEnabled = true;
     }
 
@@ -776,11 +784,16 @@ public class Cell : MonoBehaviour
             cellDoStuffObject.SetActive(true);
     }
 
-    //private void EnableEnemies()
-    //{
-    //    foreach (EnemyBaseClass enemy in _enemyList)
-    //        enemy.EnableEnemy();
-    //}
+    private void EnableEnemies()
+    {
+        if (_enemySpawnPoints == null)
+            return;
+        foreach (GameObject enemy in _enemySpawnPoints)
+        {
+            if (enemy != null)
+                enemy.SetActive(true);
+        }
+    }
 
     public bool CellRenderersEnabled()
     {

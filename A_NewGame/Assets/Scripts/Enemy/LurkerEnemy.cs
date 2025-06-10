@@ -82,7 +82,7 @@ public class LurkerEnemy : EnemyBaseClass
         _enemyAnimator.SetBool("Yelling", true);
         _enemyAnimator.SetBool("Static", false);
         transform.LookAt(_playerPos);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.75f);
         _enemyAnimator.SetBool("Yelling", false);
         _goToPlayer = true;
         base.StopAudio();

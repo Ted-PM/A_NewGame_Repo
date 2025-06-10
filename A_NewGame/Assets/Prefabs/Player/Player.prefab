@@ -358,7 +358,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6375053209948503008}
-  - component: {fileID: 7883376123561206121}
+  - component: {fileID: 8142585838896533599}
   m_Layer: 9
   m_Name: Player - LoadAreaTrigger
   m_TagString: Untagged
@@ -381,8 +381,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3475186108045417513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &7883376123561206121
-BoxCollider:
+--- !u!135 &8142585838896533599
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -400,7 +400,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 40, y: 12, z: 40}
+  m_Radius: 20
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3289864487876989452
 GameObject:

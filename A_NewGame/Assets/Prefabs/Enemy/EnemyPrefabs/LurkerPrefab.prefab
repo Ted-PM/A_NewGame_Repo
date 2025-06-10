@@ -406,7 +406,7 @@ MonoBehaviour:
   agent: {fileID: 2245250564947002579}
   _enemyBody: {fileID: 4383792080476054291}
   _distanceBeforeGoToPlayer: 20
-  _timeWithoutSeeingPlayerBeforeLeave: 2
+  _timeWithoutSeeingPlayerBeforeLeave: 1
   _enemyAnimator: {fileID: 65616577013278166}
   _enemyLayer:
     serializedVersion: 2

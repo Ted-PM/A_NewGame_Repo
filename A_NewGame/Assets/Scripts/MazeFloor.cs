@@ -451,7 +451,7 @@ public class MazeFloor : MonoBehaviour
             result = false;
         else if (!CanSpawnDeadCell(potentialPrefab, x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
             result = false;
-        else if (!CellNotBorderingSameCell(x, z, possibleCellIndex, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional, potentialPrefab.hasDeadCells))
+        else if (!CellNotBorderingSameCell(x, z, possibleCellIndex, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional, potentialPrefab.hasDeadCells, potentialPrefab.hasEnemy))
             result = false;
 
         return result;
@@ -471,7 +471,7 @@ public class MazeFloor : MonoBehaviour
         return IntPairIsInList(x, z, _prevFloorTransitionCells);
     }
 
-    private bool CellNotBorderingSameCell(int x, int z, int prefabIndex, int _xWidth, int _zHeight, bool iTransitional, bool hasDeadCell)
+    private bool CellNotBorderingSameCell(int x, int z, int prefabIndex, int _xWidth, int _zHeight, bool iTransitional, bool hasDeadCell, bool hasEnemy)
     {
         if (iTransitional)
             return true;
@@ -485,7 +485,8 @@ public class MazeFloor : MonoBehaviour
                 if (_cellMatrix[x + i, z - 1] != null)
                 {
                     if (_cellMatrix[x + i, z - 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex || 
-                        (hasDeadCell && _cellMatrix[x + i, z - 1].GetComponent<Cell>().hasDeadCells))
+                        (hasDeadCell && _cellMatrix[x + i, z - 1].GetComponent<Cell>().hasDeadCells) ||
+                        (hasEnemy && _cellMatrix[x + i, z - 1].GetComponent<Cell>().hasEnemy))
                     return false;
                 }
             }         
@@ -499,7 +500,8 @@ public class MazeFloor : MonoBehaviour
                 if (_cellMatrix[x - 1, z + i] != null)
                 {
                     if (_cellMatrix[x - 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
-                        (hasDeadCell && _cellMatrix[x - 1, z + i].GetComponent<Cell>().hasDeadCells))
+                        (hasDeadCell && _cellMatrix[x - 1, z + i].GetComponent<Cell>().hasDeadCells) ||
+                        (hasEnemy && _cellMatrix[x - 1, z + i].GetComponent<Cell>().hasEnemy))
                         return false;
                 }
                 //if (_cellMatrix[x - 1, z +i] != null && _cellMatrix[x -1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
@@ -516,7 +518,8 @@ public class MazeFloor : MonoBehaviour
                 if (_cellMatrix[x + i, z + 1] != null)
                 {
                     if (_cellMatrix[x + i, z + 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
-                        (hasDeadCell && _cellMatrix[x + i, z + 1].GetComponent<Cell>().hasDeadCells))
+                        (hasDeadCell && _cellMatrix[x + i, z + 1].GetComponent<Cell>().hasDeadCells) ||
+                        (hasEnemy && _cellMatrix[x + i, z + 1].GetComponent<Cell>().hasEnemy))
                         return false;
                 }
                 //if (_cellMatrix[x + i, z + 1] != null && _cellMatrix[x + i, z + 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
@@ -532,7 +535,8 @@ public class MazeFloor : MonoBehaviour
                 if (_cellMatrix[x + 1, z + i] != null)
                 {
                     if (_cellMatrix[x + 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
-                        (hasDeadCell && _cellMatrix[x + 1, z + i].GetComponent<Cell>().hasDeadCells))
+                        (hasDeadCell && _cellMatrix[x + 1, z + i].GetComponent<Cell>().hasDeadCells) ||
+                        (hasEnemy && _cellMatrix[x + 1, z + i].GetComponent<Cell>().hasEnemy))
                         return false;
                 }
                 //if (_cellMatrix[x + 1, z + i] != null && _cellMatrix[x + 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex)
@@ -543,9 +547,11 @@ public class MazeFloor : MonoBehaviour
         return true;
     }
 
+    //private bool CanSpawnEnemyCell()
+
     private bool CanSpawnDeadCell(Cell potentialCell, int x, int z, int _xWidth, int _zHeight, bool isTransitional)
     {
-        if (!potentialCell.HasDeadCell())
+        if (!potentialCell.HasDeadCell() && !potentialCell.hasEnemy)
             return true;
 
         bool result = true;

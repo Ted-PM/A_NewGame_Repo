@@ -310,7 +310,17 @@ public class EnemyBaseClass : MonoBehaviour
     {
         Vector3 directionToPlayer = _playerCam.transform.position - (transform.position + new Vector3(0,2,0));
         //Debug.DrawRay((transform.position + new Vector3(0, 2, 0)), directionToPlayer, Color.red, 5f);
-        return Physics.Raycast(_playerCam.transform.position, directionToPlayer, _distanceBeforeGoToPlayer, _playerLayer, QueryTriggerInteraction.Ignore);
+        RaycastHit hit;
+        //return Physics.Raycast((transform.position + new Vector3(0, 2, 0)), directionToPlayer, _distanceBeforeGoToPlayer, _playerLayer, QueryTriggerInteraction.Ignore);
+        Physics.Raycast((transform.position + new Vector3(0, 2, 0)), directionToPlayer, out hit, _distanceBeforeGoToPlayer, ~0, QueryTriggerInteraction.Ignore);
+        //return (hit == null)
+        if (hit.collider == null || hit.collider.gameObject == null)
+            return false;
+
+        if (hit.transform.gameObject.layer == _playerLayer)
+            return true;
+
+        return false;
     }
 
     protected bool EnemyVisibleToPlayer()

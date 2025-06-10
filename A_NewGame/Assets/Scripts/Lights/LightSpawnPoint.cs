@@ -8,11 +8,9 @@ public class LightSpawnPoint : MonoBehaviour
 
     public LightScriptableObjectScript lightData;
 
-    [Range(0f, 100f)]
-    public int LikelyHoodOfFlickering;
+
     private bool willFLicker = false;
-    public float timeOff = 1f;
-    public float timeOn = 1f;
+
 
     private GameObject _newLight = null;
     private AudioSource _newLightAudioSource = null;
@@ -158,11 +156,11 @@ public class LightSpawnPoint : MonoBehaviour
             ToggleLight(light);
             //PlayLightToggledAudio(false);
             StopAudio();
-            yield return new WaitForSeconds(timeOff);
+            yield return new WaitForSeconds(lightData.flickerTimeOff);
             ToggleLight(light);
             //PlayLightToggledAudio(true);
             PlayLightPassiveAudio();
-            yield return new WaitForSeconds(timeOn);
+            yield return new WaitForSeconds(lightData.flickerTimeOn);
         }
     }
 
@@ -174,6 +172,6 @@ public class LightSpawnPoint : MonoBehaviour
 
     public bool LightFlickers()
     {
-        return Random.Range(0, 100) <= LikelyHoodOfFlickering;
+        return Random.Range(0, 100) <= lightData.LikelyHoodOfFlickering;
     }
 }

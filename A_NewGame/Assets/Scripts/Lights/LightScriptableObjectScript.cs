@@ -9,6 +9,11 @@ public class LightScriptableObjectScript : ScriptableObject
     public float lightIntensity = 10;
     public float lightRange = 10;
 
+    [Range(0f, 100f)]
+    public int LikelyHoodOfFlickering;
+    public float flickerTimeOff = 1f;
+    public float flickerTimeOn = 1f;
+
     [Range(0f, 1f)]
     public float shadowStrength = 1f;
 

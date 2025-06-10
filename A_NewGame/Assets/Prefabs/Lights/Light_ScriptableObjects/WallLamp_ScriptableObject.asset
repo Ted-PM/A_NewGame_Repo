@@ -17,6 +17,9 @@ MonoBehaviour:
   lightColor: {r: 1, g: 0.80843496, b: 0.435849, a: 1}
   lightIntensity: 15
   lightRange: 20
+  LikelyHoodOfFlickering: 10
+  flickerTimeOff: 0.05
+  flickerTimeOn: 3
   shadowStrength: 1
   passiveLightAudio: {fileID: 8300000, guid: 41607708416f6ed43b728bd5a76b5133, type: 3}
   lightToggledAudio: {fileID: 8300000, guid: e2d1b2f235d44ff4e9e371276a89e751, type: 3}
