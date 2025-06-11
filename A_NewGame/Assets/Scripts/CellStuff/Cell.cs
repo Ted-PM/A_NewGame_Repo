@@ -202,7 +202,7 @@ public class Cell : MonoBehaviour
             try
             {
                 tempWall = this.GetComponentInChildren<CellWall>();
-                tempCellWallData = new CellWallData(tempWall, (int)tempWall.GetWallX(), (int)tempWall.GetWallZ(), null);
+                tempCellWallData = new CellWallData(tempWall, (int)tempWall.GetWallX(), (int)tempWall.GetWallZ(), 0, null);
 
                 // tempWall.GetWallX() returns local X position of wall
                 // walls along x axis have x value incremented by 5 each time

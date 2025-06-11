@@ -48,15 +48,17 @@ public class LurkerEnemy : EnemyBaseClass
         _playerStaring = false;
         _checkingIfStaring = false;
         _goToPlayer = false;
+        yield return null;
 
-        while (_enemyState != EnemyStates.Agro && _enemyState != EnemyStates.Disabled)
-        {
-            yield return new WaitForFixedUpdate();
-            if (EnemyVisibleToPlayer())
-                _enemyState = EnemyStates.Agro;
-            //_enemySeenForFirstTime = EnemyVisibleToPlayer();
-        }
-        StartCoroutine(base.CanNoLongerSeePlayer());
+        StartCoroutine(base.EnemySeenForFirstTime());
+        //while (_enemyState != EnemyStates.Agro && _enemyState != EnemyStates.Disabled)
+        //{
+        //    yield return new WaitForFixedUpdate();
+        //    if (EnemyVisibleToPlayer())
+        //        _enemyState = EnemyStates.Agro;
+        //    //_enemySeenForFirstTime = EnemyVisibleToPlayer();
+        //}
+        //StartCoroutine(base.CanNoLongerSeePlayer());
     }
 
     protected override void EnableAgent()

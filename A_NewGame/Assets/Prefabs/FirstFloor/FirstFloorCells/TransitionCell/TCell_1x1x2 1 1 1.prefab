@@ -5097,6 +5097,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4847578620178373002}
   - component: {fileID: 2767630014968803261}
+  - component: {fileID: 6735860397636118749}
   m_Layer: 0
   m_Name: TCell_1x1x2 1 1 1
   m_TagString: Untagged
@@ -5156,3 +5157,27 @@ MonoBehaviour:
   cellDoStuffObject: {fileID: 0}
   hasEnemy: 0
   _enemySpawnPoints: []
+--- !u!114 &6735860397636118749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9152071213757157107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d217db684c67004cbf0734b33f359d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellTypes: 03000000
+  _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
+  _floorMaterial: {fileID: 2100000, guid: f266ba03e1218bf45b32f96554872ef8, type: 2}
+  _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
+  _doorWayPrefabs: []
+  _entrancePrefabs: []
+  _lights: []
+  _props: {fileID: 0}
+  xWidth: 1
+  zHeight: 1
+  transCellExitX: 0
+  transCellExitZ: 0

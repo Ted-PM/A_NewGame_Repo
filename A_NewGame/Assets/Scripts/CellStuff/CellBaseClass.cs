@@ -47,6 +47,10 @@ public class CellBaseClass : MonoBehaviour
 
     private int _cellPrefabIndex = -1;
 
+    [Tooltip("Add the dead cells as XXZZ, no spaces, must have 4 characters")]
+    public List<string> _deadCellListStr;
+    private List<int[]> _deadCellListInt;
+
     private void Awake()
     {
         InitializeLists();
@@ -344,7 +348,7 @@ public class CellBaseClass : MonoBehaviour
     {
         for (int i = 0; i < _ceelings.Count; i++)
         {
-            _ceelings[i].ChangeCeelingMat(_floorMaterial);
+            _ceelings[i].ChangeCeelingMat(_ceelingMaterial);
         }
     }
 
@@ -566,6 +570,9 @@ public class CellBaseClass : MonoBehaviour
         _cellBaseIndex = new int[2];
         _cellBaseIndex[0] = x;
         _cellBaseIndex[1] = z;
+
+        if (HasDeadCells())
+            SetDeadCells();
     }
 
     public void SetCellDerivedIndex(int x, int z)
@@ -787,6 +794,57 @@ public class CellBaseClass : MonoBehaviour
         _xNegVerticleWalls[index] = wallData;
     }
 
+    // SET DEAD CELL DATA
+    private void SetDeadCells()
+    {
+        if (_deadCellListStr == null || _deadCellListStr.Count <= 0)
+            return;
+
+        _deadCellListInt = new List<int[]>();
+
+        int[] tempIndex = null;
+
+        for (int i = 0; i < _deadCellListStr.Count; i++)
+        {
+            if (_deadCellListStr[i].Length == 4)
+            {
+                tempIndex = new int[2];
+                tempIndex[0] = _cellBaseIndex[0] + GetIntFrom2Char(_deadCellListStr[i][0], _deadCellListStr[i][1]);
+                tempIndex[1] = _cellBaseIndex[1] + GetIntFrom2Char(_deadCellListStr[i][2], _deadCellListStr[i][3]);
+                _deadCellListInt.Add(tempIndex);
+            }
+            else
+                Debug.LogError("Dead Cell Name Wrong!! Name: " + _deadCellListStr[i]);
+        }
+    }
+
+    // GET DEAD CELL DATA
+    public int GetNumDeadCells()
+    {
+        return _deadCellListInt.Count;
+    }
+
+    public int GetDeadCellX(int num)
+    {
+        if (num >= _deadCellListInt.Count || num < 0)
+            return -1;
+        return _deadCellListInt[num][0];
+    }
+
+    public int GetDeadCellZ(int num)
+    {
+        if (num >= _deadCellListInt.Count || num < 0)
+            return -1;
+        return _deadCellListInt[num][1];
+    }
+
+    public List<int[]> GetDeadCellList()
+    {
+        if (_deadCellListInt == null || _deadCellListInt.Count == 0)
+            return new List<int[]>();
+        return _deadCellListInt;
+    }    
+
     //      GET CELL DATA
     public int GetCellXWidth()
     {
@@ -801,6 +859,56 @@ public class CellBaseClass : MonoBehaviour
     public virtual int GetCellYFloors()
     {
         return 1;
+    }
+
+    public virtual int GetNumPosZWalls()
+    {
+        return _zPosHorizontalWalls.Count;
+    }
+
+    public virtual int[] GetSpecificPosZWallMatrixID(int i)
+    {
+        if (i < 0 || i >= _zPosHorizontalWalls.Count)
+            return null;
+
+        return _zPosHorizontalWalls[i].GetMatrixID();
+    }
+
+    public virtual int GetNumNegZWalls()
+    {
+        return _zNegHorizontalWalls.Count;
+    }
+
+    public virtual int[] GetSpecificNegZWallMatrixID(int i)
+    {
+        if (i < 0 || i >= _zNegHorizontalWalls.Count)
+            return null;
+
+        return _zNegHorizontalWalls[i].GetMatrixID();
+    }
+
+    public virtual int GetNumPosXWalls()
+    {
+        return _xPosVerticleWalls.Count;
+    }
+    public virtual int[] GetSpecificPosXWallMatrixID(int i)
+    {
+        if (i < 0 || i >= _xPosVerticleWalls.Count)
+            return null;
+
+        return _xPosVerticleWalls[i].GetMatrixID();
+    }
+
+    public virtual int GetNumNegXWalls()
+    {
+        return _xNegVerticleWalls.Count;
+    }
+    public virtual int[] GetSpecificNegXWallMatrixID(int i)
+    {
+        if (i < 0 || i >= _xNegVerticleWalls.Count)
+            return null;
+
+        return _xNegVerticleWalls[i].GetMatrixID();
     }
 
     public bool CellIsEnabled()
@@ -818,8 +926,11 @@ public class CellBaseClass : MonoBehaviour
 
     public int[] GetCellBaseIndex()
     {
-        if (_cellBaseIndex == null)     
+        if (_cellBaseIndex == null)
+        {
+            Debug.LogError("No Base Cell Index!! for " + this.gameObject.name);
             return null;      
+        }
 
         return _cellBaseIndex;
     }
@@ -885,5 +996,18 @@ public class CellBaseClass : MonoBehaviour
     protected bool OneInXChances(int num)
     {
         return Random.Range(0, num) == 0;
+    }
+
+    private int GetIntFrom2Char(char a, char b)
+    {
+        int result = 0;
+        result += GetIntFromChar(a) * 10;
+        result += GetIntFromChar(b);
+        return result;
+
+    }
+    private int GetIntFromChar(char ch)
+    {
+        return ((int)ch - 48);
     }
 }

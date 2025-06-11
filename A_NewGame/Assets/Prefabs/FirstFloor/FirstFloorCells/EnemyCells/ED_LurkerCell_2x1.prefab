@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7028238925211560019}
   - component: {fileID: 4004504733082500293}
+  - component: {fileID: 5177396166115125114}
   m_Layer: 0
   m_Name: ED_LurkerCell_2x1
   m_TagString: Untagged
@@ -43,7 +44,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 342488833958512737}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 55d9702d422f36d4d9bd3e111c0c06b4, type: 3}
   m_Name: 
@@ -68,6 +69,34 @@ MonoBehaviour:
   yFloors: 1
   cellDoStuffObject: {fileID: 0}
   hasEnemy: 1
+  _enemySpawnPoints:
+  - {fileID: 3277001243316601210}
+--- !u!114 &5177396166115125114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342488833958512737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3f36bd4fc33fd4ead68eac4a73ef59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellTypes: 0200000001000000
+  _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
+  _floorMaterial: {fileID: 2100000, guid: f266ba03e1218bf45b32f96554872ef8, type: 2}
+  _ceelingMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
+  _doorWayPrefabs:
+  - {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
+  - {fileID: 6013358023859362223, guid: 81e023d16ec81f04b93f2968d8768cea, type: 3}
+  _entrancePrefabs: []
+  _lights: []
+  _props: {fileID: 0}
+  xWidth: 2
+  zHeight: 1
+  _deadCellListStr:
+  - 0000
   _enemySpawnPoints:
   - {fileID: 3277001243316601210}
 --- !u!1 &628654294558573515
