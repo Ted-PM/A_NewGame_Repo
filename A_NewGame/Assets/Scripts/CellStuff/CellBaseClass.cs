@@ -108,6 +108,7 @@ public class CellBaseClass : MonoBehaviour
     {
         ChangeCellWallMaterial();
         ChangeCellFloorMaterial();
+        UpdateFloorTagAndLayer();
         ChangeCellCeelingMaterial();
     }
 
@@ -320,6 +321,15 @@ public class CellBaseClass : MonoBehaviour
         for (int i = 0; i < _floors.Count; i++)
         {
             _floors[i].ChangeFloorMat(_floorMaterial);
+        }
+    }
+
+    private void UpdateFloorTagAndLayer()
+    {
+        for (int i = 0; i < _floors.Count;i++)
+        {
+            _floors[i].gameObject.tag = "Ground";
+            _floors[i].gameObject.layer = 6;
         }
     }
 
