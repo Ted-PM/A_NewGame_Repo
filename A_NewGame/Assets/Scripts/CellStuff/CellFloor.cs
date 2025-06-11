@@ -33,4 +33,10 @@ public class CellFloor : MonoBehaviour
         _floorCollider.enabled = false;
     }
 
+    public void EnableFloor()
+    {
+        _floorCollider.enabled = true;
+        _floorRenderer.enabled = true;
+    }
+
 }

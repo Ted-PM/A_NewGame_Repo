@@ -32,4 +32,10 @@ public class CellCeeling : MonoBehaviour
         _ceelingRenderer.enabled = false;
         _ceelingCollider.enabled = false;
     }
+
+    public void EnableCeeling()
+    {
+        _ceelingRenderer.enabled = true;
+        _ceelingCollider.enabled = true;
+    }
 }

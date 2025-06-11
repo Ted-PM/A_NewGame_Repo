@@ -39,10 +39,20 @@ public class CellWall : MonoBehaviour
     {
         _wallCollider.enabled = false;
 
-        if (_wallPlane != null)
-            _wallPlane.SetActive(false);// = false;
+        if (_wallPlane != null && _planeRenderer != null)
+            _planeRenderer.enabled = false;
         if (_wallProps != null)
             DisableWallProps();
+    }
+
+    public void EnableWall()
+    {
+        _wallCollider.enabled = true;
+
+        if (_wallPlane != null && _planeRenderer != null)
+            _planeRenderer.enabled = true;
+        if (_wallProps != null)
+            EnableWallProps();
     }
 
     public void DestroyWallProps()
