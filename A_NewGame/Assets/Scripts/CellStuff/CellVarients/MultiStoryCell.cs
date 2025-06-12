@@ -124,6 +124,11 @@ public class MultiStoryCell : CellBaseClass
     //      CHANGE WALL MATERIAL
     protected override void ChangeCellWallMaterial()
     {
+        if (_wallMaterial == null)
+        {
+            Debug.Log("No multi wall material!!");
+            return;
+        }
         for (int j = 0; j < yFloors; j++)
         {
             for (int i = 0; i < _zPosMultiHorizontalWalls[j].Count; i++)

@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2911118892048601524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8384546654989596632}
+  - component: {fileID: 8637150584667724815}
+  m_Layer: 0
+  m_Name: DoorSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8384546654989596632
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2911118892048601524}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8637150584667724815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2911118892048601524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67276fe59afad5049b8a8a636d2f4aa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _doorWayTypesOrderInList: 0
+  _doorPrefabList:
+  - {fileID: 1590602543854284924, guid: ba7f112d8fc0f344e8417a19cb866088, type: 3}
+  - {fileID: 655998667001806942, guid: fa80207377466594e85c6510043bb07a, type: 3}
+  _doorWayPrefabList:
+  - {fileID: 6013358023859362223, guid: 81e023d16ec81f04b93f2968d8768cea, type: 3}
+  - {fileID: 2647540597859773457, guid: 36b5182b77c4b3843a527ced68801df7, type: 3}
+  _numberOfDoorsInPool: 3200000032000000

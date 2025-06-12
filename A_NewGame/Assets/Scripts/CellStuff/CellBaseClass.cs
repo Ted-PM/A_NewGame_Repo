@@ -190,6 +190,11 @@ public class CellBaseClass : MonoBehaviour
 
     protected virtual void ChangeCellWallMaterial()
     {
+        if (_wallMaterial == null)
+        {
+            //Debug.Log("No wall material!!");
+            return;
+        }
         for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
         {
             _zPosHorizontalWalls[i].wall.SetWallMaterial(_wallMaterial);
@@ -318,6 +323,11 @@ public class CellBaseClass : MonoBehaviour
 
     private void ChangeCellFloorMaterial()
     {
+        if (_floorMaterial == null)
+        {
+            Debug.Log("No Floor material!!");
+            return;
+        }
         for (int i = 0; i < _floors.Count; i++)
         {
             _floors[i].ChangeFloorMat(_floorMaterial);
@@ -356,6 +366,11 @@ public class CellBaseClass : MonoBehaviour
 
     private void ChangeCellCeelingMaterial()
     {
+        if (_ceelingMaterial == null)
+        {
+            Debug.Log("No Ceeling material!!");
+            return;
+        }
         for (int i = 0; i < _ceelings.Count; i++)
         {
             _ceelings[i].ChangeCeelingMat(_ceelingMaterial);

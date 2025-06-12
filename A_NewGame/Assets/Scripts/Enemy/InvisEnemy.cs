@@ -66,12 +66,12 @@ public class InvisEnemy : EnemyBaseClass
         yield return null;
     }
     /// ------------
-    protected override IEnumerator EnemySeenForFirstTime()
-    {
-        if (_enemyState != EnemyStates.Disabled)
-            StartCoroutine(base.EnemySeenForFirstTime());
-        yield break;
-    }
+    //protected override IEnumerator EnemySeenForFirstTime()
+    //{
+    //    if (_enemyState != EnemyStates.Disabled)
+    //        StartCoroutine(base.EnemySeenForFirstTime());
+    //    yield break;
+    //}
 
     protected override void OnTriggerEnter(Collider other)
     {

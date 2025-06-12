@@ -28,6 +28,12 @@ public class LurkerEnemy : EnemyBaseClass
     /// ------------
     protected override IEnumerator CheckIfEnemyAgroed()
     {
+        _enemyAnimator.SetBool("Yelling", false);
+        _enemyAnimator.enabled = false;
+        _playerStaring = false;
+        _checkingIfStaring = false;
+        _goToPlayer = false;
+
         StartCoroutine(base.CheckIfEnemyAgroed());
         yield return null;
     }
@@ -41,25 +47,25 @@ public class LurkerEnemy : EnemyBaseClass
 
 
 
-    protected override IEnumerator EnemySeenForFirstTime()
-    {
-        _enemyAnimator.SetBool("Yelling", false);
-        _enemyAnimator.enabled = false;
-        _playerStaring = false;
-        _checkingIfStaring = false;
-        _goToPlayer = false;
-        yield return null;
+    //protected override IEnumerator EnemySeenForFirstTime()
+    //{
+    //    _enemyAnimator.SetBool("Yelling", false);
+    //    _enemyAnimator.enabled = false;
+    //    _playerStaring = false;
+    //    _checkingIfStaring = false;
+    //    _goToPlayer = false;
+    //    yield return null;
 
-        StartCoroutine(base.EnemySeenForFirstTime());
-        //while (_enemyState != EnemyStates.Agro && _enemyState != EnemyStates.Disabled)
-        //{
-        //    yield return new WaitForFixedUpdate();
-        //    if (EnemyVisibleToPlayer())
-        //        _enemyState = EnemyStates.Agro;
-        //    //_enemySeenForFirstTime = EnemyVisibleToPlayer();
-        //}
-        //StartCoroutine(base.CanNoLongerSeePlayer());
-    }
+    //    StartCoroutine(base.EnemySeenForFirstTime());
+    //    //while (_enemyState != EnemyStates.Agro && _enemyState != EnemyStates.Disabled)
+    //    //{
+    //    //    yield return new WaitForFixedUpdate();
+    //    //    if (EnemyVisibleToPlayer())
+    //    //        _enemyState = EnemyStates.Agro;
+    //    //    //_enemySeenForFirstTime = EnemyVisibleToPlayer();
+    //    //}
+    //    //StartCoroutine(base.CanNoLongerSeePlayer());
+    //}
 
     protected override void EnableAgent()
     {

@@ -20,8 +20,11 @@ public class CellWall : MonoBehaviour
     private void Awake()
     {
         _wallCollider = GetComponent<Collider>();
-        if (!_wallPlane.TryGetComponent<Renderer>(out _planeRenderer))
-            Debug.Log("No Plane Renderer");
+        if (_wallPlane == null || !_wallPlane.TryGetComponent<Renderer>(out _planeRenderer))
+        {
+
+            //Debug.Log("No Plane Renderer");
+        }
     }
 
     public void SetWallMaterial(Material wallMaterial)

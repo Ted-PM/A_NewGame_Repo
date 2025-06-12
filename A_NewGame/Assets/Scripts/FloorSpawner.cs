@@ -20,6 +20,7 @@ public class FloorSpawner : MonoBehaviour
     private MazeGenerator _generator;
 
     private List<int[]> _floorDimensions;
+    private List<int> _floorLevels;
 
     [HideInInspector]
     public bool mazeGenerated = false;
@@ -30,8 +31,11 @@ public class FloorSpawner : MonoBehaviour
             numberOfFloors = mazeFloorPrefabs.Length;
 
         _mazeFloorContainer = new GameObject("MazeFloors");
+        if (!generateDefault)
+            numberOfFloors = mazeFloorPrefabs.Length;
         _mazeFloors = new MazeFloor[numberOfFloors];
         _floorDimensions = new List<int[]>();
+        _floorLevels = new List<int>();
     }
 
     private void Start()
@@ -99,6 +103,12 @@ public class FloorSpawner : MonoBehaviour
             }
             _floorDimensions.Add(tempDim);
             Debug.Log("Floor: " + i + " - Added Floor Dimensions: " + _floorDimensions[i][0] + ", " + _floorDimensions[i][1]);
+
+            for (int j = 0; j < mazeFloorPrefabs[i].GetComponent<MazeFloor>().GetFloorYDepth();j++)
+            {
+                _floorLevels.Add(i);
+
+            }
         }
     }
 
@@ -134,7 +144,7 @@ public class FloorSpawner : MonoBehaviour
     {
         GameObject newFloor = Instantiate(mazeFloorPrefabs[floorIndex], _mazeFloorContainer.transform);
         _mazeFloors[floorIndex] = newFloor.GetComponent<MazeFloor>();
-        _mazeFloors[floorIndex].InitializeFloor(baseX, baseZ);
+        _mazeFloors[floorIndex].InitializeFloor(_floorDimensions[floorIndex][0], _floorDimensions[floorIndex][1]);
 
         if (floorIndex == 0)
             _mazeFloors[floorIndex].SetStartCells();
@@ -143,6 +153,9 @@ public class FloorSpawner : MonoBehaviour
             _mazeFloors[floorIndex].SetPrevFloorData(_mazeFloors[floorIndex - 1], _mazeFloors[floorIndex - 1].GetTransitionalCell(),
                 _mazeFloors[floorIndex - 1].GetTransitionX(), _mazeFloors[floorIndex - 1].GetTransitionZ(),
                 (floorIndex - 1));
+
+        if (floorIndex == numberOfFloors - 1)
+            _mazeFloors[floorIndex].hasNextFloor = false;
 
         if (floorIndex != numberOfFloors - 1)
         {
@@ -191,6 +204,11 @@ public class FloorSpawner : MonoBehaviour
     public MazeFloor[] GetMazeFloors()
     {
         return _mazeFloors;
+    }
+
+    public List<int> GetFloorLevelList()
+    {
+        return _floorLevels;
     }
 
     //private bool CanGenerateMaze(int floorIndex)

@@ -11,6 +11,7 @@ public class WorldRenderManager : MonoBehaviour
 
     public void SetMazeFloors(MazeFloor[] mazeFloors)
     {
+        //Debug.Log("Maze floors set");
         _mazeFloors = mazeFloors;
     }
 
@@ -68,6 +69,8 @@ public class WorldRenderManager : MonoBehaviour
 
     public void UpdateRenderers(int floorLevel)
     {
+        //Debug.Log("Updating renders");
+
         if (_mazeFloors[floorLevel] == null)
         {
             Debug.LogError("Maze Floor not in Render Manager!!");

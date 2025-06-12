@@ -10,6 +10,8 @@ public class MazeFloor : MonoBehaviour
     public GameObject emptyCell;
     public GameObject emptyFloorCell;
 
+    public List<GameObject> customCeeling;
+
     [SerializeField, Tooltip("Must include atleast one 1x1 cell.")]
     private GameObject[] _prefabs;
 
@@ -74,6 +76,7 @@ public class MazeFloor : MonoBehaviour
         SetFloorDimensions(width, height);
         CheckPrefabListAndOdds();
         SpawnXContainers();
+        SpawnCustomCeeling();
     }
 
     private void SetFloorDimensions(int width, int height)
@@ -111,6 +114,20 @@ public class MazeFloor : MonoBehaviour
         {
             Debug.Log("Prefab odds list < prefabs list.");
             PopulatePrefabOdds();
+        }
+    }
+
+    private void SpawnCustomCeeling()
+    {
+        if (customCeeling == null || customCeeling.Count <= 0)
+            return;
+
+        GameObject temp;
+        for (int i = 0; i < customCeeling.Count; i++)
+        {
+            temp = Instantiate(customCeeling[i], this.transform);
+            temp.transform.localScale = new Vector3(xWidth, 0f, zHeight);
+            temp.transform.localPosition += new Vector3((10*xWidth)/2, 0f, (10*zHeight)/2);
         }
     }
 
@@ -314,13 +331,17 @@ public class MazeFloor : MonoBehaviour
         bool cellSpawned = false;
         List<int> possibleCells = new List<int>();
         possibleCells = GetListOfPossiblePrefabs(_verticleTransitionPrefabs, true);
-        possibleCells = RandomizeIntList(possibleCells);
+        //possibleCells = RandomizeIntList(possibleCells);
 
         int potentialCellIndex;
 
         while (!cellSpawned && possibleCells.Count > 0)
         {
-            potentialCellIndex = possibleCells[0];
+            if (floorLevel == 1)
+                potentialCellIndex = possibleCells[1];
+            else 
+                potentialCellIndex = possibleCells[0];
+
             cellSpawned = CanSpawnCell(x, z, potentialCellIndex, true);
 
             if (!cellSpawned)

@@ -1,5 +1,7 @@
+using NUnit.Framework;
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -38,24 +40,29 @@ public class WorldGenerator : MonoBehaviour
     private bool _worldReady = false;
     private bool _renderManagerReady = false;
     private bool _playerReady = false;
-    private int _playerFloorLevel = -1;
+    public int _playerFloorLevel = -1;
+
+    private List<int> _floorLevels;
 
     private void Awake()
     {
+        //_floorLevels = new List<int>();
         SpawnFloors();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         StartCoroutine(WaitThenSpawnOtherShit());
     }
 
     private void FixedUpdate()
     {
-        if (_worldReady && _playerFloorLevel != GetPlayerFloorLevel())
+        //if (_worldReady && _playerFloorLevel != GetPlayerFloorLevel())
+        if (_worldReady && _playerFloorLevel != _floorLevels[GetPlayerFloorLevel()])
         {
-            _playerFloorLevel = GetPlayerFloorLevel();
+            _playerFloorLevel = _floorLevels[GetPlayerFloorLevel()];
             if (useRenderCulling)
                 _worldRenderManager.UpdateRenderers(_playerFloorLevel);
             if (useAbmientAudio)
@@ -66,7 +73,7 @@ public class WorldGenerator : MonoBehaviour
     private IEnumerator WaitThenSpawnOtherShit()
     {
         yield return new WaitForSeconds(1f);
-
+        StartCoroutine(WaitTillWorldReady());
         if (useRenderCulling)
         {
             StartCoroutine(WaitThenEnableWorldRenderer());
@@ -76,24 +83,28 @@ public class WorldGenerator : MonoBehaviour
             if (_worldRenderManager != null)
                 Destroy(_worldRenderManager);
         }
-
+        yield return new WaitForFixedUpdate();
         if (spawnEnemies)
             StartCoroutine(WaitThenSpawnEnemySpawner());
+        yield return new WaitForFixedUpdate();
         if (spawnDoors)
             StartCoroutine(WaitThenSpawnDoorSpawner());
-        if (spawnPlayer)
-            StartCoroutine(WaitThenSpawnPlayer());
+        yield return new WaitForFixedUpdate();
         if (spawnLights)
             StartCoroutine(WaitThenSpawnLightSpawner());
+        yield return new WaitForFixedUpdate();
+        if (spawnPlayer)
+            StartCoroutine(WaitThenSpawnPlayer());
 
-        StartCoroutine(WaitTillWorldReady());
+        yield return new WaitForFixedUpdate();
+
+        //StartCoroutine(WaitTillWorldReady());
     }
 
     private IEnumerator WaitTillWorldReady()
     {
         _playerReady = !spawnPlayer;
         _renderManagerReady = !useRenderCulling;
-
         while (!_playerReady || !_renderManagerReady)
         {
             yield return new WaitForFixedUpdate();
@@ -122,8 +133,15 @@ public class WorldGenerator : MonoBehaviour
 
         _mazeFloors = new MazeFloor[_floorSpawner.numberOfFloors];
         _mazeFloors = _floorSpawner.GetMazeFloors();
+        _floorLevels = _floorSpawner.GetFloorLevelList();
+        Debug.Log("Floor Level List: ");
+        for (int i = 0; i < _floorLevels.Count; i++ )
+        {
+            Debug.Log( _floorLevels[i] );
+        }
         if (_worldRenderManager != null)
             _worldRenderManager.SetMazeFloors(_mazeFloors);
+        //Debug.Log("Render Manager Ready!");
         _renderManagerReady = true;
             //StartCoroutine(_floorSpawner.DisableInitialFloorRenderers());
     }
@@ -171,6 +189,8 @@ public class WorldGenerator : MonoBehaviour
             Debug.LogError("Can't Find Player!!");
             return;
         }
+
+        //Debug.Log("Player Ready!");
         _playerReady = true;
     }
 }

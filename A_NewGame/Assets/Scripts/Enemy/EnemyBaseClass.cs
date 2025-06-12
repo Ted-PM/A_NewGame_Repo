@@ -27,13 +27,14 @@ public class EnemyBaseClass : MonoBehaviour
     [SerializeField]
     private EnemyType enemyType;
 
+    [SerializeField]
     protected EnemyStates _enemyState;
 
     [SerializeField]
     protected NavMeshAgent agent;
 
     [SerializeField]
-    private GameObject _enemyBody;
+    protected GameObject _enemyBody;
     private Renderer _enemyRenderer;
 
     [SerializeField]
@@ -57,7 +58,9 @@ public class EnemyBaseClass : MonoBehaviour
     protected Vector3 _playerPos;
 
     //protected bool _enemyDisabled = false;
-    private Vector3 _enemySpawn;
+    protected Vector3 _enemySpawn;
+
+    protected Rigidbody _enemyRB;
 
     protected NavMeshPath _enemyPath;
     protected bool _enemyMoved = false;
@@ -85,7 +88,10 @@ public class EnemyBaseClass : MonoBehaviour
         else
             Debug.LogError("Enemy Body is NULL!!");
 
-
+        if (!TryGetComponent<Rigidbody>(out _enemyRB))
+        {
+            Debug.LogError("No Enemy RigidBody!!");
+        }
         if (agent == null)
             Debug.LogError("NavMesh Agent NULL !!");
 
@@ -164,7 +170,8 @@ public class EnemyBaseClass : MonoBehaviour
             //if (!_enemyDisabled)
             if (_enemyState != EnemyStates.Disabled)
             {
-                StartCoroutine(EnemySeenForFirstTime());
+                StartCoroutine(CheckIfEnemyAgroed());
+                //StartCoroutine(EnemySeenForFirstTime());
                 StartCoroutine(CanPathToPlayer());
                 //agent.enabled = true;
                 //_enemyRenderer.enabled = true;
@@ -228,7 +235,7 @@ public class EnemyBaseClass : MonoBehaviour
         yield return null;
     }
     /// ------------
-    protected virtual IEnumerator EnemySeenForFirstTime()
+    protected IEnumerator EnemySeenForFirstTime()
     {
         //while (!_enemySeenForFirstTime && !_enemyDisabled)
         while (_enemyState != EnemyStates.Agro && _enemyState != EnemyStates.Disabled)
@@ -237,7 +244,8 @@ public class EnemyBaseClass : MonoBehaviour
             if (EnemyVisibleToPlayer())
             {
                 _enemyState = EnemyStates.Agro;
-                StartCoroutine(CanNoLongerSeePlayer());
+                StartCoroutine(CheckIfEnemyDeAgroed());
+                //StartCoroutine(CanNoLongerSeePlayer());
             }
         }
     }
@@ -268,28 +276,22 @@ public class EnemyBaseClass : MonoBehaviour
         //_enemyDisabled = true;
     }
 
-    public void EnableEnemy()
+    public virtual void EnableEnemy()
     {
         _enemyState = EnemyStates.Static;
         StopAllCoroutines();
-        //if (_enemyRenderer != null)
-        //    _enemyRenderer.enabled = true;
-        //if (agent != null)       
-        //    agent.enabled = true;
         
         if (_enemyAudioSource != null)
             _enemyAudioSource.enabled = true;
-        //if (_enemyAnimator!= null)
-        //    _enemyAnimator.enabled = true;
         EnableAgent();
         _enemySpawn = transform.position;
-        //Debug.Log(enemyType + " enabled at " + transform.position.x + ", " + transform.position.y + ", " + transform.position.z);
         if (!_playerFound)
             StartCoroutine(TryFindPlayer());
         else
         {
             _playerPos = _playerTransform.transform.position;
-            StartCoroutine(EnemySeenForFirstTime());
+
+            StartCoroutine(CheckIfEnemyAgroed());
             StartCoroutine(CanPathToPlayer());
         }
     }
@@ -423,7 +425,8 @@ public class EnemyBaseClass : MonoBehaviour
     {
         _enemyMoved = false;
         _enemyState = EnemyStates.Returning;
-        StartCoroutine(EnemySeenForFirstTime());
+        StartCoroutine(CheckIfEnemyAgroed());
+        //StartCoroutine(EnemySeenForFirstTime());
 
         while (!EnemyNearPosition(_enemySpawn) && _enemyState == EnemyStates.Returning)
         {
@@ -433,7 +436,7 @@ public class EnemyBaseClass : MonoBehaviour
                 agent.SetPath(_enemyPath);
         }
 
-        if (EnemyNearPosition(_enemySpawn) &&_enemyState != EnemyStates.Disabled)
+        if (EnemyNearPosition(_enemySpawn) && _enemyState != EnemyStates.Disabled)
         {
             _enemyAnimator.SetBool("Static", true);
             _enemyState = EnemyStates.Static;            
@@ -442,7 +445,8 @@ public class EnemyBaseClass : MonoBehaviour
 
     private bool EnemyNearPosition(Vector3 pos)
     {
-        return Vector3.Distance(pos, _enemyBody.transform.position) <= 2;
+        return Vector3.Distance(pos, transform.position) <= 2;
+        //return Vector3.Distance(pos, _enemyBody.transform.position) <= 2;
     }
 
     protected void PlayLoopedAudio(AudioClip _enemyAudioClip)
