@@ -10,7 +10,8 @@ public class MazeFloor : MonoBehaviour
     public GameObject emptyCell;
     public GameObject emptyFloorCell;
 
-    public List<GameObject> customCeeling;
+    public List<GameObject> customCeelingPrefabs;
+    private List<GameObject> _customCeelings;
 
     [SerializeField, Tooltip("Must include atleast one 1x1 cell.")]
     private GameObject[] _prefabs;
@@ -69,6 +70,7 @@ public class MazeFloor : MonoBehaviour
         _prevFloorExit = new int[2];
         _prevFloorTransitionCells = new List<int[]>();
         _startCells = new List<int[]>();
+        //_customCeelings = new List<GameObject> ();
     }
 
     public void InitializeFloor(int width, int height)
@@ -119,15 +121,17 @@ public class MazeFloor : MonoBehaviour
 
     private void SpawnCustomCeeling()
     {
-        if (customCeeling == null || customCeeling.Count <= 0)
+        if (customCeelingPrefabs == null || customCeelingPrefabs.Count <= 0)
             return;
 
+        _customCeelings = new List<GameObject>();
         GameObject temp;
-        for (int i = 0; i < customCeeling.Count; i++)
+        for (int i = 0; i < customCeelingPrefabs.Count; i++)
         {
-            temp = Instantiate(customCeeling[i], this.transform);
+            temp = Instantiate(customCeelingPrefabs[i], this.transform);
             temp.transform.localScale = new Vector3(xWidth, 0f, zHeight);
-            temp.transform.localPosition += new Vector3((10*xWidth)/2, 0f, (10*zHeight)/2);
+            temp.transform.localPosition += new Vector3((10*xWidth-10)/2, 0f, (10*zHeight-10)/2);
+            _customCeelings.Add(temp);
         }
     }
 
@@ -337,10 +341,10 @@ public class MazeFloor : MonoBehaviour
 
         while (!cellSpawned && possibleCells.Count > 0)
         {
-            if (floorLevel == 1)
+            if (floorLevel == 0)                            ///------------------
                 potentialCellIndex = possibleCells[1];
-            else 
-                potentialCellIndex = possibleCells[0];
+            else
+                potentialCellIndex = possibleCells[0];          ///------------
 
             cellSpawned = CanSpawnCell(x, z, potentialCellIndex, true);
 
@@ -898,6 +902,7 @@ public class MazeFloor : MonoBehaviour
 
     public void DisableFloorRenderers(int playerFloorLevel)
     {
+        ToggleCustomCeelings(playerFloorLevel);
         for (int x = 0; x < xWidth; x++)
         {
             for (int z = 0; z < zHeight; z++)
@@ -934,6 +939,24 @@ public class MazeFloor : MonoBehaviour
         }
     }
 
+    private void ToggleCustomCeelings(int playerFloorLevel)
+    {
+        if (_customCeelings == null || _customCeelings.Count <= 0)
+            return;
+
+        bool enabled = false;
+
+        if (playerFloorLevel == floorLevel || playerFloorLevel == (floorLevel - 1) ||
+            playerFloorLevel == (floorLevel + 1))
+            enabled = true;
+
+        for (int i = 0; i < _customCeelings.Count; i++)
+        {
+            _customCeelings[i].SetActive(enabled);
+        }
+
+    }
+
     public void EnableFloorRenderers()
     {
         for (int x = 0; x < xWidth; x++)
@@ -948,6 +971,8 @@ public class MazeFloor : MonoBehaviour
                 }
             }
         }
+
+        ToggleCustomCeelings(floorLevel);
     }
 
     public bool IntPlusMinusEqualToOther(int a, int b)

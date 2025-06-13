@@ -541,7 +541,7 @@ public class MultiStoryCell : CellBaseClass
             if (newObject != null)
             {
                 newObject.transform.position = newObjectPos;
-                newObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+                newObject.transform.rotation = Quaternion.Euler(0, 0, 0);
             }
         }
 
@@ -592,7 +592,7 @@ public class MultiStoryCell : CellBaseClass
             if (newObject != null)
             {
                 newObject.transform.position = newObjectPos;
-                newObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+                newObject.transform.rotation = Quaternion.Euler(0, 0, 0);
             }
         }
 

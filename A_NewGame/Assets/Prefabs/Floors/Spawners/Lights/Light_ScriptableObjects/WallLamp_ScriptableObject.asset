@@ -15,8 +15,9 @@ MonoBehaviour:
   lightPrefabType: 0
   lightType: 2
   lightColor: {r: 1, g: 0.80843496, b: 0.435849, a: 1}
-  lightIntensity: 15
-  lightRange: 20
+  lightIntensity: 10
+  lightRange: 7
+  bakeLight: 0
   LikelyHoodOfFlickering: 10
   flickerTimeOff: 0.05
   flickerTimeOn: 3

@@ -86,6 +86,11 @@ public class LightSpawner : MonoBehaviour
         return null;
     }
 
+    public void DisableLight(GameObject light)
+    {
+        light.SetActive(false);
+    }
+
     private void OnDisable()
     {
         for (int i = 0; i < _lightObjectPool.Count; i++)
@@ -102,6 +107,9 @@ public enum LightTypes
     wallLamp,
     ceelingLamp,
     candle,
-    wallLight
+    wallLight,
+    wallCandle,
+    wallTorch,
+    genericLight
 }
 

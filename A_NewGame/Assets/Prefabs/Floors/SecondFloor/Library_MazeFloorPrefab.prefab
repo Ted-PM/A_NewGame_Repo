@@ -108,25 +108,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50bc0b628c089584ea1b9bda7c6462b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startCell: {fileID: 342488833958512737, guid: 49568ca91a715714a88232c48fcb431b, type: 3}
+  startCell: {fileID: 342488833958512737, guid: 4fac11f1333b1d640a4645be02ff8a20, type: 3}
   emptyCell: {fileID: 342488833958512737, guid: ba4e89d9a7441344ca862807b338ed28, type: 3}
   emptyFloorCell: {fileID: 342488833958512737, guid: 24c080c237418a340868aa3282e2dd88, type: 3}
-  customCeeling:
+  customCeelingPrefabs:
   - {fileID: 6861092389201903292, guid: 300ed3aa670b7f44281cad02f2629f2e, type: 3}
   - {fileID: 39985596514853682, guid: f656077b3df116042a9be40c660f3525, type: 3}
   - {fileID: 555606959856567917, guid: ca49fff5637b716499739d5b920f5a8e, type: 3}
   _prefabs:
   - {fileID: 342488833958512737, guid: f37c6c1f8363f6b48b3f333a39e49bf5, type: 3}
   - {fileID: 342488833958512737, guid: 6a14185b3a8a4934ba87ed8fbe870827, type: 3}
-  _oddsOfChoosePrefab: 0100000003000000
+  - {fileID: 342488833958512737, guid: 50af037e153445d4982f96373e5046f9, type: 3}
+  - {fileID: 342488833958512737, guid: 8904ab0a993cbd949bf08f51c3dc5a0c, type: 3}
+  - {fileID: 342488833958512737, guid: 43b6e76db49d8024fa13584712bf68fb, type: 3}
+  _oddsOfChoosePrefab: 0100000002000000020000000300000005000000
   _verticleTransitionPrefabs:
   - {fileID: 9152071213757157107, guid: 3b6d7ca018fab9b4ebefffc16fa5f374, type: 3}
   specialCells: {fileID: 1456617566257914524}
   xWidth: 20
   zHeight: 20
   yDepth: 2
-  startX: -1
-  startZ: -1
+  startX: 10
+  startZ: 10
   floorLevel: 0
   hasNextFloor: 1
   nextFloorX: -1

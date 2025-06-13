@@ -328,7 +328,7 @@ MonoBehaviour:
   cellTypes: 00000000
   _wallMaterial: {fileID: 2100000, guid: 578bc3c86a2eec44981101c69c81ba4d, type: 2}
   _floorMaterial: {fileID: 2100000, guid: 0a361588f2d772f4ea2bd15d37d1b3f3, type: 2}
-  _ceelingMaterial: {fileID: 2100000, guid: a251d213a65668243a57f558f1aad723, type: 2}
+  _ceelingMaterial: {fileID: 2100000, guid: 7d48b6dd8df42cd43ac0ca99a02cea6c, type: 2}
   _doorWayPrefabs: []
   _entrancePrefabs:
   - {fileID: 3135848829145227517, guid: 8aa6de26c739a2e4793b13c947075790, type: 3}

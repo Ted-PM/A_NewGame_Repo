@@ -53,7 +53,7 @@ MonoBehaviour:
   _ceelingMaterial: {fileID: 2100000, guid: 7d48b6dd8df42cd43ac0ca99a02cea6c, type: 2}
   _doorWayPrefabs: []
   _entrancePrefabs:
-  - {fileID: 3135848829145227517, guid: 8aa6de26c739a2e4793b13c947075790, type: 3}
+  - {fileID: 7159097269274602033, guid: fa7268c0f7e9f1341b43a7d3ce24419e, type: 3}
   _lights: []
   _props: {fileID: 0}
   xWidth: 1

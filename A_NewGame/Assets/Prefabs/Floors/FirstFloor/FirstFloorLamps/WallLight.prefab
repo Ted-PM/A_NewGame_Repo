@@ -68,9 +68,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lightType: 3
   lightData: {fileID: 11400000, guid: f50194d9a9271174c94d6180bb8f6b74, type: 2}
-  LikelyHoodOfFlickering: 0
-  timeOff: 1
-  timeOn: 1
 --- !u!1 &4561975111862884534
 GameObject:
   m_ObjectHideFlags: 0

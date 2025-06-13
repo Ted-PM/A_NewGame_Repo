@@ -274,6 +274,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lightType: 2
   lightData: {fileID: 11400000, guid: 6861d5a6a4bb55242a22ca4c87f82913, type: 2}
-  LikelyHoodOfFlickering: 100
-  timeOff: 0.1
-  timeOn: 1.5

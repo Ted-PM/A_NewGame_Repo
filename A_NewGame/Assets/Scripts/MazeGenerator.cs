@@ -585,7 +585,7 @@ public class MazeGenerator : MonoBehaviour
                         }
                         else
                         {
-                            current.GetComponent<MultiStoryCell>().DestroySpecificNegZMultiWall(i, found, useEntrance);
+                            current.GetComponent<MultiStoryCell>().DestroySpecificNegXMultiWall(i, found, useEntrance);
                         }
 
                         //current.DestroySpecificNegXWall(i, found, useEntrance);
@@ -613,8 +613,8 @@ public class MazeGenerator : MonoBehaviour
         {
             Debug.LogError("Current or Next is NULL!!");
             return false;
-        } 
-        
+        }
+
         return (current.CellHasEnemy() || next.CellHasEnemy() || current.CellIsTransitional() || next.CellIsTransitional());
     }
 

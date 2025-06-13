@@ -47,7 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mazeFloorPrefabs:
   - {fileID: 8444920341893074768, guid: 995e5bf4ca5ba904796eea1b4d2c5450, type: 3}
-  - {fileID: 8444920341893074768, guid: 995e5bf4ca5ba904796eea1b4d2c5450, type: 3}
   - {fileID: 8444920341893074768, guid: 4deb7734132b9a84e8d32ba09bfb7a65, type: 3}
   - {fileID: 8444920341893074768, guid: 995e5bf4ca5ba904796eea1b4d2c5450, type: 3}
   numberOfFloors: 4

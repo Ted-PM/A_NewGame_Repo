@@ -56,6 +56,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The trigger above the player which triggers events when player enters a cell, for CellStuff.")]
     [SerializeField] private Collider _playerTrigger;
 
+    [Tooltip("The trigger around the player which triggers enemies, doors, lights etc. to spawn when close.")]
+    [SerializeField] private Collider _loadAreaTrigger;
+
     private bool _isGrounded = true;
     private bool _isClimbing = false;
     private Vector3 _playerInput = Vector3.zero;
@@ -126,6 +129,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         DeActivateCurosr();
+        StartCoroutine(WaitThenEnableOuterCollider());
         StartCoroutine(HandleContinuousInput());
     }
 
@@ -158,6 +162,17 @@ public class PlayerController : MonoBehaviour
             _lookSpeed++;
         else    
             _lookSpeed--;
+    }
+
+    public IEnumerator WaitThenEnableOuterCollider()
+    {
+        if (_loadAreaTrigger == null)
+            Debug.LogError("No player load area trigger!!");
+        
+        yield return null;
+        _loadAreaTrigger.enabled = false;
+        yield return new WaitForSeconds(0.2f);
+        _loadAreaTrigger.enabled = true;
     }
 
     private void PlayerZooped()

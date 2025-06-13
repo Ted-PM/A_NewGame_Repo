@@ -15,8 +15,12 @@ MonoBehaviour:
   lightPrefabType: 2
   lightType: 2
   lightColor: {r: 0.93962264, g: 0.9203325, b: 0.501723, a: 1}
-  lightIntensity: 15
-  lightRange: 20
+  lightIntensity: 7
+  lightRange: 10
+  bakeLight: 0
+  LikelyHoodOfFlickering: 0
+  flickerTimeOff: 1
+  flickerTimeOn: 1
   shadowStrength: 1
   passiveLightAudio: {fileID: 0}
   lightToggledAudio: {fileID: 0}

@@ -53,7 +53,6 @@ public class WorldGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
         StartCoroutine(WaitThenSpawnOtherShit());
     }
 
@@ -63,6 +62,9 @@ public class WorldGenerator : MonoBehaviour
         if (_worldReady && _playerFloorLevel != _floorLevels[GetPlayerFloorLevel()])
         {
             _playerFloorLevel = _floorLevels[GetPlayerFloorLevel()];
+
+            StartCoroutine(_player.WaitThenEnableOuterCollider());
+
             if (useRenderCulling)
                 _worldRenderManager.UpdateRenderers(_playerFloorLevel);
             if (useAbmientAudio)
@@ -83,6 +85,7 @@ public class WorldGenerator : MonoBehaviour
             if (_worldRenderManager != null)
                 Destroy(_worldRenderManager);
         }
+
         yield return new WaitForFixedUpdate();
         if (spawnEnemies)
             StartCoroutine(WaitThenSpawnEnemySpawner());
@@ -118,7 +121,7 @@ public class WorldGenerator : MonoBehaviour
 
     private int GetPlayerFloorLevel()
     {
-        return (int)(((int)_player.transform.position.y) / 10);
+        return (int)(((int)_player.transform.position.y + 1) / 10);
     }
 
     private IEnumerator WaitThenEnableWorldRenderer()

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35b0ce7d3270d234aa89970254fe3e44, type: 3}
+  m_Name: DimCandel_ScriptableObject
+  m_EditorClassIdentifier: 
+  lightPrefabType: 2
+  lightType: 2
+  lightColor: {r: 1, g: 0.77373314, b: 0.1566037, a: 1}
+  lightIntensity: 2.5
+  lightRange: 4
+  LikelyHoodOfFlickering: 0
+  flickerTimeOff: 1
+  flickerTimeOn: 1
+  shadowStrength: 1
+  passiveLightAudio: {fileID: 0}
+  lightToggledAudio: {fileID: 0}
