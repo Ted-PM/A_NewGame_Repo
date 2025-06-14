@@ -754,6 +754,11 @@ public class PlayerController : MonoBehaviour
         _isClimbing = false;
     }
 
+    public MovementStates GetPlayerState()
+    {
+        return _movementStates;
+    }
+
     // check if player is currently on a solid surface (ray tracing)
     private bool PlayerIsGrounded()
     {

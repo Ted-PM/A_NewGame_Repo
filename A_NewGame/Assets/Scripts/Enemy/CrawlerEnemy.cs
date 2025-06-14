@@ -13,7 +13,7 @@ public class CrawlerEnemy : EnemyBaseClass
 
     public override void GoToPlayer()
     {
-        if (!_enemyMoved && _enemyState == EnemyStates.Agro)
+        if (!_enemyMoved && _enemyState == EnemyStates.Agro && _playerTransform.GetComponent<PlayerController>().GetPlayerState() != MovementStates.Crouch)
         {
             //_enemyMoved = true;
             //StartCoroutine(WaitThenAgro());
@@ -23,7 +23,7 @@ public class CrawlerEnemy : EnemyBaseClass
             PlayOneShotAudio(_enemyAgroAudio);
             _enemyMoved = true;
         }
-        if (_enemyState == EnemyStates.Agro)// && _chasePlayer)
+        if (_enemyState == EnemyStates.Agro && _enemyMoved)// && _chasePlayer)
             base.SetEnemyPath();
     }
 

@@ -6,6 +6,8 @@ public class EnemySpawnPoint : MonoBehaviour
 {
     public EnemyType _enemyType;
     public Collider _enemySpawnCollider;
+    [Tooltip("(Only for TALL GUY enemy)")]
+    public Transform _enemyDestination;
 
     private GameObject _newEnemy;
 
@@ -53,6 +55,9 @@ public class EnemySpawnPoint : MonoBehaviour
             _newEnemy.transform.rotation = transform.rotation;
             _newEnemy.SetActive(true);
             _newEnemy.GetComponent<EnemyBaseClass>().EnableEnemy();
+            if (_enemyType == EnemyType.TallGuy)
+                _newEnemy.GetComponent<TallGuyEnemy>().SetDestinationPos(_enemyDestination.position, transform.position);
+
             //Debug.Log("New " + _enemyType + " spawned.");
 
         }

@@ -111,7 +111,7 @@ MonoBehaviour:
   startCell: {fileID: 342488833958512737, guid: 49568ca91a715714a88232c48fcb431b, type: 3}
   emptyCell: {fileID: 342488833958512737, guid: 5606d13c51c1b3c40b50dc39af682b49, type: 3}
   emptyFloorCell: {fileID: 342488833958512737, guid: 24c080c237418a340868aa3282e2dd88, type: 3}
-  customCeeling: []
+  customCeelingPrefabs: []
   _prefabs:
   - {fileID: 342488833958512737, guid: 8b3eb2b6c44c6bd4c9fa10880e4fc505, type: 3}
   - {fileID: 342488833958512737, guid: be806af4a9fb76f48ae92e4daf5f7d9c, type: 3}
@@ -120,14 +120,16 @@ MonoBehaviour:
   - {fileID: 342488833958512737, guid: b134b67c4b1f876479becca9054324cb, type: 3}
   - {fileID: 342488833958512737, guid: 0fefccbc81ad62948966aef6c77f2c05, type: 3}
   - {fileID: 342488833958512737, guid: a8b30feef281ccb468dfb1919eda2f7d, type: 3}
+  _oddsOfChoosePrefab: 01000000020000000200000002000000020000000200000002000000
+  _verticleTransitionPrefabs:
+  - {fileID: 9152071213757157107, guid: be68171a82c0bd747b6cc0ba393c3356, type: 3}
+  - {fileID: 9152071213757157107, guid: 6b3dbd96b21adf2478b22ce7d0f1d319, type: 3}
+  _enemyCellPrefabs:
   - {fileID: 342488833958512737, guid: 776935218a4a6854ebb4545db48af359, type: 3}
   - {fileID: 342488833958512737, guid: 9d5cd05cea706ed4b9da38653f8571a4, type: 3}
   - {fileID: 342488833958512737, guid: 0eb8fc71432582640a2ae40ba6f2d5c8, type: 3}
   - {fileID: 342488833958512737, guid: 99e60861f7c86e64a874a01c630c77f3, type: 3}
-  _oddsOfChoosePrefab: 0100000002000000020000000200000002000000020000000200000005000000050000000500000005000000
-  _verticleTransitionPrefabs:
-  - {fileID: 9152071213757157107, guid: be68171a82c0bd747b6cc0ba393c3356, type: 3}
-  - {fileID: 9152071213757157107, guid: 6b3dbd96b21adf2478b22ce7d0f1d319, type: 3}
+  _numEnemiesToSpawn: 02000000030000000200000002000000
   specialCells: {fileID: 1456617566257914524}
   xWidth: 20
   zHeight: 20

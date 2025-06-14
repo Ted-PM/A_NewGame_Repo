@@ -15,10 +15,11 @@ public class LurkerEnemy : EnemyBaseClass
     {
         if (!_enemyMoved && _playerStaring && _enemyState == EnemyStates.Agro)
         {
+            _enemyMoved = true;
             PlayOneShotAudio(_enemyAgroAudio);
+            //if (!_enemyAnimator.enabled) 
             StartCoroutine(YellThenRun());
             //_enemyAnimator.SetBool("Static", false);
-            _enemyMoved = true;
         }
         else if (!_checkingIfStaring && !_playerStaring)
             StartCoroutine(PlayerIsStaring());
@@ -28,8 +29,9 @@ public class LurkerEnemy : EnemyBaseClass
     /// ------------
     protected override IEnumerator CheckIfEnemyAgroed()
     {
-        _enemyAnimator.SetBool("Yelling", false);
-        _enemyAnimator.enabled = false;
+        //_enemyAnimator.SetBool("Static", true);
+        yield return new WaitForFixedUpdate();
+        //_enemyAnimator.enabled = false;
         _playerStaring = false;
         _checkingIfStaring = false;
         _goToPlayer = false;
@@ -86,12 +88,15 @@ public class LurkerEnemy : EnemyBaseClass
 
     private IEnumerator YellThenRun()
     {
+        //_enemyAnimator.SetBool("Yelling", true);
         _enemyAnimator.enabled = true;
-        _enemyAnimator.SetBool("Yelling", true);
+        //yield return new WaitForFixedUpdate();
         _enemyAnimator.SetBool("Static", false);
+        yield return new WaitForFixedUpdate();
+        _enemyAnimator.SetTrigger("StartYelling");
         transform.LookAt(_playerPos);
-        yield return new WaitForSeconds(0.5f);
-        _enemyAnimator.SetBool("Yelling", false);
+        yield return new WaitForSeconds(1.1f);
+        //_enemyAnimator.SetBool("Yelling", false);
         _goToPlayer = true;
         base.StopAudio();
     }

@@ -1676,9 +1676,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 0
+  _enemyState: 0
   agent: {fileID: 4871296247640254339}
   _enemyBody: {fileID: 2315825136271223764}
-  _distanceBeforeGoToPlayer: 25
+  _distanceBeforeAgro: 25
+  _distanceBeforeDeAgro: 10
   _timeWithoutSeeingPlayerBeforeLeave: 2
   _enemyAnimator: {fileID: 1293724755869125710}
   _enemyLayer:

@@ -22,10 +22,16 @@ public class MazeFloor : MonoBehaviour
     [SerializeField, Tooltip("Prefabs to be used when moving to second floor.")]
     private GameObject[] _verticleTransitionPrefabs;
 
+    [SerializeField, Tooltip("Prefabs containing an enemy.")]
+    private GameObject[] _enemyCellPrefabs;
+    [SerializeField, Tooltip("The number of each enemy cell prefab to spawn.")]
+    private int[] _numEnemiesToSpawn;
+
     private GameObject[,] _cellMatrix;
     private bool[,] _cellMatrixBool;
     private GameObject[] _XContainers;
     public GameObject specialCells;
+    private GameObject[] _enemyCellContainer;
 
     public int xWidth = 10;
     public int zHeight = 10;
@@ -103,6 +109,16 @@ public class MazeFloor : MonoBehaviour
         {
             _XContainers[i] = new GameObject(i.ToString() + ": ");
             _XContainers[i].transform.parent = this.transform;
+        }
+
+        if (_enemyCellPrefabs.Length > 0)
+        {
+            _enemyCellContainer = new GameObject[_enemyCellPrefabs.Length];
+            for (int i = 0; i < _enemyCellPrefabs.Length; i++)
+            {
+                _enemyCellContainer[i] = new GameObject(_enemyCellPrefabs[i].name);
+                _enemyCellContainer[i].transform.parent = this.transform;
+            }
         }
     }
 
@@ -253,6 +269,10 @@ public class MazeFloor : MonoBehaviour
             SpawnTransitionalCell(nextFloorX, nextFloorZ);
         }
 
+        if (_enemyCellPrefabs.Length > 0)
+        {
+            SpawnEnemyCells();
+        }
         //else
         //{
         //    SpawnEmptyCell(startX, startZ);
@@ -341,9 +361,9 @@ public class MazeFloor : MonoBehaviour
 
         while (!cellSpawned && possibleCells.Count > 0)
         {
-            if (floorLevel == 0)                            ///------------------
-                potentialCellIndex = possibleCells[1];
-            else
+            //if (floorLevel == 0)                            ///------------------
+            //    potentialCellIndex = possibleCells[1];
+            //else
                 potentialCellIndex = possibleCells[0];          ///------------
 
             cellSpawned = CanSpawnCell(x, z, potentialCellIndex, true);
@@ -359,6 +379,72 @@ public class MazeFloor : MonoBehaviour
         if (possibleCells.Count <= 0)
         {
             Debug.LogError("Couldn't Find acceptable cell!!");
+        }
+    }
+
+    private void SpawnEnemyCells()
+    {
+        if (_enemyCellPrefabs.Length <= 0)
+            return;
+
+        if (_numEnemiesToSpawn.Length != _enemyCellPrefabs.Length)
+        {
+            Debug.LogError("Must have the smae num elements in num enemies to spawn as _enemy cell prefabs!!!");
+            return;
+        }
+
+        //_enemyCellContainer = new GameObject[_enemyCellPrefabs.Length];
+        //_enemyCellContainer = new List<GameObject>();
+        for (int i = 0; i < _enemyCellPrefabs.Length; i++)
+        {
+            for (int j = 0; j < _numEnemiesToSpawn[i]; j++)
+            {
+                SpawnEnemyCell(i);
+            }
+            //_enemyCellContainer[i] = new GameObject(_enemyCellPrefabs[i].name);
+            //_enemyCellContainer[i].transform.parent = this.transform;
+        }
+    }
+
+    private void SpawnEnemyCell(int enemyPrefabIndex)
+    {
+        if (_enemyCellPrefabs.Length <= 0)
+            return;
+        //Debug.Log("Spawning Trans Cell at: " + x + ", " + z);
+        bool cellSpawned = false;
+        //List<int> possibleCells = new List<int>();
+        //possibleCells = GetListOfPossiblePrefabs(_enemyCellPrefabs, true);
+        //possibleCells = RandomizeIntList(possibleCells);
+
+        //int potentialCellIndex;
+
+        int x = 0;
+        int z = 0;
+
+        int maxAttempts = 0;
+
+        while (!cellSpawned && maxAttempts < 30)
+        {
+            x = GetRandomNumber(2, xWidth - 2);
+            z = GetRandomNumber(2, zHeight - 2);
+            //if (floorLevel == 0)                            ///------------------
+            //    potentialCellIndex = possibleCells[1];
+            //else
+            //potentialCellIndex = possibleCells[0];          ///------------
+
+            cellSpawned = CanSpawnCell(x, z, enemyPrefabIndex, false, true);
+
+            if (cellSpawned)
+                SpawnCell(_enemyCellPrefabs[enemyPrefabIndex], x, z, _enemyCellContainer[enemyPrefabIndex], (x.ToString() + ", " + z.ToString()));
+            //    possibleCells = RemoveDuplicateIntsFromList(possibleCells, potentialCellIndex);
+            //else
+            maxAttempts++;
+            //if (!CanSpawnCell(x, z, possibleCells, false))
+        }
+
+        if (maxAttempts >= 30)
+        {
+            Debug.LogError("Couldn't Find acceptable place to spawn ENEMY cell!!");
         }
     }
 
@@ -469,17 +555,20 @@ public class MazeFloor : MonoBehaviour
 
     }
 
-    private bool CanSpawnCell(int x, int z, int possibleCellIndex, bool isTransitional)
+    private bool CanSpawnCell(int x, int z, int possibleCellIndex, bool isTransitional, bool hasEnemy = false)
     {
         bool result = true;
         //Cell potentialPrefab;
         CellBaseClass potentialPrefab;
-        if (!isTransitional)
+        if (!isTransitional && !hasEnemy)
             potentialPrefab = _prefabs[possibleCellIndex].GetComponent<CellBaseClass>();
             //potentialPrefab = _prefabs[possibleCellIndex].GetComponent<Cell>();
-        else
+        else if (!hasEnemy)
             potentialPrefab = _verticleTransitionPrefabs[possibleCellIndex].GetComponent<CellBaseClass>();
-            //potentialPrefab = _verticleTransitionPrefabs[possibleCellIndex].GetComponent<Cell>();
+        else
+            potentialPrefab = _enemyCellPrefabs[possibleCellIndex].GetComponent<CellBaseClass>();
+
+        //potentialPrefab = _verticleTransitionPrefabs[possibleCellIndex].GetComponent<Cell>();
 
         if (!CellIsInBounds(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
             result =  false;
@@ -583,7 +672,7 @@ public class MazeFloor : MonoBehaviour
                     //if (_cellMatrix[x + i, z - 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex || 
                     //    (hasDeadCell && _cellMatrix[x + i, z - 1].GetComponent<Cell>().hasDeadCells) ||
                     //    (hasEnemy && _cellMatrix[x + i, z - 1].GetComponent<Cell>().hasEnemy))
-                        if (_cellMatrix[x + i, z - 1].GetComponent<CellBaseClass>().GetCellPrefabIndex() == prefabIndex ||
+                        if ((!_cellMatrix[x + i, z - 1].GetComponent<CellBaseClass>().CellHasEnemy() && _cellMatrix[x + i, z - 1].GetComponent<CellBaseClass>().GetCellPrefabIndex() == prefabIndex) ||
                         (hasDeadCell && _cellMatrix[x + i, z - 1].GetComponent<CellBaseClass>().HasDeadCells()) ||
                         (hasEnemy && _cellMatrix[x + i, z - 1].GetComponent<CellBaseClass>().CellHasEnemy()))
                             return false;
@@ -601,7 +690,7 @@ public class MazeFloor : MonoBehaviour
                     //if (_cellMatrix[x - 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
                     //    (hasDeadCell && _cellMatrix[x - 1, z + i].GetComponent<Cell>().hasDeadCells) ||
                     //    (hasEnemy && _cellMatrix[x - 1, z + i].GetComponent<Cell>().hasEnemy))
-                    if (_cellMatrix[x - 1, z + i].GetComponent<CellBaseClass>().GetCellPrefabIndex() == prefabIndex ||
+                    if ((!_cellMatrix[x - 1, z + i].GetComponent<CellBaseClass>().CellHasEnemy() && _cellMatrix[x - 1, z + i].GetComponent<CellBaseClass>().GetCellPrefabIndex() == prefabIndex) ||
                         (hasDeadCell && _cellMatrix[x - 1, z + i].GetComponent<CellBaseClass>().HasDeadCells()) ||
                         (hasEnemy && _cellMatrix[x - 1, z + i].GetComponent<CellBaseClass>().CellHasEnemy()))
                         return false;
@@ -622,7 +711,7 @@ public class MazeFloor : MonoBehaviour
                     //if (_cellMatrix[x + i, z + 1].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
                     //    (hasDeadCell && _cellMatrix[x + i, z + 1].GetComponent<Cell>().hasDeadCells) ||
                     //    (hasEnemy && _cellMatrix[x + i, z + 1].GetComponent<Cell>().hasEnemy))
-                    if (_cellMatrix[x + i, z + 1].GetComponent<CellBaseClass>().GetCellPrefabIndex() == prefabIndex ||
+                    if ((!_cellMatrix[x + i, z + 1].GetComponent<CellBaseClass>().CellHasEnemy() && _cellMatrix[x + i, z + 1].GetComponent<CellBaseClass>().GetCellPrefabIndex() == prefabIndex) ||
                         (hasDeadCell && _cellMatrix[x + i, z + 1].GetComponent<CellBaseClass>().HasDeadCells()) ||
                         (hasEnemy && _cellMatrix[x + i, z + 1].GetComponent<CellBaseClass>().CellHasEnemy()))
                         return false;
@@ -642,7 +731,7 @@ public class MazeFloor : MonoBehaviour
                     //if (_cellMatrix[x + 1, z + i].GetComponent<Cell>().GetCellPrefabIndex() == prefabIndex ||
                     //    (hasDeadCell && _cellMatrix[x + 1, z + i].GetComponent<Cell>().hasDeadCells) ||
                     //    (hasEnemy && _cellMatrix[x + 1, z + i].GetComponent<Cell>().hasEnemy))
-                    if (_cellMatrix[x + 1, z + i].GetComponent<CellBaseClass>().GetCellPrefabIndex() == prefabIndex ||
+                    if ((!_cellMatrix[x + 1, z + i].GetComponent<CellBaseClass>().CellHasEnemy() && _cellMatrix[x + 1, z + i].GetComponent<CellBaseClass>().GetCellPrefabIndex() == prefabIndex) ||
                         (hasDeadCell && _cellMatrix[x + 1, z + i].GetComponent<CellBaseClass>().HasDeadCells()) ||
                         (hasEnemy && _cellMatrix[x + 1, z + i].GetComponent<CellBaseClass>().CellHasEnemy()))
                         return false;

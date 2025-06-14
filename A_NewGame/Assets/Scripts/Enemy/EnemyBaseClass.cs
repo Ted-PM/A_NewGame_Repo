@@ -3,14 +3,14 @@ using UnityEngine.AI;
 using System.Collections;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
-//using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public enum EnemyType
 {
     Crawler,
     Mannequin,
     Lurker,
-    Invis
+    Invis,
+    TallGuy
 };
 
 public enum EnemyStates
@@ -35,10 +35,12 @@ public class EnemyBaseClass : MonoBehaviour
 
     [SerializeField]
     protected GameObject _enemyBody;
-    private Renderer _enemyRenderer;
+    protected Renderer _enemyRenderer;
 
     [SerializeField]
-    private float _distanceBeforeGoToPlayer;
+    protected float _distanceBeforeAgro;
+    [SerializeField]
+    protected float _distanceBeforeDeAgro = -1;
     [SerializeField]
     private float _timeWithoutSeeingPlayerBeforeLeave;
 
@@ -52,8 +54,8 @@ public class EnemyBaseClass : MonoBehaviour
     //[SerializeField]
     protected AudioSource _enemyAudioSource;
 
-    private GameObject _playerTransform;
-    private bool _playerFound = false;
+    protected GameObject _playerTransform;
+    protected bool _playerFound = false;
     //private bool _canGoToPlayer = false;
     protected Vector3 _playerPos;
 
@@ -103,18 +105,21 @@ public class EnemyBaseClass : MonoBehaviour
         _enemyAudioSource.dopplerLevel = 3;
 
         _enemyState = EnemyStates.Static;
+
+        if (_distanceBeforeDeAgro <= 0)
+            _distanceBeforeDeAgro = (_distanceBeforeAgro / 3);
         StartCoroutine(TryFindPlayer());
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected void Start()
+    protected virtual void Start()
     {
         //_enemySpawn = transform.position;
         //_enemyState = EnemyStates.Static;
         //StartCoroutine(TryFindPlayer());
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         //if (_canGoToPlayer && !_enemyDisabled && _enemySeenForFirstTime)
         if (_enemyState == EnemyStates.Agro)//  && _enemySeenForFirstTime)
@@ -128,7 +133,7 @@ public class EnemyBaseClass : MonoBehaviour
         Debug.Log("Virtual Function in Base Called");
     }
 
-    protected void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         //Debug.Log("Enemy: " + enemyType.ToString() + " -- Enemy State: " + _enemyState.ToString());
         if (_playerFound && _enemyState != EnemyStates.Disabled)
@@ -201,7 +206,7 @@ public class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    private IEnumerator CanPathToPlayer()
+    protected virtual IEnumerator CanPathToPlayer()
     {
         //while (!_enemyDisabled)
         float distanceToPlayer = 0;
@@ -210,9 +215,9 @@ public class EnemyBaseClass : MonoBehaviour
             distanceToPlayer = GetDistanceToPlayer();
             if (_enemyState != EnemyStates.Agro && _enemyState != EnemyStates.Returning)
             {
-                if (distanceToPlayer < _distanceBeforeGoToPlayer)
+                if (distanceToPlayer < _distanceBeforeAgro)
                     _enemyState = EnemyStates.InRange;
-                else if (distanceToPlayer < 2 * _distanceBeforeGoToPlayer)
+                else if (distanceToPlayer < 2 * _distanceBeforeAgro)
                     _enemyState = EnemyStates.Static;
                 else
                 {
@@ -299,7 +304,7 @@ public class EnemyBaseClass : MonoBehaviour
     private bool CheckIfPlayerInRange(float range = 0)
     {
         if (range == 0)
-            range = _distanceBeforeGoToPlayer;
+            range = _distanceBeforeAgro;
         return Vector3.Distance(_playerPos, _enemyBody.transform.position) <= range;
     }
 
@@ -314,7 +319,7 @@ public class EnemyBaseClass : MonoBehaviour
         //Debug.DrawRay((transform.position + new Vector3(0, 2, 0)), directionToPlayer, Color.red, 5f);
         RaycastHit hit;
         //return Physics.Raycast((transform.position + new Vector3(0, 2, 0)), directionToPlayer, _distanceBeforeGoToPlayer, _playerLayer, QueryTriggerInteraction.Ignore);
-        Physics.Raycast((transform.position + new Vector3(0, 2, 0)), directionToPlayer, out hit, _distanceBeforeGoToPlayer, ~0, QueryTriggerInteraction.Ignore);
+        Physics.Raycast((transform.position + new Vector3(0, 2, 0)), directionToPlayer, out hit, _distanceBeforeAgro, ~0, QueryTriggerInteraction.Ignore);
         //return (hit == null)
         if (hit.collider == null || hit.collider.gameObject == null)
             return false;
@@ -347,7 +352,7 @@ public class EnemyBaseClass : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             //Debug.DrawRay(camPos[i], directionToEnemy[i], Color.red,1f);
-            Physics.Raycast(camPos[i], directionToEnemy[i], out hits[i], (_distanceBeforeGoToPlayer * 2), _enemyLayer, QueryTriggerInteraction.Collide);
+            Physics.Raycast(camPos[i], directionToEnemy[i], out hits[i], (_distanceBeforeAgro * 2), _enemyLayer, QueryTriggerInteraction.Collide);
         }
 
         bool result = false;
@@ -371,7 +376,7 @@ public class EnemyBaseClass : MonoBehaviour
         if (!_enemyRenderer.isVisible || !CheckIfPlayerInRange())
             return false;
         if (distance <= 0f)
-            distance = (_distanceBeforeGoToPlayer * 2);
+            distance = (_distanceBeforeAgro * 2);
 
         RaycastHit hit;
 
@@ -403,7 +408,7 @@ public class EnemyBaseClass : MonoBehaviour
             while (time < _timeWithoutSeeingPlayerBeforeLeave)
             {
                 time += Time.fixedDeltaTime;
-                if (PlayerVisibleToEnemy() || CheckIfPlayerInRange(_distanceBeforeGoToPlayer/3))
+                if (PlayerVisibleToEnemy() || CheckIfPlayerInRange(_distanceBeforeDeAgro))
                 {
                     playerSeen = true;
                     break;
@@ -443,7 +448,7 @@ public class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    private bool EnemyNearPosition(Vector3 pos)
+    protected bool EnemyNearPosition(Vector3 pos)
     {
         return Vector3.Distance(pos, transform.position) <= 2;
         //return Vector3.Distance(pos, _enemyBody.transform.position) <= 2;

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2141007937606861475
+--- !u!1 &7212510307899815945
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7189174023818029768}
-  - component: {fileID: 6926656138163808242}
-  - component: {fileID: 5700242832225063526}
+  - component: {fileID: 3437444621242741619}
+  - component: {fileID: 7769657278034986274}
+  - component: {fileID: 1042976843320464638}
   m_Layer: 0
-  m_Name: Testing_FloorSpawner
+  m_Name: TallGuySpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7189174023818029768
+--- !u!4 &3437444621242741619
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2141007937606861475}
+  m_GameObject: {fileID: 7212510307899815945}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,36 +33,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6926656138163808242
+--- !u!65 &7769657278034986274
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212510307899815945}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 3.5, z: 0}
+--- !u!114 &1042976843320464638
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2141007937606861475}
+  m_GameObject: {fileID: 7212510307899815945}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d2968bfd9be2bd4494ab138b21373e8, type: 3}
+  m_Script: {fileID: 11500000, guid: ed466741c847fd6478efef613c32963a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mazeFloorPrefabs:
-  - {fileID: 8444920341893074768, guid: 4deb7734132b9a84e8d32ba09bfb7a65, type: 3}
-  - {fileID: 8444920341893074768, guid: 995e5bf4ca5ba904796eea1b4d2c5450, type: 3}
-  numberOfFloors: 4
-  baseX: 20
-  baseZ: 20
-  generateDefault: 0
-  _generator: {fileID: 5700242832225063526}
-  mazeGenerated: 0
---- !u!114 &5700242832225063526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2141007937606861475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8bd8adbfe4dd53448cb762258ac661f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _enemyType: 4
+  _enemySpawnCollider: {fileID: 7769657278034986274}
+  _enemyDestination: {fileID: 0}

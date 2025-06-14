@@ -51,6 +51,9 @@ public class CellBaseClass : MonoBehaviour
     public List<string> _deadCellListStr;
     private List<int[]> _deadCellListInt;
 
+    [SerializeField, Tooltip("Add objects with Enemy SpawnPoint here.")]
+    private List<GameObject> _enemySpawnPoints;
+
     private void Awake()
     {
         InitializeLists();
@@ -380,6 +383,7 @@ public class CellBaseClass : MonoBehaviour
     //      DISABLE CELL
     public virtual void DisableCell()
     {
+        DisableEnemies();
         DisableCellWalls();
         DisableCellFloors();
         DisableCellCeelings();
@@ -388,6 +392,17 @@ public class CellBaseClass : MonoBehaviour
         DisableCellLights();
         DisableCellProps();
         _cellEnabled = false;
+    }
+
+    private void DisableEnemies()
+    {
+        if (_enemySpawnPoints == null)
+            return;
+        foreach (GameObject enemy in _enemySpawnPoints)
+        {
+            if (enemy != null)
+                enemy.SetActive(false);
+        }
     }
 
     public virtual void DisableCellWalls()
@@ -512,6 +527,7 @@ public class CellBaseClass : MonoBehaviour
         EnableCellEntrances();
         EnableCellLights();
         EnableCellProps();
+        EnableEnemies();
         _cellEnabled = true;
     }
 
@@ -587,6 +603,17 @@ public class CellBaseClass : MonoBehaviour
     {
         if (_props != null)
             _props.SetActive(true);
+    }
+
+    private void EnableEnemies()
+    {
+        if (_enemySpawnPoints == null)
+            return;
+        foreach (GameObject enemy in _enemySpawnPoints)
+        {
+            if (enemy != null)
+                enemy.SetActive(true);
+        }
     }
 
     //      CELL MATRIX DATA
