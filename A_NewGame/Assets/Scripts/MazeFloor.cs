@@ -425,8 +425,8 @@ public class MazeFloor : MonoBehaviour
 
         while (!cellSpawned && maxAttempts < 30)
         {
-            x = GetRandomNumber(2, xWidth - 2);
-            z = GetRandomNumber(2, zHeight - 2);
+            x = GetRandomNumber(2, xWidth - 1);
+            z = GetRandomNumber(2, zHeight - 1);
             //if (floorLevel == 0)                            ///------------------
             //    potentialCellIndex = possibleCells[1];
             //else

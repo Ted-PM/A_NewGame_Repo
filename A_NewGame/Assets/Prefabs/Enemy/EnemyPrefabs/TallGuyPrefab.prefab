@@ -1338,7 +1338,7 @@ MonoBehaviour:
   agent: {fileID: 4871296247640254339}
   _enemyBody: {fileID: 5075453996663895391}
   _distanceBeforeAgro: 0
-  _distanceBeforeDeAgro: 20
+  _distanceBeforeDeAgro: 50
   _timeWithoutSeeingPlayerBeforeLeave: 0
   _enemyAnimator: {fileID: 6138927452722952445}
   _enemyLayer:

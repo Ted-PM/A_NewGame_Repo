@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 [RequireComponent(typeof(Collider))]
 public class EnemySpawnPoint : MonoBehaviour
@@ -8,6 +10,8 @@ public class EnemySpawnPoint : MonoBehaviour
     public Collider _enemySpawnCollider;
     [Tooltip("(Only for TALL GUY enemy)")]
     public Transform _enemyDestination;
+
+    public List<Transform> enemyDestinations;
 
     private GameObject _newEnemy;
 
@@ -56,11 +60,21 @@ public class EnemySpawnPoint : MonoBehaviour
             _newEnemy.SetActive(true);
             _newEnemy.GetComponent<EnemyBaseClass>().EnableEnemy();
             if (_enemyType == EnemyType.TallGuy)
-                _newEnemy.GetComponent<TallGuyEnemy>().SetDestinationPos(_enemyDestination.position, transform.position);
-
+                AddTallEnemyDestinations();
             //Debug.Log("New " + _enemyType + " spawned.");
 
         }
+    }
+
+    private void AddTallEnemyDestinations()
+    {
+        List<Vector3> destinations = new List<Vector3>();
+        foreach (Transform dest in enemyDestinations)
+        {
+            destinations.Add(dest.position);
+        }
+        
+        _newEnemy.GetComponent<TallGuyEnemy>().SetDestinationPos(destinations);
     }
 
 }

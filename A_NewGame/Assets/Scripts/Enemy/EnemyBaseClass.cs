@@ -255,7 +255,7 @@ public class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    public void DisableEnemy()
+    protected virtual void DisableEnemy()
     {
         if (_enemyState == EnemyStates.Agro)
             return;

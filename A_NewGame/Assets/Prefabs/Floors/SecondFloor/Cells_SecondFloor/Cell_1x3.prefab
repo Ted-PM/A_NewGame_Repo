@@ -97,6 +97,7 @@ MonoBehaviour:
   xWidth: 1
   zHeight: 3
   _deadCellListStr: []
+  _enemySpawnPoints: []
 --- !u!1 &565805620329324455
 GameObject:
   m_ObjectHideFlags: 0

@@ -125,8 +125,8 @@ MonoBehaviour:
   _verticleTransitionPrefabs:
   - {fileID: 9152071213757157107, guid: 3b6d7ca018fab9b4ebefffc16fa5f374, type: 3}
   _enemyCellPrefabs:
-  - {fileID: 342488833958512737, guid: 3c6572177d07313499c947b35f549008, type: 3}
-  _numEnemiesToSpawn: 03000000
+  - {fileID: 7438574378874068249, guid: db628c242ef6c924eb665147684be903, type: 3}
+  _numEnemiesToSpawn: 02000000
   specialCells: {fileID: 1456617566257914524}
   xWidth: 20
   zHeight: 20

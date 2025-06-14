@@ -341,6 +341,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7028238925211560019}
   - component: {fileID: 1948037209497945036}
+  - component: {fileID: 6653404055154025465}
   m_Layer: 0
   m_Name: Cell_3x2
   m_TagString: Untagged
@@ -375,12 +376,38 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 342488833958512737}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d3f36bd4fc33fd4ead68eac4a73ef59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cellTypes: 0000000002000000
+  _wallMaterial: {fileID: 2100000, guid: 832b6acb90e621649bd235e3afe58c71, type: 3}
+  _floorMaterial: {fileID: 2100000, guid: 0a361588f2d772f4ea2bd15d37d1b3f3, type: 2}
+  _ceelingMaterial: {fileID: 2100000, guid: 7d48b6dd8df42cd43ac0ca99a02cea6c, type: 2}
+  _doorWayPrefabs: []
+  _entrancePrefabs:
+  - {fileID: 3135848829145227517, guid: 8aa6de26c739a2e4793b13c947075790, type: 3}
+  _lights: []
+  _props: {fileID: 0}
+  xWidth: 3
+  zHeight: 2
+  _deadCellListStr: []
+  _enemySpawnPoints:
+  - {fileID: 8434439061308794331}
+--- !u!114 &6653404055154025465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342488833958512737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2ff1e6f4be82941a9d0f9a42df0d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellTypes: 02000000
   _wallMaterial: {fileID: 2100000, guid: 832b6acb90e621649bd235e3afe58c71, type: 3}
   _floorMaterial: {fileID: 2100000, guid: 0a361588f2d772f4ea2bd15d37d1b3f3, type: 2}
   _ceelingMaterial: {fileID: 2100000, guid: 7d48b6dd8df42cd43ac0ca99a02cea6c, type: 2}
