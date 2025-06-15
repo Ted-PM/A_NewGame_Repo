@@ -191,6 +191,8 @@ MonoBehaviour:
   _props: {fileID: 719605675084928339}
   xWidth: 2
   zHeight: 1
+  _deadCellListStr: []
+  _enemySpawnPoints: []
 --- !u!1 &719605675084928339
 GameObject:
   m_ObjectHideFlags: 0
