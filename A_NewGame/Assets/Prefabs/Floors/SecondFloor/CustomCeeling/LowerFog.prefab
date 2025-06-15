@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2807292909403058579}
   - component: {fileID: 7651644948094140642}
   - component: {fileID: 824049836629651407}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LowerFog
   m_TagString: Ceeling
   m_Icon: {fileID: 0}

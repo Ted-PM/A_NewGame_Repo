@@ -17,7 +17,9 @@ public class MannequinEnemy : EnemyBaseClass
 
         if (!_enemyMoved && _enemyState == EnemyStates.Agro)
         {
-            _enemyAnimator.SetBool("Static", false);
+            //_enemyAnimator.SetBool("Static", false);
+            _enemyAnimator.SetBool("move", true);
+
             PlayOneShotAudio(_enemyAgroAudio);
             _enemyMoved = true;
         }

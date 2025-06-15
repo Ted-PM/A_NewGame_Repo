@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3896818036466223331}
   - component: {fileID: 1455808677408112911}
   - component: {fileID: 8978631698685576916}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ceeling
   m_TagString: Ceeling
   m_Icon: {fileID: 0}

@@ -648,7 +648,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8942594890940003906}
-  - component: {fileID: 6138927452722952445}
   m_Layer: 0
   m_Name: Ch36
   m_TagString: Untagged
@@ -673,28 +672,6 @@ Transform:
   - {fileID: 3484222565513741408}
   m_Father: {fileID: 5603628272234262619}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &6138927452722952445
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3560127044032441116}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 94c268ab82ce1d64d8a6ea749a75a951, type: 3}
-  m_Controller: {fileID: 9100000, guid: 896d79bc5f2999a449b2a9897a27a4a6, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3622487043264293665
 GameObject:
   m_ObjectHideFlags: 0
@@ -1298,6 +1275,8 @@ GameObject:
   - component: {fileID: 5668969570450272375}
   - component: {fileID: 8757587743425553246}
   - component: {fileID: 8058791142865488072}
+  - component: {fileID: 1757869886160045941}
+  - component: {fileID: 5520278727726906115}
   m_Layer: 8
   m_Name: TallGuyPrefab
   m_TagString: Enemy
@@ -1340,7 +1319,7 @@ MonoBehaviour:
   _distanceBeforeAgro: 0
   _distanceBeforeDeAgro: 50
   _timeWithoutSeeingPlayerBeforeLeave: 0
-  _enemyAnimator: {fileID: 6138927452722952445}
+  _enemyAnimator: {fileID: 1757869886160045941}
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 503
@@ -1349,6 +1328,10 @@ MonoBehaviour:
     m_Bits: 512
   _enemyPassiveAudio: {fileID: 0}
   _enemyAgroAudio: {fileID: 0}
+  _destinations: []
+  _currentDestination: {x: 0, y: 0, z: 0}
+  _currentDestinationIndex: 0
+  _destinationSet: 0
 --- !u!195 &4871296247640254339
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1426,7 +1409,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5365662238912009380}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: cff92b9616516374cba9fabdd9c7d8ab, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1440,6 +1423,40 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 4.5, z: 3}
   m_Center: {x: 0, y: 2.25, z: 0}
+--- !u!95 &1757869886160045941
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5365662238912009380}
+  m_Enabled: 0
+  m_Avatar: {fileID: 9000000, guid: a14468e1ae096ee47b520178b96e64f1, type: 3}
+  m_Controller: {fileID: 9100000, guid: 054c69f71ea80604982399e9906d56d4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5520278727726906115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5365662238912009380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb50fe081c7b4114a9e93e96dfeb75c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5406416936046314956
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,7 +19,9 @@ public class CrawlerEnemy : EnemyBaseClass
             //StartCoroutine(WaitThenAgro());
             //transform.rotation = Quaternion.identity;
             //_enemyRB.useGravity = true;
-            _enemyAnimator.SetBool("Static", false);
+            //_enemyAnimator.SetBool("Static", false);
+            _enemyAnimator.SetBool("move", true);
+
             PlayOneShotAudio(_enemyAgroAudio);
             _enemyMoved = true;
         }

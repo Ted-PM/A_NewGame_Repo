@@ -361,9 +361,9 @@ public class MazeFloor : MonoBehaviour
 
         while (!cellSpawned && possibleCells.Count > 0)
         {
-            //if (floorLevel == 0)                            ///------------------
-            //    potentialCellIndex = possibleCells[1];
-            //else
+            if (floorLevel == 0)                            ///------------------
+                potentialCellIndex = possibleCells[1];
+            else
                 potentialCellIndex = possibleCells[0];          ///------------
 
             cellSpawned = CanSpawnCell(x, z, potentialCellIndex, true);
@@ -422,11 +422,14 @@ public class MazeFloor : MonoBehaviour
         int z = 0;
 
         int maxAttempts = 0;
+        Debug.Log("Spawning " + _enemyCellPrefabs[enemyPrefabIndex].name);
 
-        while (!cellSpawned && maxAttempts < 30)
+        while (!cellSpawned && maxAttempts < 50)
         {
             x = GetRandomNumber(2, xWidth - 1);
             z = GetRandomNumber(2, zHeight - 1);
+
+            Debug.Log("Trying Enemy: " + x + ", " + z);
             //if (floorLevel == 0)                            ///------------------
             //    potentialCellIndex = possibleCells[1];
             //else
@@ -435,7 +438,10 @@ public class MazeFloor : MonoBehaviour
             cellSpawned = CanSpawnCell(x, z, enemyPrefabIndex, false, true);
 
             if (cellSpawned)
+            {
+                Debug.Log("Sucess at: " + x + ", " + z);
                 SpawnCell(_enemyCellPrefabs[enemyPrefabIndex], x, z, _enemyCellContainer[enemyPrefabIndex], (x.ToString() + ", " + z.ToString()));
+            }
             //    possibleCells = RemoveDuplicateIntsFromList(possibleCells, potentialCellIndex);
             //else
             maxAttempts++;
@@ -444,7 +450,7 @@ public class MazeFloor : MonoBehaviour
 
         if (maxAttempts >= 30)
         {
-            Debug.LogError("Couldn't Find acceptable place to spawn ENEMY cell!!");
+            Debug.LogWarning("Couldn't Find acceptable place to spawn " + _enemyCellPrefabs[enemyPrefabIndex].name + " ENEMY cell!!");
         }
     }
 
@@ -571,13 +577,29 @@ public class MazeFloor : MonoBehaviour
         //potentialPrefab = _verticleTransitionPrefabs[possibleCellIndex].GetComponent<Cell>();
 
         if (!CellIsInBounds(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight()))
+        {
+            if (hasEnemy)
+                Debug.Log("Failed: OUT OF BOUNDS");
             result =  false;
+        }
         else if (!CellHasSpaceToSpawn(x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
+        {
+            if (hasEnemy)
+                Debug.Log("Failed: NOT ENOUGH SPACE");
             result = false;
+        }
         else if (!CanSpawnDeadCell(potentialPrefab, x, z, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional))
+        {
+            if (hasEnemy)
+                Debug.Log("Failed: CAN'T SPAWN DEAD");
             result = false;
+        }
         else if (!CellNotBorderingSameCell(x, z, possibleCellIndex, potentialPrefab.GetCellXWidth(), potentialPrefab.GetCellZHeight(), isTransitional, potentialPrefab.HasDeadCells(), potentialPrefab.CellHasEnemy()))
+        {
+            if (hasEnemy)
+                Debug.Log("Failed: BORDERING SAME CELL");
             result = false;
+        }
 
         return result;
 

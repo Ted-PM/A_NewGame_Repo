@@ -54,6 +54,9 @@ public class EnemyBaseClass : MonoBehaviour
     //[SerializeField]
     protected AudioSource _enemyAudioSource;
 
+    //[SerializeField]
+    //protected EnemyMovement _enemyMovement;
+
     protected GameObject _playerTransform;
     protected bool _playerFound = false;
     //private bool _canGoToPlayer = false;
@@ -78,7 +81,7 @@ public class EnemyBaseClass : MonoBehaviour
 
     //protected bool _enemySeenForFirstTime = false;
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         if (_enemyBody != null)
         {
@@ -96,6 +99,13 @@ public class EnemyBaseClass : MonoBehaviour
         }
         if (agent == null)
             Debug.LogError("NavMesh Agent NULL !!");
+
+        //if (_enemyMovement == null)
+        //{
+        //    if (!TryGetComponent<EnemyMovement>(out _enemyMovement))
+        //        Debug.Log("No EnemyMovement Script!!");
+        //}
+
 
         _enemyState = new EnemyStates();
         //_enemySpeed = agent.speed;
@@ -124,7 +134,9 @@ public class EnemyBaseClass : MonoBehaviour
         //if (_canGoToPlayer && !_enemyDisabled && _enemySeenForFirstTime)
         if (_enemyState == EnemyStates.Agro)//  && _enemySeenForFirstTime)
         {
+            //_enemyMovement.SynchronizeAnimatorAndAgent();
             GoToPlayer();
+
         }
     }
 
@@ -140,7 +152,7 @@ public class EnemyBaseClass : MonoBehaviour
         {
             _playerPos = _playerTransform.transform.position;
 
-            if (_enemyState == EnemyStates.Agro)
+            if (_enemyState == EnemyStates.Agro && !_enemyAnimator.applyRootMotion)
                 agent.CalculatePath(_playerPos, _enemyPath);
             //else if (_enemyMoved && !EnemyVisibleToPlayer())
             //    StartCoroutine(GoBackToSpawn());
@@ -149,7 +161,15 @@ public class EnemyBaseClass : MonoBehaviour
 
     protected void SetEnemyPath()
     {
-        agent.SetPath(_enemyPath);
+        //if (_enemyMovement != null) 
+        //    _enemyMovement.SynchronizeAnimatorAndAgent();
+        //else
+        //if (_enemyAnimator.enabled)
+        //    _enemyAnimator
+        if (!_enemyAnimator.applyRootMotion)
+            agent.SetPath(_enemyPath);
+        else
+            agent.destination = _playerPos;
     }
 
     private IEnumerator TryFindPlayer()
@@ -255,7 +275,7 @@ public class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    protected virtual void DisableEnemy()
+    public virtual void DisableEnemy()
     {
         if (_enemyState == EnemyStates.Agro)
             return;
@@ -273,7 +293,8 @@ public class EnemyBaseClass : MonoBehaviour
             _enemyAudioSource.enabled = false;
         if (_enemyAnimator != null)
         {
-            _enemyAnimator.SetBool("Static", true);
+            //_enemyAnimator.SetBool("Static", true);
+            _enemyAnimator.SetBool("move", false);  
             _enemyAnimator.enabled = false;
         }
         EnemySpawner.Instance.DisableEnemy(this.gameObject);
@@ -443,7 +464,9 @@ public class EnemyBaseClass : MonoBehaviour
 
         if (EnemyNearPosition(_enemySpawn) && _enemyState != EnemyStates.Disabled)
         {
-            _enemyAnimator.SetBool("Static", true);
+            //_enemyAnimator.SetBool("Static", true);
+            _enemyAnimator.SetBool("move", false);
+
             _enemyState = EnemyStates.Static;            
         }
     }
@@ -512,5 +535,10 @@ public class EnemyBaseClass : MonoBehaviour
                 door.InteractWithDoor(transform.position);
             }
         }
+    }
+
+    protected virtual void OnTriggerExit(Collider other)
+    {
+        Debug.Log("Base enemy trigger exit");
     }
 }

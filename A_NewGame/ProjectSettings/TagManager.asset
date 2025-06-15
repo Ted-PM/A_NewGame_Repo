@@ -26,7 +26,7 @@ TagManager:
   - InteractableLayer
   - EnemyLayer
   - PlayerLayer
-  - 
+  - InvisibleLayer
   - 
   - 
   - 

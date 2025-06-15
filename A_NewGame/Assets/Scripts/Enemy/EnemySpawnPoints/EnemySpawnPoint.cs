@@ -8,16 +8,12 @@ public class EnemySpawnPoint : MonoBehaviour
 {
     public EnemyType _enemyType;
     public Collider _enemySpawnCollider;
-    [Tooltip("(Only for TALL GUY enemy)")]
-    public Transform _enemyDestination;
 
-    public List<Transform> enemyDestinations;
-
-    private GameObject _newEnemy;
+    protected GameObject _newEnemy = null;
 
     private void FixedUpdate()
     {
-        if (_newEnemy != null && !_newEnemy.activeSelf)
+        if ((_newEnemy != null && !_newEnemy.activeSelf) || (_newEnemy == null && !_enemySpawnCollider.enabled))
         {
             _newEnemy = null;
             StartCoroutine(WaitThenEnableCollider());
@@ -46,9 +42,10 @@ public class EnemySpawnPoint : MonoBehaviour
         }     
     }
 
-    private void SpawnEnemy()
+    protected virtual void SpawnEnemy()
     {
         _newEnemy = EnemySpawner.Instance.GetObjectFromPool((int)_enemyType);
+
         if (_newEnemy == null)
         {
             Debug.Log("Enemy Pool empty!");
@@ -59,22 +56,14 @@ public class EnemySpawnPoint : MonoBehaviour
             _newEnemy.transform.rotation = transform.rotation;
             _newEnemy.SetActive(true);
             _newEnemy.GetComponent<EnemyBaseClass>().EnableEnemy();
-            if (_enemyType == EnemyType.TallGuy)
-                AddTallEnemyDestinations();
-            //Debug.Log("New " + _enemyType + " spawned.");
-
         }
     }
 
-    private void AddTallEnemyDestinations()
+    protected virtual void OnTriggerExit(Collider other)
     {
-        List<Vector3> destinations = new List<Vector3>();
-        foreach (Transform dest in enemyDestinations)
-        {
-            destinations.Add(dest.position);
-        }
-        
-        _newEnemy.GetComponent<TallGuyEnemy>().SetDestinationPos(destinations);
+        Debug.Log("Base spawn point trigger exit");
     }
+
+
 
 }

@@ -62,6 +62,7 @@ MonoBehaviour:
   xWidth: 2
   zHeight: 1
   _deadCellListStr: []
+  _enemySpawnPoints: []
 --- !u!1 &447352429176003803
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,6 +193,7 @@ GameObject:
   - component: {fileID: 3099857398731160325}
   - component: {fileID: 6588426397072625739}
   - component: {fileID: 4532259565005513285}
+  - component: {fileID: 4852736994378177967}
   m_Layer: 0
   m_Name: Pillar (3)
   m_TagString: Untagged
@@ -267,6 +269,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4852736994378177967
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 758326305530262612}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.2088699, y: 5.8725767, z: 1.2088699}
+  m_Center: {x: 0, y: 2.9362884, z: 0}
 --- !u!1 &1028919504637128377
 GameObject:
   m_ObjectHideFlags: 0
@@ -1619,6 +1642,7 @@ GameObject:
   - component: {fileID: 4672766796515603129}
   - component: {fileID: 3393115473531491878}
   - component: {fileID: 4174059043284752811}
+  - component: {fileID: 2363791106188942434}
   m_Layer: 0
   m_Name: Pillar (3)
   m_TagString: Untagged
@@ -1694,6 +1718,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2363791106188942434
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8891959841225342713}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.2088699, y: 5.8725767, z: 1.2088699}
+  m_Center: {x: 0, y: 2.9362884, z: 0}
 --- !u!1001 &652248010276114156
 PrefabInstance:
   m_ObjectHideFlags: 0

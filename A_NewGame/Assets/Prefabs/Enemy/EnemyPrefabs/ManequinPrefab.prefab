@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 773449700838612220}
-  - component: {fileID: 6655181924734322310}
   m_Layer: 0
   m_Name: Ch36_nonPBR@Hit On The Back
   m_TagString: Untagged
@@ -34,28 +33,6 @@ Transform:
   - {fileID: 5099139702504350050}
   m_Father: {fileID: 5603628272234262619}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &6655181924734322310
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 139621257303705158}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 94c268ab82ce1d64d8a6ea749a75a951, type: 3}
-  m_Controller: {fileID: 9100000, guid: 6e215858f1d492a488287ad44bd83dcb, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &391117216251930009
 GameObject:
   m_ObjectHideFlags: 0
@@ -1479,6 +1456,8 @@ GameObject:
   - component: {fileID: 5668969570450272375}
   - component: {fileID: 8757587743425553246}
   - component: {fileID: 8058791142865488072}
+  - component: {fileID: 3119714737017882913}
+  - component: {fileID: 2573208141177809785}
   m_Layer: 8
   m_Name: ManequinPrefab
   m_TagString: Enemy
@@ -1521,7 +1500,7 @@ MonoBehaviour:
   _distanceBeforeAgro: 30
   _distanceBeforeDeAgro: 10
   _timeWithoutSeeingPlayerBeforeLeave: 1.5
-  _enemyAnimator: {fileID: 6655181924734322310}
+  _enemyAnimator: {fileID: 3119714737017882913}
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 503
@@ -1621,6 +1600,40 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 4.5, z: 3}
   m_Center: {x: 0, y: 2.25, z: 0}
+--- !u!95 &3119714737017882913
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5365662238912009380}
+  m_Enabled: 0
+  m_Avatar: {fileID: 9000000, guid: 94c268ab82ce1d64d8a6ea749a75a951, type: 3}
+  m_Controller: {fileID: 9100000, guid: 6e215858f1d492a488287ad44bd83dcb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2573208141177809785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5365662238912009380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb50fe081c7b4114a9e93e96dfeb75c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5509401838670164188
 GameObject:
   m_ObjectHideFlags: 0

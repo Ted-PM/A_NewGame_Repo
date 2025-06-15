@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3437444621242741619}
   - component: {fileID: 7769657278034986274}
-  - component: {fileID: 1042976843320464638}
+  - component: {fileID: 4647543257128458730}
   m_Layer: 0
   m_Name: TallGuySpawnPoint
   m_TagString: Untagged
@@ -52,9 +52,9 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 3.5, z: 0}
---- !u!114 &1042976843320464638
+  m_Size: {x: 40, y: 2, z: 40}
+  m_Center: {x: 15, y: 3.5, z: 15}
+--- !u!114 &4647543257128458730
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,9 +63,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7212510307899815945}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed466741c847fd6478efef613c32963a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a2719c8328fd514582e96b3af5bc860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyType: 4
   _enemySpawnCollider: {fileID: 7769657278034986274}
-  _enemyDestination: {fileID: 0}
+  enemyDestinations: []

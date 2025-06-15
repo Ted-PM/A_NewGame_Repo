@@ -91,7 +91,9 @@ public class LurkerEnemy : EnemyBaseClass
         //_enemyAnimator.SetBool("Yelling", true);
         _enemyAnimator.enabled = true;
         //yield return new WaitForFixedUpdate();
-        _enemyAnimator.SetBool("Static", false);
+        //_enemyAnimator.SetBool("Static", false);
+        _enemyAnimator.SetBool("move", true);
+
         yield return new WaitForFixedUpdate();
         _enemyAnimator.SetTrigger("StartYelling");
         transform.LookAt(_playerPos);
