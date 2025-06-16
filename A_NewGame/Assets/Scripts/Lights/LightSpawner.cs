@@ -110,6 +110,7 @@ public enum LightTypes
     wallLight,
     wallCandle,
     wallTorch,
-    genericLight
+    genericDimLight,
+    genericBrightLight
 }
 

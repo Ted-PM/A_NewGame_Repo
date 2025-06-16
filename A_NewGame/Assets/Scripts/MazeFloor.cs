@@ -361,10 +361,10 @@ public class MazeFloor : MonoBehaviour
 
         while (!cellSpawned && possibleCells.Count > 0)
         {
-            if (floorLevel == 0)                            ///------------------
-                potentialCellIndex = possibleCells[1];
-            else
-                potentialCellIndex = possibleCells[0];          ///------------
+            //if (floorLevel == 0)                            ///------------------
+            //    potentialCellIndex = possibleCells[1];
+            //else
+            potentialCellIndex = possibleCells[0];          ///------------
 
             cellSpawned = CanSpawnCell(x, z, potentialCellIndex, true);
 

@@ -13,7 +13,7 @@ public class EnemySpawnPoint : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if ((_newEnemy != null && !_newEnemy.activeSelf) || (_newEnemy == null && !_enemySpawnCollider.enabled))
+        if ((_newEnemy != null && !_newEnemy.activeSelf))// || (_newEnemy == null && !_enemySpawnCollider.enabled))
         {
             _newEnemy = null;
             StartCoroutine(WaitThenEnableCollider());

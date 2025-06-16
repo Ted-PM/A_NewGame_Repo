@@ -15,6 +15,9 @@ public class WorldGenerator : MonoBehaviour
     private GameObject myDoorSpawner;
     [SerializeField]
     private GameObject myLightSpawner;
+    [SerializeField]
+    private GameObject myParticleSystemSpawner;
+
 
     [SerializeField]
     private WorldRenderManager _worldRenderManager;
@@ -29,6 +32,7 @@ public class WorldGenerator : MonoBehaviour
     public bool spawnEnemies;
     public bool spawnDoors;
     public bool spawnLights;
+    public bool spawnParticles;
 
     private FloorSpawner _floorSpawner;
     private PlayerSpawner _playerSpawner;
@@ -89,6 +93,9 @@ public class WorldGenerator : MonoBehaviour
         yield return new WaitForFixedUpdate();
         if (spawnEnemies)
             StartCoroutine(WaitThenSpawnEnemySpawner());
+        yield return new WaitForFixedUpdate();
+        if (spawnParticles)
+            StartCoroutine(WaitThenSpawnParticleSystemSpawner());
         yield return new WaitForFixedUpdate();
         if (spawnDoors)
             StartCoroutine(WaitThenSpawnDoorSpawner());
@@ -153,6 +160,12 @@ public class WorldGenerator : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         Instantiate(myEnemySpawner, this.transform);
+    }
+
+    private IEnumerator WaitThenSpawnParticleSystemSpawner()
+    {
+        yield return new WaitForSeconds(1f);
+        Instantiate(myParticleSystemSpawner, this.transform);
     }
 
     private IEnumerator WaitThenSpawnDoorSpawner()

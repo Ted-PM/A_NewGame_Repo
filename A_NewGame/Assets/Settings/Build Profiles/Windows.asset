@@ -20,8 +20,6 @@ MonoBehaviour:
   m_Scenes:
   - m_enabled: 0
     m_path: Assets/Scenes/SampleScene.unity
-  - m_enabled: 1
-    m_path: Assets/Scenes/FloorTestScenes/1_Floor_Cabin.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings: []

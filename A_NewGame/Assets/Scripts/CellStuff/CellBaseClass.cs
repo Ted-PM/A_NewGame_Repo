@@ -36,6 +36,9 @@ public class CellBaseClass : MonoBehaviour
     [SerializeField]
     private GameObject _props;
 
+    [SerializeField]
+    private List<CellProps> _cellProps;
+
     public int xWidth = 1;
     public int zHeight = 1;
 
@@ -459,10 +462,16 @@ public class CellBaseClass : MonoBehaviour
 
     private void DisableCellEntrances()
     {
+        CellProps temp;
         for (int i = 0; i < _entrances.Count;i++)
         {
             if (_entrances[i] != null)
-                _entrances[i].SetActive(false);
+            {
+                if (!_entrances[i].TryGetComponent<CellProps>(out temp))
+                    _entrances[i].SetActive(false);
+                else
+                    temp.DisableProps();
+            }
         }
     }
 
@@ -482,6 +491,15 @@ public class CellBaseClass : MonoBehaviour
     {
         if (_props != null)
             _props.SetActive(false);
+
+        if (_cellProps == null || _cellProps.Count <= 0)
+            return;
+
+        foreach (CellProps prop in _cellProps)
+        {
+            if (prop != null)
+                prop.DisableProps();
+        }
     }
 
     //      DISABLE CELL WALLS
@@ -583,10 +601,16 @@ public class CellBaseClass : MonoBehaviour
 
     private void EnableCellEntrances()
     {
+        CellProps temp;
         for (int i = 0; i < _entrances.Count; i++)
         {
             if (_entrances[i] != null)
-                _entrances[i].SetActive(true);
+            {
+                if (!_entrances[i].TryGetComponent<CellProps>(out temp))
+                    _entrances[i].SetActive(true);
+                else
+                    temp.EnableProps();
+            }
         }
     }
 
@@ -603,6 +627,15 @@ public class CellBaseClass : MonoBehaviour
     {
         if (_props != null)
             _props.SetActive(true);
+
+        if (_cellProps == null || _cellProps.Count <= 0)
+            return;
+
+        foreach (CellProps prop in _cellProps)
+        {
+            if (prop != null)
+                prop.EnableProps();
+        }
     }
 
     private void EnableEnemies()
