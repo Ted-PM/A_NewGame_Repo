@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The maximum speed a player can move at while climbing a Climbing object.(4f)")]
     [SerializeField] private float _maxClimbSpeed = 4f;
 
+    [Header("Player Colliders & Triggers")]
     [Tooltip("The outer collider on the player which has no friction, for walls.")]
     [SerializeField] private Collider _outerCollider;
 
@@ -58,6 +59,9 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("The trigger around the player which triggers enemies, doors, lights etc. to spawn when close.")]
     [SerializeField] private Collider _loadAreaTrigger;
+
+    [Tooltip("The players flashlight.")]
+    [SerializeField] private Light _flashLight;
 
     private bool _isGrounded = true;
     private bool _isClimbing = false;
@@ -677,6 +681,11 @@ public class PlayerController : MonoBehaviour
         return _camera;
     }
 
+    public void UpdateCameraBackgroundColor(UnityEngine.Color newColor)
+    {
+        _camera.backgroundColor = newColor;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision == null || collision.gameObject == null)
@@ -694,6 +703,11 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Ground")
             _isGrounded = true;
         
+    }
+
+    public void ToggleFlashLight(bool isEnabled)
+    {
+        _flashLight.enabled = isEnabled;
     }
 
     private void OnTriggerEnter(Collider other)

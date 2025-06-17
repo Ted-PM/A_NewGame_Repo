@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using System;
 
 public class CellBaseClass : MonoBehaviour
 {
@@ -718,6 +719,56 @@ public class CellBaseClass : MonoBehaviour
     }
 
     //      DESTROY CELL WALLS
+
+    public virtual void DestroyCellWalls()
+    {
+        CellWallData wallData;
+
+        for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
+        {
+            if (!_zPosHorizontalWalls[i].WallIsDestroyed())
+            {
+                wallData = _zPosHorizontalWalls[i];
+                wallData.DestroyWall();
+                Destroy(wallData.wall.gameObject);
+                _zPosHorizontalWalls[i] = wallData;
+            }
+        }
+
+        for (int i = 0; i < _zNegHorizontalWalls.Count; i++)
+        {
+            if (!_zNegHorizontalWalls[i].WallIsDestroyed())
+            {
+                wallData = _zNegHorizontalWalls[i];
+                wallData.DestroyWall();
+                Destroy(wallData.wall.gameObject);
+                _zNegHorizontalWalls[i] = wallData;
+            }
+        }
+
+        for (int i = 0; i < _xPosVerticleWalls.Count; i++)
+        {
+            if (!_xPosVerticleWalls[i].WallIsDestroyed())
+            {
+                wallData = _xPosVerticleWalls[i];
+                wallData.DestroyWall();
+                Destroy(wallData.wall.gameObject);
+                _xPosVerticleWalls[i] = wallData;
+            }
+        }
+
+        for (int i = 0; i < _xNegVerticleWalls.Count; i++)
+        {
+            if (!_xNegVerticleWalls[i].WallIsDestroyed())
+            {
+                wallData = _xNegVerticleWalls[i];
+                wallData.DestroyWall();
+                Destroy(wallData.wall.gameObject);
+                _xNegVerticleWalls[i] = wallData;
+            }
+        }
+    }
+
     public void DestroySpecificPosZWall(int index, bool addDorway = false, bool addEntrance = false)
     {
         if (index +1 > _zPosHorizontalWalls.Count)
@@ -1075,12 +1126,12 @@ public class CellBaseClass : MonoBehaviour
     {
         if (min < 0 || min > max)
             min = 0;
-        return Random.Range(min, max);
+        return UnityEngine.Random.Range(min, max);
     }
 
     protected bool OneInXChances(int num)
     {
-        return Random.Range(0, num) == 0;
+        return UnityEngine.Random.Range(0, num) == 0;
     }
 
     private int GetIntFrom2Char(char a, char b)

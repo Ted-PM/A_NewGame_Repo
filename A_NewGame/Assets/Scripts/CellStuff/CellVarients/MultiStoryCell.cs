@@ -413,6 +413,58 @@ public class MultiStoryCell : CellBaseClass
     }
 
     //      DESTROY CELL WALLS
+
+    public override void DestroyCellWalls()
+    {
+        CellWallData wallData;
+
+        for (int j = 0; j < yFloors; j ++)
+        {
+            for (int i = 0; i < _zPosMultiHorizontalWalls[j].Count; i++)
+            {
+                if (!_zPosMultiHorizontalWalls[j][i].WallIsDestroyed())
+                {
+                    wallData = _zPosMultiHorizontalWalls[j][i];
+                    wallData.DestroyWall();
+                    Destroy(wallData.wall.gameObject);
+                    _zPosMultiHorizontalWalls[j][i] = wallData;
+                }
+            }
+
+            for (int i = 0; i < _zNegMultiHorizontalWalls[j].Count; i++)
+            {
+                if (!_zNegMultiHorizontalWalls[j][i].WallIsDestroyed())
+                {
+                    wallData = _zNegMultiHorizontalWalls[j][i];
+                    wallData.DestroyWall();
+                    Destroy(wallData.wall.gameObject);
+                    _zNegMultiHorizontalWalls[j][i] = wallData;
+                }
+            }
+
+            for (int i = 0; i < _xPosMultiVerticleWalls[j].Count; i++)
+            {
+                if (!_xPosMultiVerticleWalls[j][i].WallIsDestroyed())
+                {
+                    wallData = _xPosMultiVerticleWalls[j][i];
+                    wallData.DestroyWall();
+                    Destroy(wallData.wall.gameObject);
+                    _xPosMultiVerticleWalls[j][i] = wallData;
+                }
+            }
+
+            for (int i = 0; i < _xNegMultiVerticleWalls[j].Count; i++)
+            {
+                if (!_xNegMultiVerticleWalls[j][i].WallIsDestroyed())
+                {
+                    wallData = _xNegMultiVerticleWalls[j][i];
+                    wallData.DestroyWall();
+                    Destroy(wallData.wall.gameObject);
+                    _xNegMultiVerticleWalls[j][i] = wallData;
+                }
+            }
+        }
+    }
     public void DestroySpecificPosZMultiWall(int index, bool addDorway = false, bool addEntrance = false)
     {
         if (addDorway && !_zPosMultiHorizontalWalls[0][index].WallIsDestroyed())

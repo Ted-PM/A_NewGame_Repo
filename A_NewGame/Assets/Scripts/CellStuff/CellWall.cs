@@ -42,8 +42,13 @@ public class CellWall : MonoBehaviour
     {
         _wallCollider.enabled = false;
 
-        if (_wallPlane != null && _planeRenderer != null)
-            _planeRenderer.enabled = false;
+        if (_wallPlane != null)
+        {
+            if (_wallPlane.TryGetComponent<Collider>(out Collider c))
+                c.enabled = false;
+            if ( _planeRenderer != null)
+                _planeRenderer.enabled = false;
+        }
         if (_wallProps != null)
             DisableWallProps();
     }
@@ -52,8 +57,13 @@ public class CellWall : MonoBehaviour
     {
         _wallCollider.enabled = true;
 
-        if (_wallPlane != null && _planeRenderer != null)
-            _planeRenderer.enabled = true;
+        if (_wallPlane != null)
+        {
+            if (_wallPlane.TryGetComponent<Collider>(out Collider c))
+                c.enabled = true;
+            if ( _planeRenderer != null)
+                _planeRenderer.enabled = true;
+        }
         if (_wallProps != null)
             EnableWallProps();
     }

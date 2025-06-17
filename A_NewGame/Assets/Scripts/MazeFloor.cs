@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using Unity.AI.Navigation;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
+using Unity.VisualScripting;
 
 public class MazeFloor : MonoBehaviour
 {
@@ -70,6 +73,11 @@ public class MazeFloor : MonoBehaviour
 
     private int _previousCellIndex = -1;
 
+    [SerializeField]
+    private FogData_ScriptableObjectScript _floorFogData;
+    //private Volume _floorVolumePrefab = null;
+    //private Volume _floorVolume = null;
+
     private void Awake()
     {
         _hasPrevFloor = false;
@@ -85,6 +93,7 @@ public class MazeFloor : MonoBehaviour
         CheckPrefabListAndOdds();
         SpawnXContainers();
         SpawnCustomCeeling();
+        //UpdateFog();
     }
 
     private void SetFloorDimensions(int width, int height)
@@ -124,6 +133,12 @@ public class MazeFloor : MonoBehaviour
 
     private void CheckPrefabListAndOdds()
     {
+        if (isEmptyFloor)
+        {
+            if (emptyFloorCell == null)
+                Debug.LogError("Empty floor cel NULL!!");
+            return;
+        }
         if (_prefabs.Length <= 0)
             Debug.LogError("No Prefabs in List!");
         if (hasNextFloor && _verticleTransitionPrefabs.Length <= 0)
@@ -150,6 +165,43 @@ public class MazeFloor : MonoBehaviour
             _customCeelings.Add(temp);
         }
     }
+
+    //private void UpdateFog()
+    //{
+    //    RenderSettings.fog = true;
+    //    RenderSettings.fogColor = Color.white;
+    //}
+
+    //private void SpawnCustomVolume()
+    //{
+    //    if (_floorVolume != null || _floorVolumePrefab == null)
+    //        return;
+
+    //    RenderSettings.fog = true;
+    //    RenderSettings.fogColor = Color.white;
+
+    //    //_floorVolume = Instantiate(_floorVolumePrefab, this.transform);
+    //    //VolumeProfile vP = _floorVolume.sharedProfile;
+
+    //    //VolumeProfile profile = _floorVolume.sharedProfile;
+    //    //if (!profile.TryGet<Fog>(out var fog))
+    //    //{
+    //    //    fog = profile.Add<Fog>(false);
+    //    //}
+
+    //    //if (!vP.TryGet<Fog>(out var fog))
+    //    //{
+
+    //    //}
+    //    //_floorVolume.name = _floorVolumePrefab.name;
+    //    //float xW = xWidth * 9;
+    //    //float zH = zHeight * 9;
+
+    //    //_floorVolume.transform.localScale = new Vector3(xW, 10, zH);
+    //    //_floorVolume.transform.localPosition += new Vector3((xW - 10) / 2, 5f, ( zH - 10) / 2);
+    //    //_floorVolume.enabled = true;
+
+    //}
 
     public void SetStartCells()
     {
@@ -494,7 +546,7 @@ public class MazeFloor : MonoBehaviour
                     if (i > 0 && i < xWidth - 1 && j > 0 && j < zHeight - 1)
                     {
                         //_cellMatrix[i, j].GetComponent<Cell>().DisableAllWalls(true);
-                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DisableCellWalls();
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyCellWalls();
                         continue;
                     }
 
@@ -511,7 +563,10 @@ public class MazeFloor : MonoBehaviour
                         _cellMatrix[i, j].GetComponent<CellBaseClass>().DisablePosZWalls();
                         //_cellMatrix[i, j].GetComponent<Cell>().DisablePosZWalls(true);
                 }
-                
+                else if (CellIsTransitional(i, j))
+                {
+                    _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyCellWalls();
+                }               
             }
         }
     }
@@ -1161,6 +1216,10 @@ public class MazeFloor : MonoBehaviour
         return list.OrderBy(x => UnityEngine.Random.value).ToList();
     }
 
+    public FogData_ScriptableObjectScript GetFloorFogData()
+    {
+        return _floorFogData;
+    }
     public bool[,] GetCellMatrixBool()
     {
         return _cellMatrixBool;

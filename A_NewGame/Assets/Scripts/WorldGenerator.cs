@@ -73,6 +73,8 @@ public class WorldGenerator : MonoBehaviour
                 _worldRenderManager.UpdateRenderers(_playerFloorLevel);
             if (useAbmientAudio)
                 _worldAudioManager.PlayFloorAmbiance(_mazeFloors[_playerFloorLevel].GetFloorAmbientAudioClip());
+            if (spawnPlayer)
+                _playerSpawner.UpdatePlayerFog(_mazeFloors[_playerFloorLevel].GetFloorFogData());
         }
     }
 
