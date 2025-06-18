@@ -122,6 +122,7 @@ MonoBehaviour:
   - {fileID: 342488833958512737, guid: a8b30feef281ccb468dfb1919eda2f7d, type: 3}
   _oddsOfChoosePrefab: 01000000020000000200000002000000020000000200000002000000
   _verticleTransitionPrefabs:
+  - {fileID: 9152071213757157107, guid: dc1467ad66dcc164ab14a94466ae5e70, type: 3}
   - {fileID: 9152071213757157107, guid: be68171a82c0bd747b6cc0ba393c3356, type: 3}
   - {fileID: 9152071213757157107, guid: 6b3dbd96b21adf2478b22ce7d0f1d319, type: 3}
   _enemyCellPrefabs:

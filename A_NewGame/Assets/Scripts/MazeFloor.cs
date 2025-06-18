@@ -75,6 +75,11 @@ public class MazeFloor : MonoBehaviour
 
     [SerializeField]
     private FogData_ScriptableObjectScript _floorFogData;
+
+    [SerializeField]
+    private bool addTerain;
+    [SerializeField]
+    private Terrain _terrain;
     //private Volume _floorVolumePrefab = null;
     //private Volume _floorVolume = null;
 
@@ -93,6 +98,7 @@ public class MazeFloor : MonoBehaviour
         CheckPrefabListAndOdds();
         SpawnXContainers();
         SpawnCustomCeeling();
+        AddTerrain();
         //UpdateFog();
     }
 
@@ -164,6 +170,26 @@ public class MazeFloor : MonoBehaviour
             temp.transform.localPosition += new Vector3((10*xWidth-10)/2, 0f, (10*zHeight-10)/2);
             _customCeelings.Add(temp);
         }
+    }
+
+    private void AddTerrain()
+    {
+        if (!addTerain || _terrain == null)
+            return;
+
+        _terrain = Instantiate(_terrain, this.transform);
+        TerrainData data = new TerrainData();
+
+            //_terrain.GetComponent<TerrainData>();
+        data.size = new Vector3(100, 100, 100);
+        _terrain.terrainData = data;
+        _terrain.GetComponent<TerrainCollider>().terrainData = data;
+        //_terrain.size
+        //_terrain.transform.localScale = new Vector3(10,10,10);
+        //_terrain =this.AddComponent<Terrain>();
+        //_terrain.transform.parent = this.transform;
+        //TerrainData terrainData = _terrain.GetComponent<TerrainData>();
+        //terrainData.
     }
 
     //private void UpdateFog()
@@ -325,6 +351,8 @@ public class MazeFloor : MonoBehaviour
         {
             SpawnEnemyCells();
         }
+        if (isEmptyFloor)
+            MarkEmptyFloorCellEdges();
         //else
         //{
         //    SpawnEmptyCell(startX, startZ);
@@ -399,6 +427,7 @@ public class MazeFloor : MonoBehaviour
     {
         //Debug.Log("Spawning Empty Cell at: " + x.ToString() + ", " + z.ToString());
         SpawnCell(emptyCell, x, z, specialCells, ("Above Trans Cell:  " + x.ToString() + ", " + z.ToString()));
+
     }
 
     private void SpawnTransitionalCell(int x, int z)
@@ -510,7 +539,16 @@ public class MazeFloor : MonoBehaviour
     {
         if (emptyFloorCell == null)
             Debug.LogError("EmptyFloorCell no set!!");
-        SpawnCell(emptyFloorCell, x, z, _XContainers[x], (x.ToString() + ", " + z.ToString()));
+
+        if (_prefabs != null && _prefabs.Length > 0)
+        {
+            if (x > 1 && z > 1 && x < xWidth - 2 && z < zHeight - 2)
+                SpawnNormalCell(x, z);
+            else
+                SpawnCell(emptyFloorCell, x, z, _XContainers[x], (x.ToString() + ", " + z.ToString()));
+        }
+        else
+            SpawnCell(emptyFloorCell, x, z, _XContainers[x], (x.ToString() + ", " + z.ToString()));
 
         //if (x > 0 && x < xWidth - 1 && z > 0 && z < zHeight - 1)
         //{
@@ -538,36 +576,82 @@ public class MazeFloor : MonoBehaviour
                 {
                     //_cellMatrix[i, j].GetComponent<Cell>().DisableAllWalls(true);
                     //_cellMatrix[i, j].GetComponent<Cell>().DisableFloors();
-                    _cellMatrix[i, j].GetComponent<CellBaseClass>().DisableCellWalls();
+                    //_cellMatrix[i, j].GetComponent<CellBaseClass>().DisableCellWalls();
+                    _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyCellWalls();
                     _cellMatrix[i, j].GetComponent<CellBaseClass>().DisableCellFloors();
+                    _cellMatrix[i, j].GetComponent<CellBaseClass>().DisableCellCeelings();
                 }
                 else if (!CellIsTransitional(i, j))
                 {
-                    if (i > 0 && i < xWidth - 1 && j > 0 && j < zHeight - 1)
+                    //if (i > 0 && i < xWidth - 1 && j > 0 && j < zHeight - 1)
+                    if (i > 1 && i < xWidth - 2 && j > 1 && j < zHeight - 2)
                     {
                         //_cellMatrix[i, j].GetComponent<Cell>().DisableAllWalls(true);
-                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyCellWalls();
+                        //_cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyCellWalls();
                         continue;
                     }
 
-                    if (i > 0)
-                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DisableNegXWalls();
-                        //_cellMatrix[i, j].GetComponent<Cell>().DisableNegXWalls(true);
-                    if (j > 0)
-                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DisableNegZWalls();
-                        //_cellMatrix[i, j].GetComponent<Cell>().DisableNegZWalls(true);
-                    if (i < xWidth - 1)
-                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DisablePosXWalls();
-                        //_cellMatrix[i, j].GetComponent<Cell>().DisablePosXWalls(true);
-                    if (j < zHeight - 1)
-                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DisablePosZWalls();
-                        //_cellMatrix[i, j].GetComponent<Cell>().DisablePosZWalls(true);
+                    //if (i > 0 && i < xWidth - 1)
+                    if (i > 1 && i < xWidth - 2)
+                    {
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyNegXWalls();
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyPosXWalls();
+                    }
+
+                    if (i == 0 || i == xWidth - 2)
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyPosXWalls();
+                    if (i == xWidth - 1 || i == 1)
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyNegXWalls();
+
+                    //if (i > 0)
+                    //    _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyNegXWalls();
+
+                    //if (i < xWidth - 1)
+                    //    _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyPosXWalls();
+
+                    //if (j > 0 && j < zHeight - 1)
+                    if (j > 1 && j < zHeight - 2)
+                    {
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyNegZWalls();
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyPosZWalls();
+                    }
+                    if (j == 0 || j == zHeight - 2)
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyPosZWalls();
+                    if (j == zHeight - 1 || j == 1)
+                        _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyNegZWalls();
+
+                    //if (j > 0)
+                    //    _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyNegZWalls();
+
+                    //if (j < zHeight - 1)
+                    //    _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyPosZWalls();
+
                 }
                 else if (CellIsTransitional(i, j))
                 {
                     _cellMatrix[i, j].GetComponent<CellBaseClass>().DestroyCellWalls();
                 }               
             }
+        }
+    }
+
+    public void MarkEmptyFloorCellEdges()
+    {
+        //int x = 0;
+        //int z = 0;
+        for (int i = 0; i < xWidth; i++)
+        {
+            _cellMatrixBool[i, zHeight - 1] = true;
+            _cellMatrixBool[i, zHeight - 2] = true;
+            _cellMatrixBool[i, 0] = true;
+            _cellMatrixBool[i, 1] = true;
+        }
+        for (int i = 0; i < zHeight; i++)
+        {
+            _cellMatrixBool[xWidth-1, i] = true;
+            _cellMatrixBool[xWidth-2, i] = true;
+            _cellMatrixBool[0, i] = true;
+            _cellMatrixBool[1, i] = true;
         }
     }
     private bool CellIsTransitional(int x, int z)
@@ -684,6 +768,11 @@ public class MazeFloor : MonoBehaviour
                     break;
                 }
                 if (_hasPrevFloor && CheckIfCellAbovePrevFloorTransitionals(i, j))
+                {
+                    result = false;
+                    break;
+                }
+                if (isEmptyFloor && (i <=1 || i >= xWidth -2 || j <= 1 || j >= zHeight - 2))
                 {
                     result = false;
                     break;

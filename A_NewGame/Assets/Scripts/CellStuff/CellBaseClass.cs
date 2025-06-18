@@ -441,7 +441,7 @@ public class CellBaseClass : MonoBehaviour
         }
     }
 
-    private void DisableCellCeelings()
+    public void DisableCellCeelings()
     {
         for (int i = 0; i < _ceelings.Count; i++)
         {
@@ -722,6 +722,14 @@ public class CellBaseClass : MonoBehaviour
 
     public virtual void DestroyCellWalls()
     {
+        DestroyPosZWalls();
+        DestroyNegZWalls();
+        DestroyPosXWalls();
+        DestroyNegXWalls();
+    }
+
+    public virtual void DestroyPosZWalls()
+    {
         CellWallData wallData;
 
         for (int i = 0; i < _zPosHorizontalWalls.Count; i++)
@@ -732,39 +740,6 @@ public class CellBaseClass : MonoBehaviour
                 wallData.DestroyWall();
                 Destroy(wallData.wall.gameObject);
                 _zPosHorizontalWalls[i] = wallData;
-            }
-        }
-
-        for (int i = 0; i < _zNegHorizontalWalls.Count; i++)
-        {
-            if (!_zNegHorizontalWalls[i].WallIsDestroyed())
-            {
-                wallData = _zNegHorizontalWalls[i];
-                wallData.DestroyWall();
-                Destroy(wallData.wall.gameObject);
-                _zNegHorizontalWalls[i] = wallData;
-            }
-        }
-
-        for (int i = 0; i < _xPosVerticleWalls.Count; i++)
-        {
-            if (!_xPosVerticleWalls[i].WallIsDestroyed())
-            {
-                wallData = _xPosVerticleWalls[i];
-                wallData.DestroyWall();
-                Destroy(wallData.wall.gameObject);
-                _xPosVerticleWalls[i] = wallData;
-            }
-        }
-
-        for (int i = 0; i < _xNegVerticleWalls.Count; i++)
-        {
-            if (!_xNegVerticleWalls[i].WallIsDestroyed())
-            {
-                wallData = _xNegVerticleWalls[i];
-                wallData.DestroyWall();
-                Destroy(wallData.wall.gameObject);
-                _xNegVerticleWalls[i] = wallData;
             }
         }
     }
@@ -792,7 +767,8 @@ public class CellBaseClass : MonoBehaviour
             }
             else if (_entrancePrefabs.Count > 0)
             {
-                newObject = Instantiate(_entrancePrefabs[GetRandomNum(0, _entrancePrefabs.Count)], this.transform);
+                int prefabIndex = GetRandomNum(0, _entrancePrefabs.Count);
+                newObject = Instantiate(_entrancePrefabs[prefabIndex], this.transform);
                 _entrances.Add(newObject);
             }
 
@@ -809,6 +785,21 @@ public class CellBaseClass : MonoBehaviour
         _zPosHorizontalWalls[index] = wallData;
     }
 
+    public virtual void DestroyNegZWalls()
+    {
+        CellWallData wallData;
+
+        for (int i = 0; i < _zNegHorizontalWalls.Count; i++)
+        {
+            if (!_zNegHorizontalWalls[i].WallIsDestroyed())
+            {
+                wallData = _zNegHorizontalWalls[i];
+                wallData.DestroyWall();
+                Destroy(wallData.wall.gameObject);
+                _zNegHorizontalWalls[i] = wallData;
+            }
+        }
+    }
     public void DestroySpecificNegZWall(int index, bool addDorway = false, bool addEntrance = false)
     {
         if (index + 1 > _zNegHorizontalWalls.Count)
@@ -832,7 +823,8 @@ public class CellBaseClass : MonoBehaviour
             }
             else if (_entrancePrefabs.Count > 0)
             {
-                newObject = Instantiate(_entrancePrefabs[GetRandomNum(0, _entrancePrefabs.Count)], this.transform);
+                int prefabIndex = GetRandomNum(0, _entrancePrefabs.Count);
+                newObject = Instantiate(_entrancePrefabs[prefabIndex], this.transform);
                 _entrances.Add(newObject);
             }
 
@@ -847,6 +839,22 @@ public class CellBaseClass : MonoBehaviour
         wallData.DestroyWall();
         Destroy(wallData.wall.gameObject);
         _zNegHorizontalWalls[index] = wallData;
+    }
+
+    public virtual void DestroyPosXWalls()
+    {
+        CellWallData wallData;
+
+        for (int i = 0; i < _xPosVerticleWalls.Count; i++)
+        {
+            if (!_xPosVerticleWalls[i].WallIsDestroyed())
+            {
+                wallData = _xPosVerticleWalls[i];
+                wallData.DestroyWall();
+                Destroy(wallData.wall.gameObject);
+                _xPosVerticleWalls[i] = wallData;
+            }
+        }
     }
 
     public void DestroySpecificPosXWall(int index, bool addDorway = false, bool addEntrance = false)
@@ -872,7 +880,8 @@ public class CellBaseClass : MonoBehaviour
             }
             else if (_entrancePrefabs.Count > 0)
             {
-                newObject = Instantiate(_entrancePrefabs[GetRandomNum(0, _entrancePrefabs.Count)], this.transform);
+                int prefabIndex = GetRandomNum(0, _entrancePrefabs.Count);
+                newObject = Instantiate(_entrancePrefabs[prefabIndex], this.transform);
                 _entrances.Add(newObject);
             }
 
@@ -888,6 +897,22 @@ public class CellBaseClass : MonoBehaviour
         wallData.DestroyWall();
         Destroy(wallData.wall.gameObject);
         _xPosVerticleWalls[index] = wallData;
+    }
+
+    public virtual void DestroyNegXWalls()
+    {
+        CellWallData wallData;
+
+        for (int i = 0; i < _xNegVerticleWalls.Count; i++)
+        {
+            if (!_xNegVerticleWalls[i].WallIsDestroyed())
+            {
+                wallData = _xNegVerticleWalls[i];
+                wallData.DestroyWall();
+                Destroy(wallData.wall.gameObject);
+                _xNegVerticleWalls[i] = wallData;
+            }
+        }
     }
 
     public void DestroySpecificNegXWall(int index, bool addDorway = false, bool addEntrance = false)
@@ -913,7 +938,8 @@ public class CellBaseClass : MonoBehaviour
             }
             else if (_entrancePrefabs.Count > 0)
             {
-                newObject = Instantiate(_entrancePrefabs[GetRandomNum(0, _entrancePrefabs.Count)], this.transform);
+                int prefabIndex = GetRandomNum(0, _entrancePrefabs.Count);
+                newObject = Instantiate(_entrancePrefabs[prefabIndex], this.transform);
                 _entrances.Add(newObject);
             }
 
@@ -1124,8 +1150,14 @@ public class CellBaseClass : MonoBehaviour
     //      UTILITY
     protected int GetRandomNum(int max, int min = 0)
     {
-        if (min < 0 || min > max)
+        if (min < 0)
             min = 0;
+        if (min > max)
+        {
+            int t = min;
+            min = max;
+            max = t;
+        }
         return UnityEngine.Random.Range(min, max);
     }
 

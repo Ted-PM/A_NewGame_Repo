@@ -181,6 +181,10 @@ public class FloorSpawner : MonoBehaviour
     private IEnumerator WaitThenGenerateEmptyFloor(int floorIndex)
     {
         yield return new WaitForSeconds(1f);
+        _mazeFloors[floorIndex].MarkEmptyFloorCellEdges();
+        yield return new WaitForFixedUpdate();
+        GenerateMazeFloor(floorIndex);
+        yield return new WaitForFixedUpdate();
         _mazeFloors[floorIndex].DisableEmptyFloorCellWalls();
         yield return new WaitForFixedUpdate();
         _mazeFloors[floorIndex].AddNavmeshSurfaceData();

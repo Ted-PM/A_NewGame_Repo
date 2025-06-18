@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: ThirdFloor_FogData_ScriptableObjectScript
   m_EditorClassIdentifier: 
   useFog: 1
-  fogColor: {r: 0.6392157, g: 0.6392157, b: 0.63529414, a: 1}
-  camBGColor: {r: 0.6392157, g: 0.6392157, b: 0.63529414, a: 1}
+  fogColor: {r: 0.6933072, g: 0.7735849, b: 0.76568824, a: 1}
+  camBGColor: {r: 0.69411767, g: 0.77254903, b: 0.7647059, a: 1}
   flashLightEnabled: 0
   fogMode: 1
   fogStartDistance: 0
-  fogEndDistance: 32.5
-  fogDensity: 0.15
+  fogEndDistance: 35
+  fogDensity: 0.1
+  useParticleSystem: 1

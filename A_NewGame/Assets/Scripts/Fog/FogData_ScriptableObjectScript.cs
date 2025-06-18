@@ -14,4 +14,5 @@ public class FogData_ScriptableObjectScript : ScriptableObject
     [Header("Only for Exponential & Exponential Squared fog")]
     [Range(0,1)]
     public float fogDensity = 0.075f;
+    public bool useParticleSystem = false;
 }

@@ -27,6 +27,7 @@ public class PlayerSpawner : MonoBehaviour
         _playerController.UpdateCameraBackgroundColor(newFogData.camBGColor);
 
         RenderSettings.fogMode = newFogData.fogMode;
+
         if (newFogData.fogMode == FogMode.Linear)
         {
             RenderSettings.fogStartDistance = newFogData.fogStartDistance;
@@ -36,6 +37,9 @@ public class PlayerSpawner : MonoBehaviour
             RenderSettings.fogDensity = newFogData.fogDensity;
 
         _playerController.ToggleFlashLight(newFogData.flashLightEnabled);
+
+        //if (newFogData.useParticleSystem)
+        _playerController.EnablePlayerParticleSystem(newFogData.useParticleSystem);
     }
     public GameObject SpawnPlayer(int x, int z, int y = 0)
     {

@@ -63,6 +63,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The players flashlight.")]
     [SerializeField] private Light _flashLight;
 
+    [Tooltip("The particle system directly above the player.")]
+    [SerializeField] private ParticleSystem _particleSystem;
+
     private bool _isGrounded = true;
     private bool _isClimbing = false;
     private Vector3 _playerInput = Vector3.zero;
@@ -684,6 +687,22 @@ public class PlayerController : MonoBehaviour
     public void UpdateCameraBackgroundColor(UnityEngine.Color newColor)
     {
         _camera.backgroundColor = newColor;
+    }
+
+    //public void DisablePostProcessing()
+    //{
+    //    _camera.GetComponent<Renderer>().
+    //}
+
+    public void EnablePlayerParticleSystem(bool enable)
+    {
+        if (_particleSystem == null)
+            return;
+
+        if (enable)
+            _particleSystem.Play();
+        else
+            _particleSystem.Stop();
     }
 
     private void OnCollisionEnter(Collision collision)

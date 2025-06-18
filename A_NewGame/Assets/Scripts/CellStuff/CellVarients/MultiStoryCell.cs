@@ -414,11 +414,63 @@ public class MultiStoryCell : CellBaseClass
 
     //      DESTROY CELL WALLS
 
-    public override void DestroyCellWalls()
+    //public override void DestroyCellWalls()
+    //{
+    //    CellWallData wallData;
+
+    //    for (int j = 0; j < yFloors; j ++)
+    //    {
+    //        for (int i = 0; i < _zPosMultiHorizontalWalls[j].Count; i++)
+    //        {
+    //            if (!_zPosMultiHorizontalWalls[j][i].WallIsDestroyed())
+    //            {
+    //                wallData = _zPosMultiHorizontalWalls[j][i];
+    //                wallData.DestroyWall();
+    //                Destroy(wallData.wall.gameObject);
+    //                _zPosMultiHorizontalWalls[j][i] = wallData;
+    //            }
+    //        }
+
+    //        for (int i = 0; i < _zNegMultiHorizontalWalls[j].Count; i++)
+    //        {
+    //            if (!_zNegMultiHorizontalWalls[j][i].WallIsDestroyed())
+    //            {
+    //                wallData = _zNegMultiHorizontalWalls[j][i];
+    //                wallData.DestroyWall();
+    //                Destroy(wallData.wall.gameObject);
+    //                _zNegMultiHorizontalWalls[j][i] = wallData;
+    //            }
+    //        }
+
+    //        for (int i = 0; i < _xPosMultiVerticleWalls[j].Count; i++)
+    //        {
+    //            if (!_xPosMultiVerticleWalls[j][i].WallIsDestroyed())
+    //            {
+    //                wallData = _xPosMultiVerticleWalls[j][i];
+    //                wallData.DestroyWall();
+    //                Destroy(wallData.wall.gameObject);
+    //                _xPosMultiVerticleWalls[j][i] = wallData;
+    //            }
+    //        }
+
+    //        for (int i = 0; i < _xNegMultiVerticleWalls[j].Count; i++)
+    //        {
+    //            if (!_xNegMultiVerticleWalls[j][i].WallIsDestroyed())
+    //            {
+    //                wallData = _xNegMultiVerticleWalls[j][i];
+    //                wallData.DestroyWall();
+    //                Destroy(wallData.wall.gameObject);
+    //                _xNegMultiVerticleWalls[j][i] = wallData;
+    //            }
+    //        }
+    //    }
+    //}
+
+    public override void DestroyPosZWalls()
     {
         CellWallData wallData;
 
-        for (int j = 0; j < yFloors; j ++)
+        for (int j = 0; j < yFloors; j++)
         {
             for (int i = 0; i < _zPosMultiHorizontalWalls[j].Count; i++)
             {
@@ -430,41 +482,9 @@ public class MultiStoryCell : CellBaseClass
                     _zPosMultiHorizontalWalls[j][i] = wallData;
                 }
             }
-
-            for (int i = 0; i < _zNegMultiHorizontalWalls[j].Count; i++)
-            {
-                if (!_zNegMultiHorizontalWalls[j][i].WallIsDestroyed())
-                {
-                    wallData = _zNegMultiHorizontalWalls[j][i];
-                    wallData.DestroyWall();
-                    Destroy(wallData.wall.gameObject);
-                    _zNegMultiHorizontalWalls[j][i] = wallData;
-                }
-            }
-
-            for (int i = 0; i < _xPosMultiVerticleWalls[j].Count; i++)
-            {
-                if (!_xPosMultiVerticleWalls[j][i].WallIsDestroyed())
-                {
-                    wallData = _xPosMultiVerticleWalls[j][i];
-                    wallData.DestroyWall();
-                    Destroy(wallData.wall.gameObject);
-                    _xPosMultiVerticleWalls[j][i] = wallData;
-                }
-            }
-
-            for (int i = 0; i < _xNegMultiVerticleWalls[j].Count; i++)
-            {
-                if (!_xNegMultiVerticleWalls[j][i].WallIsDestroyed())
-                {
-                    wallData = _xNegMultiVerticleWalls[j][i];
-                    wallData.DestroyWall();
-                    Destroy(wallData.wall.gameObject);
-                    _xNegMultiVerticleWalls[j][i] = wallData;
-                }
-            }
         }
     }
+
     public void DestroySpecificPosZMultiWall(int index, bool addDorway = false, bool addEntrance = false)
     {
         if (addDorway && !_zPosMultiHorizontalWalls[0][index].WallIsDestroyed())
@@ -484,8 +504,10 @@ public class MultiStoryCell : CellBaseClass
             }
             else if (_entrancePrefabs.Count > 0)
             {
-                newObject = Instantiate(_entrancePrefabs[GetRandomNum(0, _entrancePrefabs.Count)], this.transform);
+                int prefabIndex = GetRandomNum(0, _entrancePrefabs.Count);
+                newObject = Instantiate(_entrancePrefabs[prefabIndex], this.transform);
                 _entrances.Add(newObject);
+                addEntrance = true;
             }
 
             if (newObject != null)
@@ -516,6 +538,26 @@ public class MultiStoryCell : CellBaseClass
         }
     }
 
+    public override void DestroyNegZWalls()
+    {
+        CellWallData wallData;
+
+        for (int j = 0; j < yFloors; j++)
+        {
+            for (int i = 0; i < _zNegMultiHorizontalWalls[j].Count; i++)
+            {
+                if (!_zNegMultiHorizontalWalls[j][i].WallIsDestroyed())
+                {
+                    wallData = _zNegMultiHorizontalWalls[j][i];
+                    wallData.DestroyWall();
+                    Destroy(wallData.wall.gameObject);
+                    _zNegMultiHorizontalWalls[j][i] = wallData;
+                }
+            }
+        }
+    }
+
+
     public void DestroySpecificNegZMultiWall(int index, bool addDorway = false, bool addEntrance = false)
     {
         if (addDorway && !_zNegMultiHorizontalWalls[0][index].WallIsDestroyed())
@@ -535,8 +577,10 @@ public class MultiStoryCell : CellBaseClass
             }
             else if (_entrancePrefabs.Count > 0)
             {
-                newObject = Instantiate(_entrancePrefabs[GetRandomNum(0, _entrancePrefabs.Count)], this.transform);
+                int prefabIndex = GetRandomNum(0, _entrancePrefabs.Count);
+                newObject = Instantiate(_entrancePrefabs[prefabIndex], this.transform);
                 _entrances.Add(newObject);
+                addEntrance = true;
             }
 
             if (newObject != null)
@@ -567,6 +611,25 @@ public class MultiStoryCell : CellBaseClass
         }
     }
 
+    public override void DestroyPosXWalls()
+    {
+        CellWallData wallData;
+
+        for (int j = 0; j < yFloors; j++)
+        {
+            for (int i = 0; i < _xPosMultiVerticleWalls[j].Count; i++)
+            {
+                if (!_xPosMultiVerticleWalls[j][i].WallIsDestroyed())
+                {
+                    wallData = _xPosMultiVerticleWalls[j][i];
+                    wallData.DestroyWall();
+                    Destroy(wallData.wall.gameObject);
+                    _xPosMultiVerticleWalls[j][i] = wallData;
+                }
+            }
+        }
+    }
+
     public void DestroySpecificPosXMultiWall(int index, bool addDorway = false, bool addEntrance = false)
     {
         if (addDorway && !_xPosMultiVerticleWalls[0][index].WallIsDestroyed())
@@ -586,8 +649,10 @@ public class MultiStoryCell : CellBaseClass
             }
             else if (_entrancePrefabs.Count > 0)
             {
-                newObject = Instantiate(_entrancePrefabs[GetRandomNum(0, _entrancePrefabs.Count)], this.transform);
+                int prefabIndex = GetRandomNum(0, _entrancePrefabs.Count);
+                newObject = Instantiate(_entrancePrefabs[prefabIndex], this.transform);
                 _entrances.Add(newObject);
+                addEntrance = true;
             }
 
             if (newObject != null)
@@ -618,6 +683,24 @@ public class MultiStoryCell : CellBaseClass
         }
     }
 
+    public override void DestroyNegXWalls()
+    {
+        CellWallData wallData;
+
+        for (int j = 0; j < yFloors; j++)
+        {
+            for (int i = 0; i < _xNegMultiVerticleWalls[j].Count; i++)
+            {
+                if (!_xNegMultiVerticleWalls[j][i].WallIsDestroyed())
+                {
+                    wallData = _xNegMultiVerticleWalls[j][i];
+                    wallData.DestroyWall();
+                    Destroy(wallData.wall.gameObject);
+                    _xNegMultiVerticleWalls[j][i] = wallData;
+                }
+            }
+        }
+    }
     public void DestroySpecificNegXMultiWall(int index, bool addDorway = false, bool addEntrance = false)
     {
         if (addDorway && !_xNegMultiVerticleWalls[0][index].WallIsDestroyed())
@@ -637,8 +720,10 @@ public class MultiStoryCell : CellBaseClass
             }
             else if (_entrancePrefabs.Count > 0)
             {
-                newObject = Instantiate(_entrancePrefabs[GetRandomNum(0, _entrancePrefabs.Count)], this.transform);
+                int prefabIndex = GetRandomNum(0, _entrancePrefabs.Count);
+                newObject = Instantiate(_entrancePrefabs[prefabIndex], this.transform);
                 _entrances.Add(newObject);
+                addEntrance = true;
             }
 
             if (newObject != null)

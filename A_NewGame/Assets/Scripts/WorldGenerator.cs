@@ -1,7 +1,9 @@
-using NUnit.Framework;
+//using NUnit.Framework;
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Events;
+
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -48,10 +50,14 @@ public class WorldGenerator : MonoBehaviour
 
     private List<int> _floorLevels;
 
+    //public static UnityEvent<int> playerChangedFloorLevel;
+
     private void Awake()
     {
         //_floorLevels = new List<int>();
         SpawnFloors();
+        //if (playerChangedFloorLevel == null)
+            //playerChangedFloorLevel = new UnityEvent<int>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -127,6 +133,13 @@ public class WorldGenerator : MonoBehaviour
 
         _worldReady = true;
     }
+
+    //private void SubscribeFunctionsToEvent()
+    //{
+    //    if (useRenderCulling)
+    //        playerChangedFloorLevel.AddListener(_worldRenderManager.UpdateRenderers);
+
+    //}
 
     private int GetPlayerFloorLevel()
     {
