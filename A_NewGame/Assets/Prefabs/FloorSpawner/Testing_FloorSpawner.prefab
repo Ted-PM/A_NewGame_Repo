@@ -52,7 +52,7 @@ MonoBehaviour:
   numberOfFloors: 1
   baseX: 20
   baseZ: 20
-  generateDefault: 0
+  generateDefault: 1
   _generator: {fileID: 5700242832225063526}
   mazeGenerated: 0
 --- !u!114 &5700242832225063526

@@ -76,10 +76,10 @@ public class MazeFloor : MonoBehaviour
     [SerializeField]
     private FogData_ScriptableObjectScript _floorFogData;
 
-    [SerializeField]
-    private bool addTerain;
-    [SerializeField]
-    private Terrain _terrain;
+    //[SerializeField]
+    //private bool addTerain;
+    //[SerializeField]
+    //private Terrain _terrain;
     //private Volume _floorVolumePrefab = null;
     //private Volume _floorVolume = null;
 
@@ -98,7 +98,7 @@ public class MazeFloor : MonoBehaviour
         CheckPrefabListAndOdds();
         SpawnXContainers();
         SpawnCustomCeeling();
-        AddTerrain();
+        //AddTerrain();
         //UpdateFog();
     }
 
@@ -172,25 +172,27 @@ public class MazeFloor : MonoBehaviour
         }
     }
 
-    private void AddTerrain()
-    {
-        if (!addTerain || _terrain == null)
-            return;
 
-        _terrain = Instantiate(_terrain, this.transform);
-        TerrainData data = new TerrainData();
 
-            //_terrain.GetComponent<TerrainData>();
-        data.size = new Vector3(100, 100, 100);
-        _terrain.terrainData = data;
-        _terrain.GetComponent<TerrainCollider>().terrainData = data;
-        //_terrain.size
-        //_terrain.transform.localScale = new Vector3(10,10,10);
-        //_terrain =this.AddComponent<Terrain>();
-        //_terrain.transform.parent = this.transform;
-        //TerrainData terrainData = _terrain.GetComponent<TerrainData>();
-        //terrainData.
-    }
+    //private void AddTerrain()
+    //{
+    //    if (!addTerain || _terrain == null)
+    //        return;
+
+    //    _terrain = Instantiate(_terrain, this.transform);
+    //    TerrainData data = new TerrainData();
+
+    //        //_terrain.GetComponent<TerrainData>();
+    //    data.size = new Vector3(100, 100, 100);
+    //    _terrain.terrainData = data;
+    //    _terrain.GetComponent<TerrainCollider>().terrainData = data;
+    //    //_terrain.size
+    //    //_terrain.transform.localScale = new Vector3(10,10,10);
+    //    //_terrain =this.AddComponent<Terrain>();
+    //    //_terrain.transform.parent = this.transform;
+    //    //TerrainData terrainData = _terrain.GetComponent<TerrainData>();
+    //    //terrainData.
+    //}
 
     //private void UpdateFog()
     //{
@@ -442,10 +444,10 @@ public class MazeFloor : MonoBehaviour
 
         while (!cellSpawned && possibleCells.Count > 0)
         {
-            //if (floorLevel == 0)                            ///------------------
-            //    potentialCellIndex = possibleCells[1];
-            //else
-            potentialCellIndex = possibleCells[0];          ///------------
+            if (floorLevel == 0)                            ///------------------
+                potentialCellIndex = possibleCells[1];
+            else
+                potentialCellIndex = possibleCells[0];          ///------------
 
             cellSpawned = CanSpawnCell(x, z, potentialCellIndex, true);
 
