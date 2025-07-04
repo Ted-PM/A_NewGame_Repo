@@ -6,7 +6,7 @@ public class CellFloor : MonoBehaviour
     private Renderer _floorRenderer;
     private Collider _floorCollider;
 
-    private void Awake()
+    protected void Awake()
     {
         _floorCollider = GetComponent<Collider>();
         _floorRenderer = GetComponent<Renderer>();
