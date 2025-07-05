@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private static EnemySpawner _instance;
-    public static EnemySpawner Instance {  get { return _instance; } }
+    //private static EnemySpawner _instance;
+    //public static EnemySpawner Instance {  get { return _instance; } }
 
     [SerializeField]
     private EnemyType _enemyTypesOrderInList;
@@ -18,13 +18,13 @@ public class EnemySpawner : MonoBehaviour
     private GameObject _enemyContainer;
     private List<GameObject> _enemyTypeContainers;
 
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-            Destroy(this.gameObject);
-        else
-            _instance = this;
-    }
+    //private void Awake()
+    //{
+    //    if (_instance != null && _instance != this)
+    //        Destroy(this.gameObject);
+    //    else
+    //        _instance = this;
+    //}
 
     private void Start()
     {
@@ -93,10 +93,10 @@ public class EnemySpawner : MonoBehaviour
         return null;
     }
 
-    public void DisableEnemy(GameObject enemy)
-    {
-        enemy.SetActive(false);
-    }
+    //public void DisableEnemy(GameObject enemy)
+    //{
+    //    enemy.SetActive(false);
+    //}
 
     private void OnDisable()
     {

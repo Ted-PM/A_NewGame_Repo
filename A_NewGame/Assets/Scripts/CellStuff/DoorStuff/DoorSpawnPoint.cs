@@ -129,7 +129,9 @@ public class DoorSpawnPoint : MonoBehaviour
 
     private void SpawnDoor()
     {
-        _newDoor = DoorSpawner.Instance.GetDoorFromPool((int)_doorType);
+
+        _newDoor = ObjectPoolManager.Instance.GetDoorFromPool((int)_doorType);
+        //_newDoor = DoorSpawner.Instance.GetDoorFromPool((int)_doorType);
 
         if ( _newDoor == null)
         {

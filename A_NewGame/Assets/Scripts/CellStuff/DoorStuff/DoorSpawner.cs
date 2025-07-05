@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 public class DoorSpawner : MonoBehaviour
 {
-    private static DoorSpawner _instance;
-    public static DoorSpawner Instance { get { return _instance; } }
+    //private static DoorSpawner _instance;
+    //public static DoorSpawner Instance { get { return _instance; } }
 
     [SerializeField]
     private DoorTypes _doorWayTypesOrderInList;
@@ -25,13 +25,13 @@ public class DoorSpawner : MonoBehaviour
     [SerializeField]
     private List<int> _numberOfDoorsInPool;
 
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-            Destroy(this.gameObject);
-        else
-            _instance = this;
-    }
+    //private void Awake()
+    //{
+    //    if (_instance != null && _instance != this)
+    //        Destroy(this.gameObject);
+    //    else
+    //        _instance = this;
+    //}
     void Start()
     {
         InitializeLists();

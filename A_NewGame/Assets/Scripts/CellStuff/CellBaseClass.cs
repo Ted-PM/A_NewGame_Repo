@@ -23,6 +23,10 @@ public class CellBaseClass : MonoBehaviour
     private Material _ceelingMaterial;
     private List<CellCeeling> _ceelings;
 
+    public bool useDefaultMaterials = false;
+    [SerializeField]
+    private CellData_ScriptableObjectScript _cellMaterials;
+
     [SerializeField]
     protected List<GameObject> _doorWayPrefabs;
     protected List<GameObject> _doorWays;
@@ -80,6 +84,7 @@ public class CellBaseClass : MonoBehaviour
     {
         if (DimensionsAreValid())
         {
+            UpdateMaterials();
             FindCellComponents();
             ReEndableCellComponents();
             ChangeCellComponentMaterials();
@@ -95,6 +100,16 @@ public class CellBaseClass : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void UpdateMaterials()
+    {
+        if (useDefaultMaterials && _cellMaterials != null)
+        {
+            _wallMaterial = _cellMaterials._wallMat;
+            _floorMaterial = _cellMaterials._floorMat;
+            _ceelingMaterial = _cellMaterials._ceelingMat;
+        }
     }
 
     private void FindCellComponents()

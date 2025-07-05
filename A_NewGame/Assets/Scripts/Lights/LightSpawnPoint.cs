@@ -98,7 +98,8 @@ public class LightSpawnPoint : MonoBehaviour
 
     private void SpawnLight()
     {
-        _newLight = LightSpawner.Instance.GetLightFromPool();
+        //_newLight = LightSpawner.Instance.GetLightFromPool();
+        _newLight = ObjectPoolManager.Instance.GetLightFromPool();
 
         if (_newLight == null)
         {

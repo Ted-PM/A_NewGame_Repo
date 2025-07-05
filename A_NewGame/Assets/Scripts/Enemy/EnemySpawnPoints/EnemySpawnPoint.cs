@@ -44,7 +44,8 @@ public class EnemySpawnPoint : MonoBehaviour
 
     protected virtual void SpawnEnemy()
     {
-        _newEnemy = EnemySpawner.Instance.GetObjectFromPool((int)_enemyType);
+        _newEnemy = ObjectPoolManager.Instance.GetEnemyFromPool((int)_enemyType);
+        //_newEnemy = EnemySpawner.Instance.GetObjectFromPool((int)_enemyType);
 
         if (_newEnemy == null)
         {

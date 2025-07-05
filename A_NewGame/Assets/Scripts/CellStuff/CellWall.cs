@@ -15,17 +15,24 @@ public class CellWall : MonoBehaviour
     private List<GameObject> _wallProps;
     [SerializeField]
     private GameObject _wallPlane;
+    [SerializeField]
     private Renderer _planeRenderer;
 
     private void Awake()
     {
         _wallCollider = GetComponent<Collider>();
-        if (_wallPlane == null || !_wallPlane.TryGetComponent<Renderer>(out _planeRenderer))
-        {
+        //if (_wallPlane == null || !_wallPlane.TryGetComponent<Renderer>(out _planeRenderer))
+        //{
 
-            //Debug.Log("No Plane Renderer");
-        }
+        //    //Debug.Log("No Plane Renderer");
+        //}
     }
+
+    //private void Start()
+    //{
+    //    if (_wallPlane != null)
+    //        _planeRenderer = _wallPlane.GetComponent<Renderer>();
+    //}
 
     public void SetWallMaterial(Material wallMaterial)
     {
@@ -44,8 +51,8 @@ public class CellWall : MonoBehaviour
 
         if (_wallPlane != null)
         {
-            if (_wallPlane.TryGetComponent<Collider>(out Collider c))
-                c.enabled = false;
+            //if (_wallPlane.TryGetComponent<Collider>(out Collider c))
+            //    c.enabled = false;
             if ( _planeRenderer != null)
                 _planeRenderer.enabled = false;
         }
@@ -59,8 +66,8 @@ public class CellWall : MonoBehaviour
 
         if (_wallPlane != null)
         {
-            if (_wallPlane.TryGetComponent<Collider>(out Collider c))
-                c.enabled = true;
+            //if (_wallPlane.TryGetComponent<Collider>(out Collider c))
+            //    c.enabled = true;
             if ( _planeRenderer != null)
                 _planeRenderer.enabled = true;
         }
@@ -80,6 +87,12 @@ public class CellWall : MonoBehaviour
             if (_wallProps[i] != null)
                 Destroy(_wallProps[i]);
         }
+    }
+
+    public void DestroyWallPlane()
+    {
+        if ( _wallPlane != null)
+            Destroy( _wallPlane );
     }
 
     //public void EnableW
@@ -165,7 +178,11 @@ public class CellWall : MonoBehaviour
         return transform.localPosition.y;
     }
 
-
+    //private void OnDisable()
+    //{
+    //    //DisableWallProps();
+    //    DisableRenderer();
+    //}
 
 }
 

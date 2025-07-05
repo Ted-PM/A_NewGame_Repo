@@ -11,12 +11,12 @@ public class WorldGenerator : MonoBehaviour
     private GameObject myFloorSpawner;
     [SerializeField]
     private GameObject myPlayerSpawner;
-    [SerializeField]
-    private GameObject myEnemySpawner;
-    [SerializeField]
-    private GameObject myDoorSpawner;
-    [SerializeField]
-    private GameObject myLightSpawner;
+    //[SerializeField]
+    //private GameObject myEnemySpawner;
+    //[SerializeField]
+    //private GameObject myDoorSpawner;
+    //[SerializeField]
+    //private GameObject myLightSpawner;
     [SerializeField]
     private GameObject myParticleSystemSpawner;
 
@@ -31,9 +31,9 @@ public class WorldGenerator : MonoBehaviour
     public bool spawnPlayer;
     public bool useRenderCulling;
     public bool useAbmientAudio;
-    public bool spawnEnemies;
-    public bool spawnDoors;
-    public bool spawnLights;
+    //public bool spawnEnemies;
+    //public bool spawnDoors;
+    //public bool spawnLights;
     public bool spawnParticles;
 
     private FloorSpawner _floorSpawner;
@@ -98,19 +98,19 @@ public class WorldGenerator : MonoBehaviour
                 Destroy(_worldRenderManager);
         }
 
-        yield return new WaitForFixedUpdate();
-        if (spawnEnemies)
-            StartCoroutine(WaitThenSpawnEnemySpawner());
+        //yield return new WaitForFixedUpdate();
+        //if (spawnEnemies)
+        //    StartCoroutine(WaitThenSpawnEnemySpawner());
         yield return new WaitForFixedUpdate();
         if (spawnParticles)
             StartCoroutine(WaitThenSpawnParticleSystemSpawner());
         yield return new WaitForFixedUpdate();
-        if (spawnDoors)
-            StartCoroutine(WaitThenSpawnDoorSpawner());
-        yield return new WaitForFixedUpdate();
-        if (spawnLights)
-            StartCoroutine(WaitThenSpawnLightSpawner());
-        yield return new WaitForFixedUpdate();
+        //if (spawnDoors)
+        //    StartCoroutine(WaitThenSpawnDoorSpawner());
+        //yield return new WaitForFixedUpdate();
+        //if (spawnLights)
+        //    StartCoroutine(WaitThenSpawnLightSpawner());
+        //yield return new WaitForFixedUpdate();
         if (spawnPlayer)
             StartCoroutine(WaitThenSpawnPlayer());
 
@@ -143,6 +143,8 @@ public class WorldGenerator : MonoBehaviour
 
     private int GetPlayerFloorLevel()
     {
+        if (_player == null)
+            return 0;
         return (int)(((int)_player.transform.position.y + 1) / 10);
     }
 
@@ -158,12 +160,12 @@ public class WorldGenerator : MonoBehaviour
 
         _mazeFloors = new MazeFloor[_floorSpawner.numberOfFloors];
         _mazeFloors = _floorSpawner.GetMazeFloors();
-        _floorLevels = _floorSpawner.GetFloorLevelList();
-        Debug.Log("Floor Level List: ");
-        for (int i = 0; i < _floorLevels.Count; i++ )
-        {
-            Debug.Log( _floorLevels[i] );
-        }
+        //_floorLevels = _floorSpawner.GetFloorLevelList();
+        //Debug.Log("Floor Level List: ");
+        //for (int i = 0; i < _floorLevels.Count; i++ )
+        //{
+        //    Debug.Log( _floorLevels[i] );
+        //}
         if (_worldRenderManager != null)
             _worldRenderManager.SetMazeFloors(_mazeFloors);
         //Debug.Log("Render Manager Ready!");
@@ -171,29 +173,30 @@ public class WorldGenerator : MonoBehaviour
             //StartCoroutine(_floorSpawner.DisableInitialFloorRenderers());
     }
 
-    private IEnumerator WaitThenSpawnEnemySpawner()
-    {
-        yield return new WaitForSeconds(1f);
-        Instantiate(myEnemySpawner, this.transform);
-    }
+    //private IEnumerator WaitThenSpawnEnemySpawner()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    Instantiate(myEnemySpawner, this.transform);
+    //}
 
     private IEnumerator WaitThenSpawnParticleSystemSpawner()
     {
         yield return new WaitForSeconds(1f);
-        Instantiate(myParticleSystemSpawner, this.transform);
+        if (myParticleSystemSpawner != null)
+            Instantiate(myParticleSystemSpawner, this.transform);
     }
 
-    private IEnumerator WaitThenSpawnDoorSpawner()
-    {
-        yield return new WaitForSeconds(1f);
-        Instantiate(myDoorSpawner, this.transform);
-    }
+    //private IEnumerator WaitThenSpawnDoorSpawner()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    Instantiate(myDoorSpawner, this.transform);
+    //}
 
-    private IEnumerator WaitThenSpawnLightSpawner()
-    {
-        yield return new WaitForSeconds(1f);
-        Instantiate(myLightSpawner, this.transform);
-    }
+    //private IEnumerator WaitThenSpawnLightSpawner()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    Instantiate(myLightSpawner, this.transform);
+    //}
 
     private IEnumerator WaitThenSpawnPlayer()
     {
@@ -207,6 +210,12 @@ public class WorldGenerator : MonoBehaviour
     {
         GameObject floorSpawnerObject = Instantiate(myFloorSpawner, this.transform.parent);
         _floorSpawner = floorSpawnerObject.GetComponent<FloorSpawner>();
+        _floorLevels = _floorSpawner.GetFloorLevelList();
+        Debug.Log("Floor Level List: ");
+        for (int i = 0; i < _floorLevels.Count; i++)
+        {
+            Debug.Log(_floorLevels[i]);
+        }
     }
 
     private void SpawnPlayerSpawner(int x, int z)

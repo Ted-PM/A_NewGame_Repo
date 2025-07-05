@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class LightSpawner : MonoBehaviour
 {
-    private static LightSpawner _instance;
-    public static LightSpawner Instance {  get { return _instance; } }
+    //private static LightSpawner _instance;
+    //public static LightSpawner Instance {  get { return _instance; } }
 
     public LightTypes lightTypeOrder;
     [SerializeField]
@@ -20,13 +20,13 @@ public class LightSpawner : MonoBehaviour
 
 
 
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-            Destroy(this.gameObject);
-        else
-            _instance = this;
-    }
+    //private void Awake()
+    //{
+    //    if (_instance != null && _instance != this)
+    //        Destroy(this.gameObject);
+    //    else
+    //        _instance = this;
+    //}
     void Start()
     {
         InitializeLists();

@@ -72,7 +72,7 @@ public class LightController : MonoBehaviour
         }
 
         if (t >= 1)
-            LightSpawner.Instance.DisableLight(this.gameObject);
+            ObjectPoolManager.Instance.DisableLight(this.gameObject);
             
     }
 

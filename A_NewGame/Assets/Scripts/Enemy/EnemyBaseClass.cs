@@ -297,7 +297,7 @@ public class EnemyBaseClass : MonoBehaviour
             _enemyAnimator.SetBool("move", false);  
             _enemyAnimator.enabled = false;
         }
-        EnemySpawner.Instance.DisableEnemy(this.gameObject);
+        ObjectPoolManager.Instance.DisableEnemy(this.gameObject);
         //_canGoToPlayer = false;
         //_enemyDisabled = true;
     }

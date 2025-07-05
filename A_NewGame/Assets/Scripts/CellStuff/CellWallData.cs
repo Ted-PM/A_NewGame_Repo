@@ -53,11 +53,13 @@ public struct CellWallData
 
     public void DisableWall()
     {
+        wall.DisableWall();
         wall.gameObject.SetActive(false);
     }
 
     public void DestroyWall()
     {
+        wall.DestroyWallPlane();
         wall.DestroyWallProps();
         wallDestroyed = true;
     }
@@ -65,5 +67,9 @@ public struct CellWallData
     public bool WallIsDisabled() { return !wall.gameObject.activeSelf; }
 
     public bool WallIsDestroyed() { return wallDestroyed; }
-    public void EnableWall() { wall.gameObject.SetActive(true); }
+    public void EnableWall() 
+    { 
+        wall.gameObject.SetActive(true);
+        wall.EnableWall();
+    }
 }
